@@ -1,0 +1,14 @@
+<RCC>
+    <qresource prefix="/">
+        <file>src/icon/copy.png</file>
+        <file>src/icon/cut.png</file>
+        <file>src/icon/editredo.png</file>
+        <file>src/icon/editundo.png</file>
+        <file>src/icon/filenew.png</file>
+        <file>src/icon/fileopen.png</file>
+        <file>src/icon/fileprint.png</file>
+        <file>src/icon/filesave.png</file>
+        <file>src/icon/zoomin.png</file>
+        <file>src/icon/zoomout.png</file>
+    </qresource>
+</RCC>
