@@ -1,6 +1,6 @@
 #include "iomanager.h"
-#include "gui/documentview.h"
-#include "core/building.h"
+#include "../gui/documentview.h"
+#include "../core/building.h"
 #include "jsonloader.h"
 #include <QFileDialog>
 #include <QMessageBox>

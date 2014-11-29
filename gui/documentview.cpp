@@ -1,9 +1,9 @@
 #include "documentview.h"
-#include "core/building.h"
-#include "core/mapentity.h"
-#include "core/floor.h"
-#include "core/funcarea.h"
-#include "core/pubpoint.h"
+#include "../core/building.h"
+#include "../core/mapentity.h"
+#include "../core/floor.h"
+#include "../core/funcarea.h"
+#include "../core/pubpoint.h"
 #include <QGraphicsScene>
 #include <QGraphicsObject>
 #include <QUndoStack>

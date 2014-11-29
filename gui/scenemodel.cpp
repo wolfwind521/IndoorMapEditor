@@ -1,5 +1,5 @@
 #include "scenemodel.h"
-#include "core/mapentity.h"
+#include "../core/mapentity.h"
 
 SceneModel::SceneModel(MapEntity *root, QObject *parent) :
     QAbstractItemModel(parent), m_root(root)

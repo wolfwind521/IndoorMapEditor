@@ -30,6 +30,7 @@ bool PubPoint::load(const QJsonObject &jsonObject) {
 
     QJsonArray point = jsonObject["Outline"].toArray()[0].toArray()[0].toArray();
     m_center = QPoint(point[0].toInt(), point[1].toInt());
+    return true;
 }
 
 QRectF PubPoint::boundingRect() const

@@ -109,7 +109,7 @@ void MainWindow::setCurrentFile(const QString & fileName){
     m_curFile = fileName;
     currentDocument()->setModified(false);
 
-    QString shownName = tr("未命名");
+    QString shownName = tr("Untitle");
     if(! m_curFile.isEmpty()){
         shownName = QFileInfo(fileName).fileName();
         m_recentFiles.removeAll(m_curFile);
@@ -121,9 +121,9 @@ void MainWindow::setCurrentFile(const QString & fileName){
 
 bool MainWindow::okToContinue(){
     if(currentDocument()->isModified()){
-        int r = QMessageBox::warning(this, tr("注意"),
-                                     tr("文件已被修改，\n"
-                                     "是否保存？"),
+        int r = QMessageBox::warning(this, tr("Warning"),
+                                     tr("the file has been modifed\n"
+                                     "do you want to save? "),
                                      QMessageBox::Yes | QMessageBox::No | QMessageBox::Cancel);
         if(r == QMessageBox::Yes){
             return saveDocument();

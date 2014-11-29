@@ -1,5 +1,5 @@
 #include "jsonloader.h"
-#include "core/building.h"
+#include "../core/building.h"
 
 #include <QJsonDocument>
 #include <QJsonObject>
