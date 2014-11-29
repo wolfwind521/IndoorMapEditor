@@ -2,6 +2,7 @@
 #define DOCUMENTVIEW_H
 
 #include <QGraphicsView>
+#include <QModelIndex>
 
 QT_FORWARD_DECLARE_CLASS(QUndoStack)
 QT_FORWARD_DECLARE_CLASS(QGraphicsScene)
@@ -25,6 +26,9 @@ public:
 
 signals:
     void buildingChanged(const Building & building);
+
+public slots:
+    void selectEntity(const QModelIndex & index);
 private:
     QUndoStack *m_undoStack;
     QGraphicsScene *m_scene;

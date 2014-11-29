@@ -5,11 +5,11 @@
 
 class MapEntity;
 
-class SceneTreeModel : public QAbstractItemModel
+class SceneModel : public QAbstractItemModel
 {
     Q_OBJECT
 public:
-    SceneTreeModel(MapEntity *root, QObject *parent = 0);
+    SceneModel(MapEntity *root, QObject *parent = 0);
 
     Qt::ItemFlags flags(const QModelIndex &index) const;
     QVariant data(const QModelIndex &index, int role) const;

@@ -1,7 +1,7 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include "gui/documentview.h"
-#include "gui/scenetreemodel.h"
+#include "gui/scenemodel.h"
 #include "core/building.h"
 #include "io/iomanager.h"
 #include <QFileDialog>
@@ -27,8 +27,8 @@ MainWindow::MainWindow(QWidget *parent) :
     addDocument(new DocumentView());
     setCurrentFile("");
 
-//    ObjectTreeModel *model = new ObjectTreeModel(this);
-//    sceneTreeView->setModel(model);
+    connect(sceneTreeView, SIGNAL(clicked(QModelIndex)), m_docView, SLOT(selectEntity(QModelIndex)));
+
 }
 
 MainWindow::~MainWindow()
@@ -80,6 +80,8 @@ void MainWindow::newDocument()
     if(okToContinue()){
         currentDocument()->clear();
         setCurrentFile("");
+
+        rebuildTreeView();
     }
 }
 
@@ -133,8 +135,9 @@ bool MainWindow::okToContinue(){
 }
 
 void MainWindow::rebuildTreeView(){
-    SceneTreeModel *model = new SceneTreeModel(m_docView->root());
+    SceneModel *model = new SceneModel(m_docView->root());
     sceneTreeView->setModel(model);
+    sceneTreeView->expandAll();
 //        ObjectTreeModel *model = new ObjectTreeModel(this);
 //        sceneTreeView->setModel(model);
 }

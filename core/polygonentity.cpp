@@ -1,6 +1,7 @@
 #include "polygonentity.h"
-
-#include <QtWidgets>
+#include <QWidget>
+#include <QStyleOptionGraphicsItem>
+#include <QPainter>
 
 PolygonEntity::PolygonEntity(QGraphicsItem *parent)
     :MapEntity(parent), m_area(0.0)
@@ -12,14 +13,14 @@ PolygonEntity::PolygonEntity(QGraphicsItem *parent)
 PolygonEntity::PolygonEntity(const QString & name, QGraphicsItem *parent)
     : MapEntity(parent), m_area(0.0)
 {
-    m_name = name;
+    setObjectName(name);
     setFlags(ItemIsSelectable | ItemIsMovable);
     setAcceptHoverEvents(true);
 }
 
 PolygonEntity::PolygonEntity(const QString & name, int id) :  m_area(0.0)
 {
-    m_name = name;
+    setObjectName(name);
     m_id = id;
     setFlags(ItemIsSelectable | ItemIsMovable);
     setAcceptHoverEvents(true);
@@ -28,7 +29,7 @@ PolygonEntity::PolygonEntity(const QString & name, int id) :  m_area(0.0)
 PolygonEntity::PolygonEntity(const QString & name, int id, QPolygon poly, double area)
     :m_outline(poly), m_area(area)
 {
-    m_name = name;
+    setObjectName(name);
     m_id = id;
     setFlags(ItemIsSelectable | ItemIsMovable);
     setAcceptHoverEvents(true);
@@ -110,9 +111,9 @@ void PolygonEntity::paint(QPainter *painter, const QStyleOptionGraphicsItem *opt
 
     //if selected
     QColor fillColor = (option->state & QStyle::State_Selected) ? m_color.darker(150) : m_color;
-    //if mouse over
-    if (option->state & QStyle::State_MouseOver)
-        fillColor = fillColor.lighter(125);
+//    //if mouse over
+//    if (option->state & QStyle::State_MouseOver)
+//        fillColor = fillColor.lighter(125);
 
     painter->setBrush(fillColor);
     painter->setPen(QPen(m_color.darker(),1));

@@ -30,7 +30,7 @@ bool Building::load(const QJsonObject &jsonObject)
     m_underfloors = buildingObject["UnderFloors"].toInt();
     m_frontAngle = buildingObject["FrontAngle"].toDouble();
     m_defaultFloor = buildingObject["DefaultFloor"].toInt(1);
-    m_name = buildingObject["Name"].toString();
+    setObjectName( buildingObject["Name"].toString() );
     m_enName = buildingObject["Name_En"].toString();
     m_area = buildingObject["Area"].toDouble();
     m_groundFloors = buildingObject["GroundFloors"].toInt();
@@ -45,6 +45,9 @@ bool Building::load(const QJsonObject &jsonObject)
     m_key = buildingObject["_id"].toString();
     setOutline(buildingObject["Outline"].toArray()[0].toArray()[0].toArray());
 
+    QVector<Floor*> allFloors;
+    allFloors.resize(m_underfloors + m_groundFloors);
+
     QJsonArray floorsArray = dataObject["Floors"].toArray();
     for (int i = 0; i < floorsArray.size(); ++i) {
         QJsonObject floorObject = floorsArray[i].toObject();
@@ -53,8 +56,15 @@ bool Building::load(const QJsonObject &jsonObject)
         if(!floor->load(floorObject)) {
             //TODO: show some warning
         }
-        floor->setParentItem(this);
+        int floorId = floor->id();
+        if(floorId < 0) //underfloors
+            allFloors[floorId + m_underfloors] = floor;
+        else //groundfloors
+            allFloors[floorId - 1 + m_underfloors] = floor;
     }
+
+    for(int i = 0; i < allFloors.size(); i++)
+        allFloors[i]->setParent(this);
 
     return true;
 }

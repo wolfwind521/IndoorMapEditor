@@ -21,9 +21,9 @@ SOURCES += main.cpp\
     core/polygonentity.cpp \
     io/jsonloader.cpp \
     io/iomanager.cpp \
-    gui/scenetreemodel.cpp \
     core/mapentity.cpp \
-    core/pubpoint.cpp
+    core/pubpoint.cpp \
+    gui/scenemodel.cpp
 
 HEADERS  += mainwindow.h \
     core/building.h \
@@ -34,9 +34,9 @@ HEADERS  += mainwindow.h \
     core/polygonentity.h \
     io/jsonloader.h \
     io/iomanager.h \
-    gui/scenetreemodel.h \
     core/mapentity.h \
-    core/pubpoint.h
+    core/pubpoint.h \
+    gui/scenemodel.h
 
 FORMS    += mainwindow.ui
 

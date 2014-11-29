@@ -6,22 +6,23 @@ MapEntity::MapEntity(QGraphicsItem *parent) :
 }
 
 MapEntity::MapEntity(const QString &name, QGraphicsItem *parent) :
-    QGraphicsObject(parent), m_name(name)
+    QGraphicsObject(parent)
 {
+    setObjectName(name);
 }
 
-const QString& MapEntity::name() const
-{
-    return m_name;
-}
+//QString MapEntity::name() const
+//{
+//    return m_name;
+//}
 
-void MapEntity::setName(const QString & name)
-{
-    if(m_name == name)
-        return;
-    m_name = name;
-    emit nameChanged(m_name);
-}
+//void MapEntity::setName(const QString & name)
+//{
+//    if(m_name == name)
+//        return;
+//    m_name = name;
+//    emit nameChanged(m_name);
+//}
 
 int MapEntity::id() const
 {

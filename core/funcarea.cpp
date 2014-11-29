@@ -20,7 +20,7 @@ void FuncArea::setFuncType(const FUNC_TYPE type)
 }
 
 bool FuncArea::load(const QJsonObject &jsonObject) {
-    m_name = jsonObject["Name"].toString();
+    setObjectName( jsonObject["Name"].toString() );
     m_enName = jsonObject["Name_En"].toString();
     m_area = jsonObject["Area"].toDouble();
     m_type = FUNC_TYPE(jsonObject["Type"].toString().toInt());

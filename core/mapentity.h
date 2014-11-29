@@ -7,7 +7,6 @@ class MapEntity : public QGraphicsObject
 {
     Q_OBJECT
 
-    Q_PROPERTY(QString name READ name WRITE setName NOTIFY nameChanged)
     Q_PROPERTY(int id READ id WRITE setId NOTIFY idChanged)
     Q_PROPERTY(QString enName READ enName WRITE setEnName NOTIFY enNameChanged)
     Q_PROPERTY(QPointF center READ center WRITE setCenter NOTIFY centerChanged)
@@ -16,8 +15,8 @@ public:
     explicit MapEntity(const QString & name, QGraphicsItem *parent = 0);
 
     //setters and getters
-    const QString& name() const;
-    void setName(const QString & name);
+//    QString name() const;
+//    void setName(const QString & name);
     int id() const;
     void setId(const int id);
     const QString & enName() const;
@@ -33,7 +32,7 @@ signals:
     void idChanged(int id);
     void centerChanged(const QPointF & center);
 protected:
-    QString m_name;
+    //QString m_name;
     QString m_enName;
     int m_id;
     QPointF m_center;

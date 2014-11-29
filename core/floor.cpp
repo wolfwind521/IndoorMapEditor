@@ -1,5 +1,6 @@
 #include "floor.h"
 #include "funcarea.h"
+#include "pubpoint.h"
 
 Floor::Floor(QGraphicsItem *parent)
     : PolygonEntity(parent)
@@ -9,10 +10,10 @@ Floor::Floor(QGraphicsItem *parent)
 
 bool Floor::load(const QJsonObject &jsonObject) {
 
-    m_name = jsonObject["Name"].toString();
+    setObjectName( jsonObject["Name"].toString() );
     m_area = jsonObject["Area"].toDouble();
     m_height = jsonObject["High"].toDouble();
-    m_id = jsonObject["id"].toInt();
+    m_id = jsonObject["_id"].toInt();
     setOutline(jsonObject["Outline"].toArray()[0].toArray()[0].toArray());
 
     QJsonArray funcArray = jsonObject["FuncAreas"].toArray();
@@ -23,7 +24,18 @@ bool Floor::load(const QJsonObject &jsonObject) {
         if(!funcArea->load(funcObject)) {
             //TODO: show some warning
         }
-        funcArea->setParentItem(this);
+        funcArea->setParent(this);
+    }
+
+    QJsonArray pubArray = jsonObject["PubPoint"].toArray();
+    for (int i = 0; i < pubArray.size(); ++i) {
+        QJsonObject pubObject = pubArray[i].toObject();
+
+        PubPoint * pubPoint = new PubPoint(this);
+        if(!pubPoint->load(pubObject)) {
+            //TODO: show some warning
+        }
+        pubPoint->setParent(this);
     }
     return true;
 }
