@@ -26,13 +26,11 @@ bool Building::load(const QJsonObject &jsonObject)
     }
 
     const QJsonObject & buildingObject = buildingValue.toObject();
+    PolygonEntity::load(buildingObject);
 
     m_underfloors = buildingObject["UnderFloors"].toInt();
     m_frontAngle = buildingObject["FrontAngle"].toDouble();
     m_defaultFloor = buildingObject["DefaultFloor"].toInt(1);
-    setObjectName( buildingObject["Name"].toString() );
-    m_enName = buildingObject["Name_En"].toString();
-    m_area = buildingObject["Area"].toDouble();
     m_groundFloors = buildingObject["GroundFloors"].toInt();
     m_postCode = buildingObject["Adcode"].toString();
     m_remark = buildingObject["Remark"].toString();
@@ -43,7 +41,6 @@ bool Building::load(const QJsonObject &jsonObject)
     m_version = buildingObject["Version"].toInt();
     m_type = (BUILDING_TYPE) buildingObject["Type"].toString().toInt();
     m_key = buildingObject["_id"].toString();
-    setOutline(buildingObject["Outline"].toArray()[0].toArray()[0].toArray());
 
     QVector<Floor*> allFloors;
     allFloors.resize(m_underfloors + m_groundFloors);
@@ -67,4 +64,39 @@ bool Building::load(const QJsonObject &jsonObject)
         allFloors[i]->setParent(this);
 
     return true;
+}
+
+bool Building::save(QJsonObject &jsonObject)
+{
+    QJsonObject dataObject, buildingObject;
+
+    dataObject["building"] = buildingObject;
+    jsonObject["data"] = dataObject;
+
+    PolygonEntity::save(buildingObject);
+    buildingObject["UnderFloors"] = m_underfloors;
+    buildingObject["FrontAngle"] = m_frontAngle;
+    buildingObject["DefaultFloor"] = m_defaultFloor;
+    buildingObject["GroundFloors"] = m_groundFloors;
+    buildingObject["Adcode"] = m_postCode;
+    buildingObject["Remark"] = m_remark;
+    buildingObject["FloorsId"] = m_floorsId;
+    buildingObject["High"] = m_height;
+    buildingObject["_yLat"] = m_latitude;
+    buildingObject["_xLon"] = m_longitude;
+    buildingObject["Version"] = m_version;
+    buildingObject["Type"] = QString::number(static_cast<int>(m_type));
+    buildingObject["_id"] = m_key;
+
+    QJsonArray floorArray;
+    foreach(QObject* object, this->children()){
+        if(object->metaObject()->className() == "Floor"){
+            QJsonObject floorObject;
+            static_cast<Floor*>(object)->save(floorObject);
+            floorArray.append(floorObject);
+        }
+    }
+
+    buildingObject["Floors"] = floorArray;
+
 }

@@ -21,10 +21,14 @@ public:
     FuncArea(QGraphicsItem *parent = 0);
 
     bool load(const QJsonObject & jsonObject);
+    bool save(QJsonObject &jsonObject);
 
     //setters and getters
     FUNC_TYPE funcType() const;
     void setFuncType(const FUNC_TYPE type);
+
+    void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget);
+
 signals:
     void funcTypeChanged(FUNC_TYPE type);
 private:

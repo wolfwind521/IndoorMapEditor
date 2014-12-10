@@ -20,6 +20,8 @@ DocumentView::DocumentView():m_isModified(false), m_root(NULL), m_building(NULL)
     this->setDragMode(QGraphicsView::RubberBandDrag);
     this->setRenderHints(QPainter::Antialiasing);
 
+    connect(m_scene, SIGNAL(selectionChanged()), this, SLOT(updateSelection()));
+
 }
 
 DocumentView::~DocumentView()
@@ -63,17 +65,34 @@ void DocumentView::clear()
     m_undoStack->clear();
 }
 
-void DocumentView::selectEntity(const QModelIndex & index){
+void DocumentView::printScene(QPainter *painter){
+    m_scene->render(painter);
+}
+
+void DocumentView::updateSelection(){
+    if(m_scene->selectedItems().size() > 0){
+        MapEntity* selectedEntity = static_cast<MapEntity*>(m_scene->selectedItems().at(0));
+        emit selectionChanged(selectedEntity);
+    }else{
+        emit selectionChanged(NULL);
+    }
+}
+
+void DocumentView::updateSelection(const QModelIndex & index){
     MapEntity* mapEntity = static_cast<MapEntity*>(index.internalPointer());
+
+    //a floor selected, change the visible floor
     QString className = mapEntity->metaObject()->className();
-    if( !className.compare( "Floor" )){ //floor selected
+    if( !className.compare( "Floor" )){
         QObject* floor;
         foreach (floor, m_building->children()) {
             static_cast<MapEntity*>(floor)->setVisible(false);
         }
         mapEntity->setVisible(true);
         this->update(this->contentsRect());
-    }else if( !className.compare("FuncArea") ){ //funcArea selected
+    }
+    //a funcArea or pubPoint selected, change the visible floor
+    else if( !className.compare("FuncArea") || !className.compare("PubPoint")){
         MapEntity* parent = static_cast<MapEntity*>(mapEntity->parent());
         if(!parent->isSelected()){
             QObject* floor;
@@ -83,7 +102,11 @@ void DocumentView::selectEntity(const QModelIndex & index){
             parent->setVisible(true);
         }
         m_scene->clearSelection();
-        mapEntity->setSelected(true);
     }
 
+    mapEntity->setSelected(true);
+}
+
+QGraphicsScene * DocumentView::scene() const{
+    return m_scene;
 }

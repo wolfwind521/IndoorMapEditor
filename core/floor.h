@@ -13,6 +13,7 @@ class Floor : public PolygonEntity
 public:
     Floor(QGraphicsItem *parent = 0);
     bool load(const QJsonObject & jsonObject);
+    bool save(QJsonObject & jsonObject);
 
     //setters and getters
     double height() const;

@@ -62,6 +62,18 @@ void MapEntity::setCenter(const QPointF & center)
     emit centerChanged(m_center);
 }
 
+bool MapEntity::load(const QJsonObject &jsonObject)
+{
+    setObjectName( jsonObject["Name"].toString() );
+    m_enName = jsonObject["Name_en"].toString();
+}
+
+bool MapEntity::save(QJsonObject &jsonObject)
+{
+    jsonObject["Name"] = objectName();
+    jsonObject["Name_en"] = m_enName;
+}
+
 QRectF MapEntity::boundingRect() const
 {
     return QRectF(m_center, m_center);

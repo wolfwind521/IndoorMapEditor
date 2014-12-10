@@ -35,6 +35,8 @@
     <addaction name="actionSave"/>
     <addaction name="actionSaveAs"/>
     <addaction name="separator"/>
+    <addaction name="actionPrint"/>
+    <addaction name="separator"/>
    </widget>
    <addaction name="menu_File"/>
   </widget>
@@ -85,18 +87,7 @@
    <attribute name="dockWidgetArea">
     <number>2</number>
    </attribute>
-   <widget class="QWidget" name="dockPropWidgetContents">
-    <widget class="QListView" name="propListView">
-     <property name="geometry">
-      <rect>
-       <x>0</x>
-       <y>0</y>
-       <width>256</width>
-       <height>192</height>
-      </rect>
-     </property>
-    </widget>
-   </widget>
+   <widget class="QWidget" name="dockPropWidgetContents"/>
   </widget>
   <action name="actionOpen">
    <property name="icon">
@@ -187,10 +178,13 @@
      <normaloff>:/src/icon/fileprint.png</normaloff>:/src/icon/fileprint.png</iconset>
    </property>
    <property name="text">
-    <string>打印</string>
+    <string>打印...</string>
    </property>
    <property name="toolTip">
     <string>打印</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+P</string>
    </property>
   </action>
   <action name="actionExport">

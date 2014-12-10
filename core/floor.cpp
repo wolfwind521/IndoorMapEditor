@@ -10,11 +10,9 @@ Floor::Floor(QGraphicsItem *parent)
 
 bool Floor::load(const QJsonObject &jsonObject) {
 
-    setObjectName( jsonObject["Name"].toString() );
-    m_area = jsonObject["Area"].toDouble();
+    PolygonEntity::load(jsonObject);
     m_height = jsonObject["High"].toDouble();
     m_id = jsonObject["_id"].toInt();
-    setOutline(jsonObject["Outline"].toArray()[0].toArray()[0].toArray());
 
     QJsonArray funcArray = jsonObject["FuncAreas"].toArray();
     for (int i = 0; i < funcArray.size(); ++i) {
@@ -38,6 +36,35 @@ bool Floor::load(const QJsonObject &jsonObject) {
         pubPoint->setParent(this);
     }
     return true;
+}
+
+bool Floor::save(QJsonObject &jsonObject)
+{
+    PolygonEntity::save(jsonObject);
+    jsonObject["High"] = m_height;
+    jsonObject["_id"] = m_id;
+
+    //save the funcAreas
+    QJsonArray funcArray;
+    foreach (QObject* object, this->children()) {
+        if(object->metaObject()->className() == "FuncArea"){
+            QJsonObject funcObject;
+            static_cast<FuncArea*>(object)->save(funcObject);
+            funcArray.append(funcObject);
+        }
+    }
+    jsonObject["FuncAreas"] = funcArray;
+
+    //save the pubPoints
+    QJsonArray pubArray;
+    foreach(QObject* object, this->children()){
+        if(object->metaObject()->className() == "PubPoint"){
+            QJsonObject pubObject;
+            static_cast<PubPoint*>(object)->save(pubObject);
+            pubArray.append(pubObject);
+        }
+    }
+    jsonObject["PubPoint"] = pubArray;
 }
 
 double Floor::height() const

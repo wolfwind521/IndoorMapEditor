@@ -6,6 +6,7 @@
 
 QT       += core gui
 
+qtHaveModule(printsupport): QT += printsupport
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
 TARGET = IndoorMapEditor
@@ -23,7 +24,11 @@ SOURCES += main.cpp\
     io/iomanager.cpp \
     core/mapentity.cpp \
     core/pubpoint.cpp \
-    gui/scenemodel.cpp
+    gui/scenemodel.cpp \
+    gui/propertyview.cpp \
+    tool/abstracttool.cpp \
+    tool/toolmanager.cpp \
+    tool/polygontool.cpp
 
 HEADERS  += mainwindow.h \
     core/building.h \
@@ -36,7 +41,11 @@ HEADERS  += mainwindow.h \
     io/iomanager.h \
     core/mapentity.h \
     core/pubpoint.h \
-    gui/scenemodel.h
+    gui/scenemodel.h \
+    gui/propertyview.h \
+    tool/abstracttool.h \
+    tool/toolmanager.h \
+    tool/polygontool.h
 
 FORMS    += mainwindow.ui
 

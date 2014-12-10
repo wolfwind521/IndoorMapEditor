@@ -18,7 +18,6 @@ public:
     //setters and getters
     const QPolygon & outline() const;
     void setOutline(const QVector<QPoint> & points);
-    void setOutline(const QJsonArray & jsonArray);
     double area();
     void setArea(const double area);
 
@@ -42,6 +41,10 @@ public:
     QRectF boundingRect() const;
     QPainterPath shape() const;
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget);
+
+    //io
+    virtual bool load(const QJsonObject & jsonObject);
+    virtual bool save(QJsonObject & jsonObject);
 protected:
 
     double computeArea();

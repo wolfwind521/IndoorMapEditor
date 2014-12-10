@@ -8,7 +8,9 @@ class MainWindow;
 }
 
 class DocumentView;
+class PropertyView;
 QT_FORWARD_DECLARE_CLASS(QTreeView)
+QT_FORWARD_DECLARE_CLASS(QPrinter)
 
 class MainWindow : public QMainWindow
 {
@@ -26,6 +28,7 @@ public slots:
     void saveAsDocument();
     void closeDocument();
     void exportDocument();
+    void printDocument();
 
     void rebuildTreeView();
 private:
@@ -34,12 +37,14 @@ private:
     void setCurrentFile(const QString & fileName);
     Ui::MainWindow *ui;
 
-    QTreeView *sceneTreeView;
+    QTreeView *m_sceneTreeView;
+    PropertyView *m_propertyView;
     int m_maxRecentFiles;
     QStringList m_recentFiles;
     QString m_curFile;
     QString m_lastFilePath;
     DocumentView* m_docView;
+    QPrinter *m_printer;
 };
 
 #endif // MAINWINDOW_H

@@ -42,16 +42,45 @@ void PolygonEntity::setOutline(const QVector<QPoint> & points)
    m_outline = QPolygon(points);
 }
 
-void PolygonEntity::setOutline(const QJsonArray &jsonArray)
-{
-    for(int i = 0; i < jsonArray.size() - 1; i+=2){
-        m_outline.append(QPoint(jsonArray[i].toInt(), jsonArray[i+1].toInt()));
-    }
-}
-
 const QPolygon & PolygonEntity::outline() const
 {
     return m_outline;
+}
+
+bool PolygonEntity::load(const QJsonObject &jsonObject)
+{
+
+    MapEntity::load(jsonObject);
+    m_area = jsonObject["Area"].toDouble();
+
+    const QJsonArray & jsonArray = jsonObject["Outline"].toArray()[0].toArray()[0].toArray();
+    for(int i = 0; i < jsonArray.size() - 1; i+=2){
+        m_outline.append(QPoint(jsonArray[i].toInt(), jsonArray[i+1].toInt()));
+    }
+
+    if(m_area == 0){
+        computeArea();
+    }
+    if(m_center.isNull()){
+        computeCenter();
+    }
+}
+
+bool PolygonEntity::save(QJsonObject &jsonObject)
+{
+    MapEntity::save(jsonObject);
+    jsonObject["Area"] = m_area;
+    QJsonArray jsonArray;
+    for(int i = 0; i < m_outline.size(); i++){
+        jsonArray.append(m_outline[i].x());
+        jsonArray.append(m_outline[i].y());
+    }
+    QJsonArray array0,array1,array2;
+    array0.append(jsonArray);
+    array1.append(array0);
+    array2.append(array1);
+
+    jsonObject["Outline"] = array2;
 }
 
 double PolygonEntity::area(){

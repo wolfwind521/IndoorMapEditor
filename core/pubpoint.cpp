@@ -22,15 +22,32 @@ void PubPoint::setPubType(PUB_TYPE type)
     emit pubTypeChanged(m_type);
 }
 
-bool PubPoint::load(const QJsonObject &jsonObject) {
-    setObjectName( jsonObject["Name"].toString() );
-    m_enName = jsonObject["Name_En"].toString();
-    m_type = PUB_TYPE(jsonObject["Type"].toString().toInt());
+bool PubPoint::load(const QJsonObject &jsonObject)
+{
+    MapEntity::load(jsonObject);
+    m_type = static_cast<PUB_TYPE>(jsonObject["Type"].toString().toInt());
     m_id = jsonObject["_id"].toInt();
 
     QJsonArray point = jsonObject["Outline"].toArray()[0].toArray()[0].toArray();
     m_center = QPoint(point[0].toInt(), point[1].toInt());
     return true;
+}
+
+bool PubPoint::save(QJsonObject &jsonObject)
+{
+    MapEntity::save(jsonObject);
+    jsonObject["Type"] = static_cast<int>(m_type);
+    jsonObject["_id"] = m_id;
+
+    QJsonArray point;
+    point.append(m_center.x());
+    point.append(m_center.y());
+
+    QJsonArray array0, array1;
+    array0.append(point);
+    array1.append(array0);
+
+    jsonObject["Outline"] = array1;
 }
 
 QRectF PubPoint::boundingRect() const
@@ -60,5 +77,7 @@ void PubPoint::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, 
 //        fillColor = fillColor.lighter(125);
 
     painter->setBrush(fillColor);
-    painter->drawEllipse(m_center, 5, 5);
+    painter->drawEllipse(m_center, 3, 3);
+    painter->setPen(QPen());
+    painter->drawText(m_center, objectName());
 }

@@ -21,6 +21,7 @@ public:
     explicit PubPoint(QGraphicsItem *parent = 0);
 
     bool load(const QJsonObject & jsonObject);
+    bool save(QJsonObject &jsonObject);
 
     PUB_TYPE pubType() const;
     void setPubType(PUB_TYPE type);

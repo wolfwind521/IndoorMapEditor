@@ -18,6 +18,7 @@ public:
     };
     Building(const QString & name, QGraphicsItem *parent = 0);
     bool load(const QJsonObject & jsonObject);
+    bool save(QJsonObject & jsonObject);
 
 private:
     int m_underfloors;

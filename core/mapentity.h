@@ -2,6 +2,7 @@
 #define MAPENTITY_H
 
 #include <QGraphicsObject>
+#include <QJsonObject>
 
 class MapEntity : public QGraphicsObject
 {
@@ -26,6 +27,10 @@ public:
 
     QRectF boundingRect() const;
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget);
+
+    //io
+    virtual bool load(const QJsonObject & jsonObject);
+    virtual bool save(QJsonObject & jsonObject);
 signals:
     void nameChanged(const QString & name);
     void enNameChanged(const QString & name);
