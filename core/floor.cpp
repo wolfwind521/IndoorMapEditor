@@ -8,6 +8,12 @@ Floor::Floor(QGraphicsItem *parent)
     m_color = QColor(193, 193, 193);
 }
 
+Floor::Floor(PolygonEntity &polygon)
+{
+    new (this) Floor();
+    copy(polygon);
+}
+
 bool Floor::load(const QJsonObject &jsonObject) {
 
     PolygonEntity::load(jsonObject);

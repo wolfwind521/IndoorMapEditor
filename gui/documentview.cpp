@@ -4,18 +4,20 @@
 #include "../core/floor.h"
 #include "../core/funcarea.h"
 #include "../core/pubpoint.h"
+#include "../core/scene.h"
 #include <QGraphicsScene>
 #include <QGraphicsObject>
 #include <QUndoStack>
+#include <QPrinter>
 
 
-DocumentView::DocumentView():m_isModified(false), m_root(NULL), m_building(NULL)
+DocumentView::DocumentView()
+    :m_isModified(false), m_selectable(true)
 {
-    m_scene = new QGraphicsScene();
+    m_scene = new Scene(this);
+    m_scene->reset();
     m_undoStack = new QUndoStack(this);
-    m_root = new MapEntity(tr("root"));
-    m_scene->addItem(static_cast<QGraphicsItem*>(m_root));
-    //m_building = new Building(tr("未命名"), m_root);
+
     this->setScene(m_scene);
     this->setDragMode(QGraphicsView::RubberBandDrag);
     this->setRenderHints(QPainter::Antialiasing);
@@ -28,27 +30,6 @@ DocumentView::~DocumentView()
 {
 }
 
-MapEntity *DocumentView::root() const{
-    return m_root;
-}
-
-Building* DocumentView::building() const{
-    return m_building;
-}
-
-void DocumentView::setBuilding(Building *building)
-{
-    if(m_building == building)
-        return;
-    //delete m_building; //delete the old one
-
-    m_building = building;
-    m_building->setParentItem(m_root);
-    m_building->setParent(m_root);
-
-    emit buildingChanged(*m_building);
-}
-
 bool DocumentView::isModified()
 {
     return m_isModified;
@@ -59,14 +40,21 @@ void DocumentView::setModified(bool b)
     m_isModified = b;
 }
 
+Building* DocumentView::building(){
+    return m_scene->building();
+}
+
 void DocumentView::clear()
 {
-    m_scene->clear();
+    m_scene->reset();
     m_undoStack->clear();
 }
 
-void DocumentView::printScene(QPainter *painter){
-    m_scene->render(painter);
+void DocumentView::printScene(QPrinter *printer){
+    QPainter painter;
+    painter.begin(printer);
+    m_scene->render(&painter, printer->pageRect(), m_scene->sceneRect(), Qt::KeepAspectRatio);
+    painter.end();
 }
 
 void DocumentView::updateSelection(){
@@ -83,30 +71,47 @@ void DocumentView::updateSelection(const QModelIndex & index){
 
     //a floor selected, change the visible floor
     QString className = mapEntity->metaObject()->className();
-    if( !className.compare( "Floor" )){
+    if( className == "Floor"){
         QObject* floor;
-        foreach (floor, m_building->children()) {
+        foreach (floor, m_scene->building()->children()) {
             static_cast<MapEntity*>(floor)->setVisible(false);
         }
         mapEntity->setVisible(true);
-        this->update(this->contentsRect());
+        m_scene->setCurrentFloor(static_cast<Floor*>(mapEntity));
+        this->update();
     }
     //a funcArea or pubPoint selected, change the visible floor
     else if( !className.compare("FuncArea") || !className.compare("PubPoint")){
         MapEntity* parent = static_cast<MapEntity*>(mapEntity->parent());
         if(!parent->isSelected()){
             QObject* floor;
-            foreach (floor, m_building->children()) {
+            foreach (floor, m_scene->building()->children()) {
                 static_cast<MapEntity*>(floor)->setVisible(false);
             }
             parent->setVisible(true);
+            m_scene->setCurrentFloor(static_cast<Floor*>(parent));
         }
         m_scene->clearSelection();
+    }
+    else if(!className.compare("Building")){
+        m_scene->setCurrentFloor(NULL);
     }
 
     mapEntity->setSelected(true);
 }
 
-QGraphicsScene * DocumentView::scene() const{
+Scene * DocumentView::scene() const{
     return m_scene;
+}
+
+void DocumentView::setSelectable(bool b){
+    if(m_selectable != b){
+        m_selectable = b;
+        if(m_selectable){
+            this->setDragMode(QGraphicsView::RubberBandDrag);
+        }else{
+            this->setDragMode(QGraphicsView::NoDrag);
+        }
+        m_scene->setSelectable(m_selectable);
+    }
 }

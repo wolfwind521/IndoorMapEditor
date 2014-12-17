@@ -63,6 +63,9 @@
    <attribute name="toolBarBreak">
     <bool>false</bool>
    </attribute>
+   <addaction name="actionSelectTool"/>
+   <addaction name="actionPolygonTool"/>
+   <addaction name="actionPubPointTool"/>
   </widget>
   <widget class="QDockWidget" name="dockTreeWidget">
    <property name="windowTitle">
@@ -190,6 +193,69 @@
   <action name="actionExport">
    <property name="text">
     <string>导出</string>
+   </property>
+  </action>
+  <action name="actionPolygonTool">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="IndoorMapEditor.qrc">
+     <normaloff>:/src/icon/polygon.png</normaloff>:/src/icon/polygon.png</iconset>
+   </property>
+   <property name="text">
+    <string>polygonTool</string>
+   </property>
+   <property name="toolTip">
+    <string>创建多边形</string>
+   </property>
+  </action>
+  <action name="actionSelectTool">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="checked">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="IndoorMapEditor.qrc">
+     <normaloff>:/src/icon/select.png</normaloff>:/src/icon/select.png</iconset>
+   </property>
+   <property name="text">
+    <string>selectTool</string>
+   </property>
+   <property name="toolTip">
+    <string>选择工具</string>
+   </property>
+  </action>
+  <action name="actionPubPointTool">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="IndoorMapEditor.qrc">
+     <normaloff>:/src/icon/pubpoint.png</normaloff>:/src/icon/pubpoint.png</iconset>
+   </property>
+   <property name="text">
+    <string>pubPointTool</string>
+   </property>
+   <property name="toolTip">
+    <string>添加功能点</string>
+   </property>
+  </action>
+  <action name="actionPanTool">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="IndoorMapEditor.qrc">
+     <normaloff>:/src/icon/pan.png</normaloff>:/src/icon/pan.png</iconset>
+   </property>
+   <property name="text">
+    <string>panTool</string>
+   </property>
+   <property name="toolTip">
+    <string>平移工具</string>
    </property>
   </action>
  </widget>

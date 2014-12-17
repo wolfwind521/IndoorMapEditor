@@ -19,6 +19,7 @@ class FuncArea : public PolygonEntity
     Q_PROPERTY(FUNC_TYPE funcType READ funcType WRITE setFuncType NOTIFY funcTypeChanged)
 public:
     FuncArea(QGraphicsItem *parent = 0);
+    FuncArea(PolygonEntity &polygon);
 
     bool load(const QJsonObject & jsonObject);
     bool save(QJsonObject &jsonObject);

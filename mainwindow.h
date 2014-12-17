@@ -9,6 +9,7 @@ class MainWindow;
 
 class DocumentView;
 class PropertyView;
+
 QT_FORWARD_DECLARE_CLASS(QTreeView)
 QT_FORWARD_DECLARE_CLASS(QPrinter)
 
@@ -31,6 +32,10 @@ public slots:
     void printDocument();
 
     void rebuildTreeView();
+
+    void setPolygonTool();
+    void setSelectTool();
+    void setPubPointTool();
 private:
     bool okToContinue();
     void addDocument(DocumentView* doc);

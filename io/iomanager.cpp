@@ -1,6 +1,7 @@
 #include "iomanager.h"
 #include "../gui/documentview.h"
 #include "../core/building.h"
+#include "../core/scene.h"
 #include "jsonloader.h"
 #include <QFileDialog>
 #include <QMessageBox>
@@ -18,7 +19,7 @@ bool IOManager::loadFile(const QString & fileName, DocumentView * doc)
     {
         Building * building = dynamic_cast<Building*>(JsonLoader::loadFile(fileName));
         if(building != NULL){ //loaded successfully
-            doc->setBuilding(building);
+            doc->scene()->setBuilding(building);
             return true;
         }else{
             return false;

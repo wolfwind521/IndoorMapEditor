@@ -7,9 +7,12 @@
 QT_FORWARD_DECLARE_CLASS(QUndoStack)
 QT_FORWARD_DECLARE_CLASS(QGraphicsScene)
 QT_FORWARD_DECLARE_CLASS(QGraphicsObject)
-QT_FORWARD_DECLARE_CLASS(QPainter)
+QT_FORWARD_DECLARE_CLASS(QPrinter)
+
+class Floor;
 class Building;
 class MapEntity;
+class Scene;
 
 class DocumentView : public QGraphicsView
 {
@@ -18,29 +21,26 @@ class DocumentView : public QGraphicsView
 public:
     DocumentView();
     ~DocumentView();
-    MapEntity* root() const;
-    Building* building() const;
-    QGraphicsScene * scene() const;
-    void setBuilding(Building* building);
+    Scene * scene() const;
     bool isModified();
     void setModified(bool b);
     void clear();
-    void printScene(QPainter *painter);
+    void setSelectable(bool b);
+    Building* building();
 
 signals:
-    void buildingChanged(const Building & building);
     void selectionChanged(MapEntity * mapEntity);
 
 public slots:
+    void printScene(QPrinter *printer);
     void updateSelection(const QModelIndex & index);
     void updateSelection();
 
 private:
     QUndoStack *m_undoStack;
-    QGraphicsScene *m_scene;
-    MapEntity *m_root;
-    Building *m_building;
+    Scene *m_scene;
     bool m_isModified;
+    bool m_selectable;
 };
 
 #endif // DOCUMENTVIEW_H

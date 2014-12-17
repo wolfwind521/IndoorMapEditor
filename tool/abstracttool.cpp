@@ -1,6 +1,6 @@
 #include "abstracttool.h"
 
-AbstractTool::AbstractTool(QObject *parent) :
-    QObject(parent)
+AbstractTool::AbstractTool(DocumentView *doc)
+    :m_doc(doc)
 {
 }

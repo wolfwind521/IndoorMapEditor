@@ -6,9 +6,19 @@
 #include <QJsonValue>
 
 Building::Building(const QString & name, QGraphicsItem *parent)
-    : PolygonEntity(name, parent)
+    : PolygonEntity(name, parent), m_underfloors(0), m_groundFloors(0)
 {
     m_color = QColor(247, 247, 247);
+}
+
+Building::Building(PolygonEntity &polygon)
+{
+    new (this) Building("");
+    copy(polygon);
+}
+
+int Building::floorNum(){
+    return m_underfloors + m_groundFloors;
 }
 
 bool Building::load(const QJsonObject &jsonObject)

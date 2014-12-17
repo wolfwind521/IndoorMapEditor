@@ -28,7 +28,10 @@ SOURCES += main.cpp\
     gui/propertyview.cpp \
     tool/abstracttool.cpp \
     tool/toolmanager.cpp \
-    tool/polygontool.cpp
+    tool/polygontool.cpp \
+    core/scene.cpp \
+    tool/selecttool.cpp \
+    tool/pubpointtool.cpp
 
 HEADERS  += mainwindow.h \
     core/building.h \
@@ -45,7 +48,10 @@ HEADERS  += mainwindow.h \
     gui/propertyview.h \
     tool/abstracttool.h \
     tool/toolmanager.h \
-    tool/polygontool.h
+    tool/polygontool.h \
+    core/scene.h \
+    tool/selecttool.h \
+    tool/pubpointtool.h
 
 FORMS    += mainwindow.ui
 

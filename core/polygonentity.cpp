@@ -1,4 +1,5 @@
 #include "polygonentity.h"
+#include <cmath>
 #include <QWidget>
 #include <QStyleOptionGraphicsItem>
 #include <QPainter>
@@ -36,6 +37,15 @@ PolygonEntity::PolygonEntity(const QString & name, int id, QPolygon poly, double
 }
 
 
+void PolygonEntity::copy(PolygonEntity &polygon)
+{
+    setObjectName(polygon.objectName());
+    m_enName = polygon.enName();
+    m_id = polygon.id();
+    m_center = polygon.center();
+    m_area = polygon.area();
+    setOutline(polygon.outline());
+}
 
 void PolygonEntity::setOutline(const QVector<QPoint> & points)
 {
@@ -106,6 +116,11 @@ void PolygonEntity::movePoint(const int id, const QPoint & vector)
     m_outline[id] += vector;
 }
 
+void PolygonEntity::movePointTo(const int id, const QPoint & point){
+    Q_ASSERT(id >= 0 && id < m_outline.size());
+    m_outline[id] = point;
+}
+
 void PolygonEntity::insertPoint(const int id, const QPoint &p)
 {
     m_outline.insert(id, p);
@@ -123,7 +138,7 @@ int PolygonEntity::PointNum() const
 
 QRectF PolygonEntity::boundingRect() const
 {
-    const int margin = 1;
+    const int margin = 5;
     return m_outline.boundingRect().adjusted(-margin, -margin, margin, margin);
 }
 
@@ -151,7 +166,26 @@ void PolygonEntity::paint(QPainter *painter, const QStyleOptionGraphicsItem *opt
 
 double PolygonEntity::computeArea()
 {
-    //TODO: compute the polygon area
+    //Area = 1/2 \sum_{i}(x_{i}y_{i+1} - x_{i+1}y_{i})
+    //refer to: http://www.efg2.com/Lab/Graphics/PolygonArea.htm
+    if(m_outline.size() < 3){
+        m_area = 0;
+    }else{
+        double sum = 0;
+        QPoint p0, p1;
+        for(int i = 0; i < m_outline.size()-1; i++){
+            p0 = m_outline.at(i);
+            p1 = m_outline.at(i+1);
+            sum += p0.x() * p1.y() - p1.x() * p0.y();
+        }
+
+        //the last point
+        p0 = m_outline.at(m_outline.size()-1);
+        p1 = m_outline.at(0);
+        sum += p0.x() * p1.y() - p1.x() * p0.y();
+
+        m_area = fabs(0.5 * sum) / 100.0; //from dm to m
+    }
     return m_area;
 }
 

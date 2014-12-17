@@ -1,3 +1,10 @@
+/***************************************************
+ ** Building
+ ** @brief: the model for building data
+ ** @author: gaimeng
+ ** @date: Nov, 2014
+ **
+ ****************************************************/
 #ifndef BUILDING_H
 #define BUILDING_H
 
@@ -17,8 +24,10 @@ public:
         //TODO: maybe other types
     };
     Building(const QString & name, QGraphicsItem *parent = 0);
+    Building(PolygonEntity &polygon);
     bool load(const QJsonObject & jsonObject);
     bool save(QJsonObject & jsonObject);
+    int floorNum();
 
 private:
     int m_underfloors;

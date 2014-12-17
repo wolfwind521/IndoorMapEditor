@@ -4,7 +4,12 @@
 #include "gui/propertyview.h"
 #include "gui/scenemodel.h"
 #include "core/building.h"
+#include "core/scene.h"
 #include "io/iomanager.h"
+#include "tool/toolmanager.h"
+#include "tool/polygontool.h"
+#include "tool/selecttool.h"
+#include "tool/pubpointtool.h"
 #include <QFileDialog>
 #include <QMessageBox>
 #include <QTreeView>
@@ -28,17 +33,29 @@ MainWindow::MainWindow(QWidget *parent) :
     m_propertyView = new PropertyView(ui->dockPropertyWidget);
     ui->dockPropertyWidget->setWidget(m_propertyView);
 
+    QActionGroup * toolActionGroup = new QActionGroup(this);
+    toolActionGroup->addAction(ui->actionSelectTool);
+    toolActionGroup->addAction(ui->actionPolygonTool);
+    toolActionGroup->addAction(ui->actionPubPointTool);
+
     connect(ui->actionOpen, SIGNAL(triggered()), this, SLOT(openDocument()));
     connect(ui->actionNew, SIGNAL(triggered()), this, SLOT(newDocument()));
     connect(ui->actionSave, SIGNAL(triggered()), this, SLOT(saveDocument()));
     connect(ui->actionClose, SIGNAL(triggered()), this, SLOT(closeDocument()));
     connect(ui->actionPrint, SIGNAL(triggered()), this, SLOT(printDocument()));
+    connect(ui->actionPolygonTool, SIGNAL(triggered()), this, SLOT(setPolygonTool()));
+    connect(ui->actionSelectTool, SIGNAL(triggered()), this, SLOT(setSelectTool()));
+    connect(ui->actionPubPointTool, SIGNAL(triggered()), this, SLOT(setPubPointTool()));
 
     addDocument(new DocumentView());
     setCurrentFile("");
+    rebuildTreeView();
+
+    ToolManager::instance()->setTool(new SelectTool(currentDocument()));
 
     connect(m_sceneTreeView, SIGNAL(clicked(QModelIndex)), m_docView, SLOT(updateSelection(QModelIndex)));
     connect(m_docView, SIGNAL(selectionChanged(MapEntity*)), m_propertyView, SLOT(setMapEntity(MapEntity*)));
+    connect(m_docView->scene(), SIGNAL(buildingChanged()), this, SLOT(rebuildTreeView()));
 }
 
 MainWindow::~MainWindow()
@@ -124,14 +141,13 @@ void MainWindow::printDocument()
         QMessageBox::warning(this, tr("Error"),tr("No printer found"),QMessageBox::Ok);
         return;
     }
-    //m_printer->setOutputFormat(QPrinter::PdfFormat);
+
     QPrintPreviewDialog preview(m_printer, this);
+    //m_printer->setOutputFormat(QPrinter::NativeFormat);
 
-    QPainter painter(m_printer);
-    currentDocument()->printScene(&painter);
+    connect(&preview, SIGNAL(paintRequested(QPrinter*)),
+             currentDocument(), SLOT(printScene(QPrinter*)));
 
-//    connect(&preview, SIGNAL(paintRequested(QPrinter*)),
-//            this, SLOT(printDocument(QPrinter*)));
     preview.exec();
 
 //    QPrintDialog printDialog(m_printer, this);
@@ -172,9 +188,25 @@ bool MainWindow::okToContinue(){
 }
 
 void MainWindow::rebuildTreeView(){
-    SceneModel *model = new SceneModel(m_docView->root());
+    SceneModel *model = new SceneModel(m_docView->scene()->root());
     m_sceneTreeView->setModel(model);
     m_sceneTreeView->expandToDepth(0);
-//        ObjectTreeModel *model = new ObjectTreeModel(this);
-//        m_sceneTreeView->setModel(model);
+}
+
+void MainWindow::setPolygonTool(){
+    AbstractTool *tool = new PolygonTool(currentDocument());
+    ToolManager::instance()->setTool(tool);
+    currentDocument()->setSelectable(false);
+}
+
+void MainWindow::setSelectTool(){
+    AbstractTool *tool = new SelectTool(currentDocument());
+    ToolManager::instance()->setTool(tool);
+    currentDocument()->setSelectable(true);
+}
+
+void MainWindow::setPubPointTool(){
+    AbstractTool *tool = new PubPointTool(currentDocument());
+    ToolManager::instance()->setTool(tool);
+    currentDocument()->setSelectable(false);
 }

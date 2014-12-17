@@ -15,6 +15,8 @@ public:
     PolygonEntity( const QString & name, int id);
     PolygonEntity( const QString & name, int id, QPolygon poly, double area = -1);
 
+    //copy the data from @polygon, used in subclasses
+    void copy(PolygonEntity &polygon);
     //setters and getters
     const QPolygon & outline() const;
     void setOutline(const QVector<QPoint> & points);
@@ -26,6 +28,9 @@ public:
 
     //move the point at @id by @vector
     void movePoint(const int id, const QPoint & vector);
+
+    //move the point at @id to @point
+    void movePointTo(const int id, const QPoint & point);
 
     //insert a @point at @id
     void insertPoint(const int id, const QPoint & p);

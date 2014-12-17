@@ -47,6 +47,7 @@ void PropertyView::setMapEntity(MapEntity * mapEntity){
 
 void PropertyView::updateName(const QString &name){
     m_mapEntity->setObjectName(name);
+    m_mapEntity->update(m_mapEntity->boundingRect());
 }
 
 void PropertyView::updateEnName(const QString &enName){

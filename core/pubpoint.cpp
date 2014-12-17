@@ -3,10 +3,12 @@
 #include <QStyleOptionGraphicsItem>
 #include <QPainter>
 #include <QJsonObject>
+#include <QApplication>
 
 PubPoint::PubPoint(QGraphicsItem *parent) :
     MapEntity(parent)
 {
+    setFlags(ItemIsSelectable | ItemIsMovable);
 }
 
 PUB_TYPE PubPoint::pubType() const
@@ -70,14 +72,18 @@ void PubPoint::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, 
     Q_UNUSED(widget);
 
     //if selected
-    QColor color(22, 22, 22);
+    QColor color(125, 125, 125);
     QColor fillColor = (option->state & QStyle::State_Selected) ? color.darker(150) : color;
 //    //if mouse over
 //    if (option->state & QStyle::State_MouseOver)
 //        fillColor = fillColor.lighter(125);
 
     painter->setBrush(fillColor);
-    painter->drawEllipse(m_center, 3, 3);
+    painter->setPen(QPen(fillColor.darker(),1));
+    painter->drawEllipse(m_center, 5, 5);
     painter->setPen(QPen());
+    QFont font = QApplication::font();
+    font.setPixelSize(12);
+    painter->setFont(font);
     painter->drawText(m_center, objectName());
 }

@@ -1,10 +1,18 @@
 #include "funcarea.h"
 #include <QPainter>
+#include <QApplication>
 
 FuncArea::FuncArea(QGraphicsItem *parent)
     : PolygonEntity(parent)
 {
     m_color = QColor(239, 229, 217);
+    setObjectName(tr("unnamed"));
+}
+
+FuncArea::FuncArea(PolygonEntity &polygon)
+{
+    new (this) FuncArea();
+    copy(polygon);
 }
 
 FUNC_TYPE FuncArea::funcType() const {
@@ -35,8 +43,17 @@ bool FuncArea::save(QJsonObject &jsonObject) {
 
 void FuncArea::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget){
     PolygonEntity::paint(painter, option, widget);
-    painter->setBrush(QColor(22, 22, 22));
-    painter->drawEllipse(m_center, 3, 3);
-    painter->setPen(QPen());
-    painter->drawText(m_center, objectName());
+
+    //paint the marker
+    if(!m_center.isNull()){
+        painter->setBrush(QColor(22, 22, 22));
+        painter->drawEllipse(m_center, 3, 3);
+
+        //paint the text
+        painter->setPen(QPen());
+        QFont font = QApplication::font();
+        font.setPixelSize(12);
+        painter->setFont(font);
+        painter->drawText(m_center, objectName());
+    }
 }
