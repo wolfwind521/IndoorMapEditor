@@ -77,7 +77,7 @@ bool PolygonEntity::load(const QJsonObject &jsonObject)
     return true;
 }
 
-bool PolygonEntity::save(QJsonObject &jsonObject)
+bool PolygonEntity::save(QJsonObject &jsonObject) const
 {
     MapEntity::save(jsonObject);
     jsonObject["Area"] = m_area;
@@ -86,12 +86,11 @@ bool PolygonEntity::save(QJsonObject &jsonObject)
         jsonArray.append(m_outline[i].x());
         jsonArray.append(m_outline[i].y());
     }
-    QJsonArray array0,array1,array2;
+    QJsonArray array0,array1;
     array0.append(jsonArray);
     array1.append(array0);
-    array2.append(array1);
 
-    jsonObject["Outline"] = array2;
+    jsonObject["Outline"] = array1;
     return true;
 }
 
@@ -157,12 +156,12 @@ void PolygonEntity::paint(QPainter *painter, const QStyleOptionGraphicsItem *opt
 
     //if selected
     QColor fillColor = (option->state & QStyle::State_Selected) ? m_color.darker(150) : m_color;
-//    //if mouse over
-//    if (option->state & QStyle::State_MouseOver)
-//        fillColor = fillColor.lighter(125);
+
+    QColor borderColor = ((option->state & QStyle::State_Selected) || (option->state & QStyle::State_MouseOver) ) ? QColor(0, 160, 233) : m_color.darker();
+
 
     painter->setBrush(fillColor);
-    painter->setPen(QPen(m_color.darker(),1));
+    painter->setPen(QPen(borderColor, 1));
     painter->drawPolygon(m_outline);
 }
 

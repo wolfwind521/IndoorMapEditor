@@ -1,8 +1,8 @@
 #include "polygontool.h"
 #include "../gui/documentview.h"
 #include "../core/funcarea.h"
-#include "./core/building.h"
-#include "./core/scene.h"
+#include "../core/building.h"
+#include "../core/scene.h"
 #include <QGraphicsSceneEvent>
 
 PolygonTool::PolygonTool(DocumentView *doc) :

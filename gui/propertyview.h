@@ -5,6 +5,7 @@
 
 class MapEntity;
 QT_FORWARD_DECLARE_CLASS(QLineEdit)
+QT_FORWARD_DECLARE_CLASS(QFormLayout)
 
 class PropertyView : public QWidget
 {
@@ -14,18 +15,24 @@ public:
     explicit PropertyView(QWidget *parent = 0);
     ~PropertyView();
 
-public slots:
-    void setMapEntity( MapEntity * mapEntity);
+    virtual bool match(const MapEntity * mapEntity) const;
+    virtual void setMapEntity( MapEntity * mapEntity);
+public slots:  
     void updateName(const QString &name);
     void updateEnName(const QString &enName);
-private:
+    void updateId(const QString &id);
+protected:
     void createWidgets();
     void createLayout();
     void createConnections();
 
-    MapEntity* m_mapEntity;
-    QLineEdit* m_nameLineEdit;
-    QLineEdit* m_enNameLineEdit;
+    MapEntity * m_mapEntity;
+    QFormLayout * m_layout;
+
+    QLineEdit * m_nameLineEdit;
+    QLineEdit * m_enNameLineEdit;
+    QLineEdit * m_idEdit;
+
 };
 
 #endif // PROPERTYVIEW_H

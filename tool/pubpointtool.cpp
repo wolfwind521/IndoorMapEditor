@@ -1,7 +1,7 @@
 #include "pubpointtool.h"
 #include "../core/pubpoint.h"
-#include "./core/building.h"
-#include "./core/scene.h"
+#include "../core/building.h"
+#include "../core/scene.h"
 #include "../gui/documentview.h"
 #include <QGraphicsSceneEvent>
 

@@ -44,32 +44,27 @@ bool Floor::load(const QJsonObject &jsonObject) {
     return true;
 }
 
-bool Floor::save(QJsonObject &jsonObject)
+bool Floor::save(QJsonObject &jsonObject) const
 {
     PolygonEntity::save(jsonObject);
     jsonObject["High"] = m_height;
     jsonObject["_id"] = m_id;
 
-    //save the funcAreas
-    QJsonArray funcArray;
+    //save the funcAreas and pubPoints
+    QJsonArray funcArray, pubArray;
     foreach (QObject* object, this->children()) {
-        if(object->metaObject()->className() == "FuncArea"){
+        QString className = object->metaObject()->className();
+        if(className == "FuncArea"){
             QJsonObject funcObject;
             static_cast<FuncArea*>(object)->save(funcObject);
             funcArray.append(funcObject);
-        }
-    }
-    jsonObject["FuncAreas"] = funcArray;
-
-    //save the pubPoints
-    QJsonArray pubArray;
-    foreach(QObject* object, this->children()){
-        if(object->metaObject()->className() == "PubPoint"){
+        }else if(className == "PubPoint"){
             QJsonObject pubObject;
             static_cast<PubPoint*>(object)->save(pubObject);
             pubArray.append(pubObject);
         }
     }
+    jsonObject["FuncAreas"] = funcArray;
     jsonObject["PubPoint"] = pubArray;
     return true;
 }

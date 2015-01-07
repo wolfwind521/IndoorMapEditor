@@ -18,7 +18,7 @@ Scene::Scene(QObject *parent) :
 void Scene::reset(){
     QGraphicsScene::clear();
     createRoot();
-    setBuilding(new Building(tr("未命名")));
+    setBuilding(new Building(tr("Unnamed")));
 }
 
 MapEntity *Scene::root() const{
@@ -145,10 +145,15 @@ void Scene::convertSelectedToFuncArea(){
 }
 
 void Scene::deleteMapEntity(MapEntity *entity){
-    entity->setParent(NULL);
-    entity->setParentItem(NULL);
+    removeMapEntity(entity);
     delete entity;
     entity = NULL;
+}
+
+void Scene::removeMapEntity(MapEntity *entity){
+    entity->setParent(NULL);
+    entity->setParentItem(NULL);
+    emit buildingChanged();
 }
 
 void Scene::setCurrentFloor(Floor *floor){

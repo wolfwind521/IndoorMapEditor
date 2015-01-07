@@ -76,12 +76,9 @@ bool Building::load(const QJsonObject &jsonObject)
     return true;
 }
 
-bool Building::save(QJsonObject &jsonObject)
+bool Building::save(QJsonObject &jsonObject) const
 {
     QJsonObject dataObject, buildingObject;
-
-    dataObject["building"] = buildingObject;
-    jsonObject["data"] = dataObject;
 
     PolygonEntity::save(buildingObject);
     buildingObject["UnderFloors"] = m_underfloors;
@@ -100,13 +97,17 @@ bool Building::save(QJsonObject &jsonObject)
 
     QJsonArray floorArray;
     foreach(QObject* object, this->children()){
-        if(object->metaObject()->className() == "Floor"){
+        QString className = object->metaObject()->className();
+        if( className == "Floor"){
             QJsonObject floorObject;
             static_cast<Floor*>(object)->save(floorObject);
             floorArray.append(floorObject);
         }
     }
 
-    buildingObject["Floors"] = floorArray;
+    dataObject["Floors"] = floorArray;
+    dataObject["building"] = buildingObject;
+    jsonObject["data"] = dataObject;
+
     return true;
 }

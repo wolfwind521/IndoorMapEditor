@@ -22,11 +22,13 @@ public:
     FuncArea(PolygonEntity &polygon);
 
     bool load(const QJsonObject & jsonObject);
-    bool save(QJsonObject &jsonObject);
+    bool save(QJsonObject &jsonObject) const;
 
     //setters and getters
     FUNC_TYPE funcType() const;
     void setFuncType(const FUNC_TYPE type);
+    QString shopNo() const;
+    void setShopNo(const QString & shopNo);
 
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget);
 
@@ -35,6 +37,7 @@ signals:
 private:
 
     FUNC_TYPE m_type;
+    QString m_shopNo;
 };
 
 #endif // FUNCAREA_H
