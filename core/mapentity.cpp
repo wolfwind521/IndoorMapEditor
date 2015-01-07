@@ -68,7 +68,7 @@ bool MapEntity::load(const QJsonObject &jsonObject)
     m_enName = jsonObject["Name_en"].toString();
 }
 
-bool MapEntity::save(QJsonObject &jsonObject)
+bool MapEntity::save(QJsonObject &jsonObject) const
 {
     jsonObject["Name"] = objectName();
     jsonObject["Name_en"] = m_enName;

@@ -1,9 +1,13 @@
 #include "scenemodel.h"
 #include "../core/mapentity.h"
-
+#include <QIcon>
 SceneModel::SceneModel(MapEntity *root, QObject *parent) :
     QAbstractItemModel(parent), m_root(root)
 {
+    m_buildingIcon = new QIcon(":/src/icon/building.png");
+    m_floorIcon = new QIcon(":/src/icon/floor.png");
+    m_funcAreaIcon = new QIcon(":/src/icon/shop.png");
+    m_pubPointIcon = new QIcon(":/src/icon/pubpoint.png");
 }
 
 Qt::ItemFlags SceneModel::flags(const QModelIndex &index) const
@@ -86,6 +90,20 @@ QVariant SceneModel::data(const QModelIndex &index, int role) const
 {
     if( !index.isValid() ){
         return QVariant();
+    }
+    if(role == Qt::DecorationRole){
+        if(index.column() == 0) {
+            QString className = static_cast<MapEntity *>( index.internalPointer() )->metaObject()->className();
+            if(className == "Building"){
+                return *m_buildingIcon;
+            }else if(className == "Floor") {
+                return *m_floorIcon;
+            } else if(className == "FuncArea") {
+                return *m_funcAreaIcon;
+            } else if (className == "PubPoint") {
+                return *m_pubPointIcon;
+            }
+        }
     }
     if(role == Qt::DisplayRole){
         if(index.column() == 0){

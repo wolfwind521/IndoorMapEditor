@@ -26,19 +26,31 @@ void FuncArea::setFuncType(const FUNC_TYPE type) {
     emit funcTypeChanged(m_type);
 }
 
+QString FuncArea::shopNo() const {
+    return m_shopNo;
+}
+
+void FuncArea::setShopNo(const QString &shopNo) {
+    if(m_shopNo == shopNo)
+        return;
+    m_shopNo = shopNo;
+}
+
 bool FuncArea::load(const QJsonObject &jsonObject) {
     PolygonEntity::load(jsonObject);
 
     m_type = static_cast<FUNC_TYPE>(jsonObject["Type"].toString().toInt());
     m_id = jsonObject["_id"].toInt();
+    m_shopNo = jsonObject["ShopNo"].toString();
     return true;
 }
 
-bool FuncArea::save(QJsonObject &jsonObject) {
+bool FuncArea::save(QJsonObject &jsonObject) const {
     PolygonEntity::save(jsonObject);
 
     jsonObject["Type"] = QString::number(static_cast<int>(m_type));
     jsonObject["_id"] = m_id;
+    jsonObject["ShopNo"] = m_shopNo;
 }
 
 void FuncArea::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget){
@@ -47,6 +59,7 @@ void FuncArea::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, 
     //paint the marker
     if(!m_center.isNull()){
         painter->setBrush(QColor(22, 22, 22));
+        painter->setPen(QPen(QColor(22, 22, 22)));
         painter->drawEllipse(m_center, 3, 3);
 
         //paint the text

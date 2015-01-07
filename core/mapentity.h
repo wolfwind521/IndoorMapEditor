@@ -30,7 +30,7 @@ public:
 
     //io
     virtual bool load(const QJsonObject & jsonObject);
-    virtual bool save(QJsonObject & jsonObject);
+    virtual bool save(QJsonObject & jsonObject) const;
 signals:
     void nameChanged(const QString & name);
     void enNameChanged(const QString & name);

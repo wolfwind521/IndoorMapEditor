@@ -31,7 +31,10 @@ SOURCES += main.cpp\
     tool/polygontool.cpp \
     core/scene.cpp \
     tool/selecttool.cpp \
-    tool/pubpointtool.cpp
+    tool/pubpointtool.cpp \
+    gui/handle.cpp \
+    cmd/addenittycommand.cpp \
+    gui/propviewfuncarea.cpp
 
 HEADERS  += mainwindow.h \
     core/building.h \
@@ -51,7 +54,10 @@ HEADERS  += mainwindow.h \
     tool/polygontool.h \
     core/scene.h \
     tool/selecttool.h \
-    tool/pubpointtool.h
+    tool/pubpointtool.h \
+    gui/handle.h \
+    cmd/addenittycommand.h \
+    gui/propviewfuncarea.h
 
 FORMS    += mainwindow.ui
 

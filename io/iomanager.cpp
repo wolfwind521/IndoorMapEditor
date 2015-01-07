@@ -8,12 +8,10 @@
 #include <QString>
 
 
-IOManager::IOManager()
-{
+IOManager::IOManager() {
 }
 
-bool IOManager::loadFile(const QString & fileName, DocumentView * doc)
-{
+bool IOManager::loadFile(const QString & fileName, DocumentView * doc) {
     QString suffix = QFileInfo(fileName).suffix();
     if(!suffix.compare("json", Qt::CaseInsensitive))
     {
@@ -36,6 +34,15 @@ bool IOManager::loadFile(const QString & fileName, DocumentView * doc)
             return true;
         }
 
+    }else{
+        return false;
+    }
+}
+
+bool IOManager::saveFile(const QString &fileName, const DocumentView *doc) {
+    QString suffix = QFileInfo(fileName).suffix();
+    if(!suffix.compare("json", Qt::CaseInsensitive)) {
+        return JsonLoader::saveFile(fileName, doc->scene()->building());
     }else{
         return false;
     }

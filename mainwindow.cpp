@@ -1,15 +1,16 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
-#include "gui/documentview.h"
-#include "gui/propertyview.h"
-#include "gui/scenemodel.h"
-#include "core/building.h"
-#include "core/scene.h"
-#include "io/iomanager.h"
-#include "tool/toolmanager.h"
-#include "tool/polygontool.h"
-#include "tool/selecttool.h"
-#include "tool/pubpointtool.h"
+#include "./gui/documentview.h"
+#include "./gui/propertyview.h"
+#include "./gui/propviewfuncarea.h"
+#include "./gui/scenemodel.h"
+#include "./core/building.h"
+#include "./core/scene.h"
+#include "./io/iomanager.h"
+#include "./tool/toolmanager.h"
+#include "./tool/polygontool.h"
+#include "./tool/selecttool.h"
+#include "./tool/pubpointtool.h"
 #include <QFileDialog>
 #include <QMessageBox>
 #include <QTreeView>
@@ -38,11 +39,12 @@ MainWindow::MainWindow(QWidget *parent) :
     toolActionGroup->addAction(ui->actionPolygonTool);
     toolActionGroup->addAction(ui->actionPubPointTool);
 
-    connect(ui->actionOpen, SIGNAL(triggered()), this, SLOT(openDocument()));
-    connect(ui->actionNew, SIGNAL(triggered()), this, SLOT(newDocument()));
-    connect(ui->actionSave, SIGNAL(triggered()), this, SLOT(saveDocument()));
-    connect(ui->actionClose, SIGNAL(triggered()), this, SLOT(closeDocument()));
-    connect(ui->actionPrint, SIGNAL(triggered()), this, SLOT(printDocument()));
+    connect(ui->actionOpen, SIGNAL(triggered()), this, SLOT(openFile()));
+    connect(ui->actionNew, SIGNAL(triggered()), this, SLOT(newFile()));
+    connect(ui->actionSave, SIGNAL(triggered()), this, SLOT(saveFile()));
+    connect(ui->actionSaveAs, SIGNAL(triggered()), this, SLOT(saveAsFile()));
+    connect(ui->actionClose, SIGNAL(triggered()), this, SLOT(closeFile()));
+    connect(ui->actionPrint, SIGNAL(triggered()), this, SLOT(printFile()));
     connect(ui->actionPolygonTool, SIGNAL(triggered()), this, SLOT(setPolygonTool()));
     connect(ui->actionSelectTool, SIGNAL(triggered()), this, SLOT(setSelectTool()));
     connect(ui->actionPubPointTool, SIGNAL(triggered()), this, SLOT(setPubPointTool()));
@@ -54,7 +56,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ToolManager::instance()->setTool(new SelectTool(currentDocument()));
 
     connect(m_sceneTreeView, SIGNAL(clicked(QModelIndex)), m_docView, SLOT(updateSelection(QModelIndex)));
-    connect(m_docView, SIGNAL(selectionChanged(MapEntity*)), m_propertyView, SLOT(setMapEntity(MapEntity*)));
+    connect(m_docView, SIGNAL(selectionChanged(MapEntity*)), this, SLOT(updatePropertyView(MapEntity*)));
     connect(m_docView->scene(), SIGNAL(buildingChanged()), this, SLOT(rebuildTreeView()));
 }
 
@@ -68,7 +70,7 @@ DocumentView *MainWindow::currentDocument() const
     return m_docView;
 }
 
-void MainWindow::openDocument()
+void MainWindow::openFile()
 {
     if(okToContinue()){
         //TODO: vector graphic file support
@@ -96,14 +98,24 @@ void MainWindow::openDocument()
     }
 }
 
-void MainWindow::addDocument(DocumentView *doc){
+void MainWindow::addDocument(DocumentView *doc) {
     //TODO: connect the slots
     m_docView = doc;
     this->setCentralWidget(doc);
 }
 
-void MainWindow::newDocument()
-{
+bool MainWindow::saveDocument(const QString &fileName){
+    if(IOManager::saveFile(fileName, currentDocument())){
+        statusBar()->showMessage(tr("文件保存成功"), 2000);
+        setCurrentFile(fileName);
+        return true;
+    }else{
+        statusBar()->showMessage(tr("文件保存失败"), 2000);
+        return false;
+    }
+}
+
+void MainWindow::newFile() {
     if(okToContinue()){
         currentDocument()->clear();
         setCurrentFile("");
@@ -112,27 +124,35 @@ void MainWindow::newDocument()
     }
 }
 
-bool MainWindow::saveDocument()
-{
-    return true;
+bool MainWindow::saveFile() {
+    if(m_curFile.isEmpty()){
+        return saveAsFile();
+    }else{
+        return saveDocument(m_curFile);
+    }
 }
 
-void MainWindow::saveAsDocument()
+bool MainWindow::saveAsFile()
+{
+    QString fileName = QFileDialog::getSaveFileName(this, tr("Save Files"),".",tr("Indoor map files(*.json)"));
+    if(fileName.isEmpty()){
+        return false;
+    }
+
+    saveDocument(fileName);
+}
+
+void MainWindow::closeFile()
 {
 
 }
 
-void MainWindow::closeDocument()
+void MainWindow::exportFile()
 {
 
 }
 
-void MainWindow::exportDocument()
-{
-
-}
-
-void MainWindow::printDocument()
+void MainWindow::printFile()
 {
     if(m_printer == NULL)
         m_printer = new QPrinter(QPrinter::HighResolution);
@@ -179,7 +199,7 @@ bool MainWindow::okToContinue(){
                                      "do you want to save? "),
                                      QMessageBox::Yes | QMessageBox::No | QMessageBox::Cancel);
         if(r == QMessageBox::Yes){
-            return saveDocument();
+            return saveFile();
         }else if(r == QMessageBox::Cancel){
             return false;
         }
@@ -191,6 +211,23 @@ void MainWindow::rebuildTreeView(){
     SceneModel *model = new SceneModel(m_docView->scene()->root());
     m_sceneTreeView->setModel(model);
     m_sceneTreeView->expandToDepth(0);
+}
+
+void MainWindow::updatePropertyView(MapEntity *mapEntity) {
+    if(mapEntity == NULL)
+        return;
+    QString className = mapEntity->metaObject()->className();
+    if(!m_propertyView->match(mapEntity)){
+        delete m_propertyView;
+        //ugly codes. should be replaced by a factory class later.
+        if(className == "FuncArea"){
+            m_propertyView = new PropViewFuncArea(ui->dockPropertyWidget);
+        }else {
+            m_propertyView = new PropertyView(ui->dockPropertyWidget);
+        }
+        ui->dockPropertyWidget->setWidget(m_propertyView);
+    }
+    m_propertyView->setMapEntity(mapEntity);
 }
 
 void MainWindow::setPolygonTool(){

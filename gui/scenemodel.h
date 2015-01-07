@@ -22,6 +22,10 @@ public:
 private:
     MapEntity *m_root;
 
+    QIcon *m_buildingIcon;
+    QIcon *m_floorIcon;
+    QIcon *m_funcAreaIcon;
+    QIcon *m_pubPointIcon;
 };
 
 #endif // SCENETREEMODEL_H

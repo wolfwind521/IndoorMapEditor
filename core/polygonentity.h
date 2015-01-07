@@ -49,7 +49,7 @@ public:
 
     //io
     virtual bool load(const QJsonObject & jsonObject);
-    virtual bool save(QJsonObject & jsonObject);
+    virtual bool save(QJsonObject & jsonObject) const;
 protected:
 
     double computeArea();

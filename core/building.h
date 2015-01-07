@@ -26,7 +26,7 @@ public:
     Building(const QString & name, QGraphicsItem *parent = 0);
     Building(PolygonEntity &polygon);
     bool load(const QJsonObject & jsonObject);
-    bool save(QJsonObject & jsonObject);
+    bool save(QJsonObject & jsonObject) const;
     int floorNum();
 
 private:

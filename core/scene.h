@@ -46,7 +46,8 @@ public:
     void addFuncArea(FuncArea* funcArea);
     void addPubPoint(PubPoint* pubPoint);
 
-    void deleteMapEntity(MapEntity* entity);
+    void deleteMapEntity(MapEntity *entity);
+    void removeMapEntity(MapEntity *entity);
     void setCurrentFloor(Floor* floor);
 signals:
     void buildingChanged();

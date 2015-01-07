@@ -38,7 +38,21 @@
     <addaction name="actionPrint"/>
     <addaction name="separator"/>
    </widget>
+   <widget class="QMenu" name="menu">
+    <property name="title">
+     <string>编辑</string>
+    </property>
+    <addaction name="actionUndo"/>
+    <addaction name="actionRedo"/>
+    <addaction name="separator"/>
+    <addaction name="actionAddFloor"/>
+    <addaction name="actionAddFuncArea"/>
+    <addaction name="actionAddPubpoint"/>
+    <addaction name="separator"/>
+    <addaction name="actionDelete"/>
+   </widget>
    <addaction name="menu_File"/>
+   <addaction name="menu"/>
   </widget>
   <widget class="QToolBar" name="mainToolBar">
    <attribute name="toolBarArea">
@@ -256,6 +270,50 @@
    </property>
    <property name="toolTip">
     <string>平移工具</string>
+   </property>
+  </action>
+  <action name="actionUndo">
+   <property name="icon">
+    <iconset resource="IndoorMapEditor.qrc">
+     <normaloff>:/src/icon/editundo.png</normaloff>:/src/icon/editundo.png</iconset>
+   </property>
+   <property name="text">
+    <string>撤销</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Z</string>
+   </property>
+  </action>
+  <action name="actionRedo">
+   <property name="icon">
+    <iconset resource="IndoorMapEditor.qrc">
+     <normaloff>:/src/icon/editredo.png</normaloff>:/src/icon/editredo.png</iconset>
+   </property>
+   <property name="text">
+    <string>重做</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Shift+Z</string>
+   </property>
+  </action>
+  <action name="actionAddFloor">
+   <property name="text">
+    <string>添加楼层</string>
+   </property>
+  </action>
+  <action name="actionAddFuncArea">
+   <property name="text">
+    <string>添加房间</string>
+   </property>
+  </action>
+  <action name="actionAddPubpoint">
+   <property name="text">
+    <string>添加公共设施点</string>
+   </property>
+  </action>
+  <action name="actionDelete">
+   <property name="text">
+    <string>删除</string>
    </property>
   </action>
  </widget>

@@ -35,7 +35,7 @@ bool PubPoint::load(const QJsonObject &jsonObject)
     return true;
 }
 
-bool PubPoint::save(QJsonObject &jsonObject)
+bool PubPoint::save(QJsonObject &jsonObject) const
 {
     MapEntity::save(jsonObject);
     jsonObject["Type"] = static_cast<int>(m_type);
@@ -81,6 +81,7 @@ void PubPoint::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, 
     painter->setBrush(fillColor);
     painter->setPen(QPen(fillColor.darker(),1));
     painter->drawEllipse(m_center, 5, 5);
+
     painter->setPen(QPen());
     QFont font = QApplication::font();
     font.setPixelSize(12);

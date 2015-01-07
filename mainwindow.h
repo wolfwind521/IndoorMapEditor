@@ -9,6 +9,7 @@ class MainWindow;
 
 class DocumentView;
 class PropertyView;
+class MapEntity;
 
 QT_FORWARD_DECLARE_CLASS(QTreeView)
 QT_FORWARD_DECLARE_CLASS(QPrinter)
@@ -23,15 +24,16 @@ public:
 
     DocumentView *currentDocument() const;
 public slots:
-    void newDocument();
-    void openDocument();
-    bool saveDocument();
-    void saveAsDocument();
-    void closeDocument();
-    void exportDocument();
-    void printDocument();
+    void newFile();
+    void openFile();
+    bool saveFile();
+    bool saveAsFile();
+    void closeFile();
+    void exportFile();
+    void printFile();
 
     void rebuildTreeView();
+    void updatePropertyView(MapEntity* mapEntity);
 
     void setPolygonTool();
     void setSelectTool();
@@ -39,7 +41,9 @@ public slots:
 private:
     bool okToContinue();
     void addDocument(DocumentView* doc);
+    bool saveDocument(const QString & fileName);
     void setCurrentFile(const QString & fileName);
+
     Ui::MainWindow *ui;
 
     QTreeView *m_sceneTreeView;
