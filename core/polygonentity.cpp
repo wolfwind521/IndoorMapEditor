@@ -74,6 +74,7 @@ bool PolygonEntity::load(const QJsonObject &jsonObject)
     if(m_center.isNull()){
         computeCenter();
     }
+    return true;
 }
 
 bool PolygonEntity::save(QJsonObject &jsonObject)
@@ -91,6 +92,7 @@ bool PolygonEntity::save(QJsonObject &jsonObject)
     array2.append(array1);
 
     jsonObject["Outline"] = array2;
+    return true;
 }
 
 double PolygonEntity::area(){

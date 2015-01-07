@@ -14,9 +14,9 @@
 #include <QMessageBox>
 #include <QTreeView>
 #ifndef QT_NO_PRINTER
-#include <QPrinter>
-#include <QPrintDialog>
-#include <QPrintPreviewDialog>
+#include <QtPrintSupport/QPrinter>
+#include <QtPrintSupport/QPrintDialog>
+#include <QtPrintSupport/QPrintPreviewDialog>
 #endif
 
 MainWindow::MainWindow(QWidget *parent) :

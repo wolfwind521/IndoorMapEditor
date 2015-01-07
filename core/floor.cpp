@@ -71,6 +71,7 @@ bool Floor::save(QJsonObject &jsonObject)
         }
     }
     jsonObject["PubPoint"] = pubArray;
+    return true;
 }
 
 double Floor::height() const

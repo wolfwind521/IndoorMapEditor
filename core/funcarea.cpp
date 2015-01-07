@@ -39,6 +39,7 @@ bool FuncArea::save(QJsonObject &jsonObject) {
 
     jsonObject["Type"] = QString::number(static_cast<int>(m_type));
     jsonObject["_id"] = m_id;
+    return true;
 }
 
 void FuncArea::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget){

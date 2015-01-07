@@ -50,6 +50,7 @@ bool PubPoint::save(QJsonObject &jsonObject)
     array1.append(array0);
 
     jsonObject["Outline"] = array1;
+    return true;
 }
 
 QRectF PubPoint::boundingRect() const

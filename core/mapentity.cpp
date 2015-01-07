@@ -66,12 +66,14 @@ bool MapEntity::load(const QJsonObject &jsonObject)
 {
     setObjectName( jsonObject["Name"].toString() );
     m_enName = jsonObject["Name_en"].toString();
+    return true;
 }
 
 bool MapEntity::save(QJsonObject &jsonObject)
 {
     jsonObject["Name"] = objectName();
     jsonObject["Name_en"] = m_enName;
+    return true;
 }
 
 QRectF MapEntity::boundingRect() const

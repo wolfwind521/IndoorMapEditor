@@ -108,5 +108,5 @@ bool Building::save(QJsonObject &jsonObject)
     }
 
     buildingObject["Floors"] = floorArray;
-
+    return true;
 }

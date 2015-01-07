@@ -8,7 +8,7 @@
 #include <QGraphicsScene>
 #include <QGraphicsObject>
 #include <QUndoStack>
-#include <QPrinter>
+#include <QtPrintSupport/QPrinter>
 
 
 DocumentView::DocumentView()
