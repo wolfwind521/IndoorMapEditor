@@ -17,8 +17,10 @@ Scene::Scene(QObject *parent) :
 
 void Scene::reset(){
     QGraphicsScene::clear();
+    m_building = NULL;
     createRoot();
     setBuilding(new Building(tr("Unnamed")));
+    update();
 }
 
 MapEntity *Scene::root() const{

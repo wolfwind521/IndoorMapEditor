@@ -33,7 +33,8 @@ SOURCES += main.cpp\
     tool/pubpointtool.cpp \
     gui/handle.cpp \
     cmd/addenittycommand.cpp \
-    gui/propviewfuncarea.cpp
+    gui/propviewfuncarea.cpp \
+    core/imagelayer.cpp
 
 HEADERS  += mainwindow.h \
     core/building.h \
@@ -56,7 +57,8 @@ HEADERS  += mainwindow.h \
     tool/pubpointtool.h \
     gui/handle.h \
     cmd/addenittycommand.h \
-    gui/propviewfuncarea.h
+    gui/propviewfuncarea.h \
+    core/imagelayer.h
 
 FORMS    += mainwindow.ui
 
