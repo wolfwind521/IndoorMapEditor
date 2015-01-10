@@ -39,12 +39,16 @@ MainWindow::MainWindow(QWidget *parent) :
     toolActionGroup->addAction(ui->actionPolygonTool);
     toolActionGroup->addAction(ui->actionPubPointTool);
 
+    //menus action
     connect(ui->actionOpen, SIGNAL(triggered()), this, SLOT(openFile()));
     connect(ui->actionNew, SIGNAL(triggered()), this, SLOT(newFile()));
     connect(ui->actionSave, SIGNAL(triggered()), this, SLOT(saveFile()));
     connect(ui->actionSaveAs, SIGNAL(triggered()), this, SLOT(saveAsFile()));
     connect(ui->actionClose, SIGNAL(triggered()), this, SLOT(closeFile()));
     connect(ui->actionPrint, SIGNAL(triggered()), this, SLOT(printFile()));
+    connect(ui->actionDelete, SIGNAL(triggered()), this, SLOT(deleteEntity()));
+
+    //tools action
     connect(ui->actionPolygonTool, SIGNAL(triggered()), this, SLOT(setPolygonTool()));
     connect(ui->actionSelectTool, SIGNAL(triggered()), this, SLOT(setSelectTool()));
     connect(ui->actionPubPointTool, SIGNAL(triggered()), this, SLOT(setPubPointTool()));
@@ -77,7 +81,7 @@ void MainWindow::openFile()
         QString fileName = QFileDialog::getOpenFileName(this,
                                                         tr("打开文件"), m_lastFilePath,
                                                         tr("Json文件 (*.json)\n"
-                                                           "图像文件 (*.jpg *.png *.bmp)"));
+                                                           "图像文件 (*.jpg *.jpeg *.png *.bmp *.gif)"));
         if(fileName.isEmpty())
             return;
 
@@ -176,6 +180,10 @@ void MainWindow::printFile()
 //        currentDocument()->printScene(&painter);
 //        statusBar()->showMessage(tr("Printed %1").arg(windowFilePath()), 2000);
 //    }
+}
+
+void MainWindow::deleteEntity(){
+    currentDocument()->scene()->deleteSelected();
 }
 
 void MainWindow::setCurrentFile(const QString & fileName){

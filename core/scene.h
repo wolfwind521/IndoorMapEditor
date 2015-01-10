@@ -15,6 +15,7 @@ class Building;
 class Floor;
 class FuncArea;
 class PubPoint;
+class ImageLayer;
 class PolygonEntity;
 
 QT_FORWARD_DECLARE_CLASS(QMenu)
@@ -45,9 +46,13 @@ public:
     void addFloor(Floor* floor);
     void addFuncArea(FuncArea* funcArea);
     void addPubPoint(PubPoint* pubPoint);
+    void addImageLayer(ImageLayer* imageLayer);
 
+    void deleteSelected();
     void deleteMapEntity(MapEntity *entity);
     void removeMapEntity(MapEntity *entity);
+
+    Floor* currentFloor() const;
     void setCurrentFloor(Floor* floor);
 signals:
     void buildingChanged();

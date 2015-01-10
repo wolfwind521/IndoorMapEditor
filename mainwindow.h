@@ -32,6 +32,8 @@ public slots:
     void exportFile();
     void printFile();
 
+    void deleteEntity();
+
     void rebuildTreeView();
     void updatePropertyView(MapEntity* mapEntity);
 

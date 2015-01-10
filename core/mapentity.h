@@ -24,6 +24,7 @@ public:
     void setEnName(const QString & name);
     const QPointF & center() const;
     void setCenter(const QPointF & center);
+    void setParentEntity(MapEntity* entity);
 
     QRectF boundingRect() const;
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget);

@@ -2,10 +2,13 @@
 #include "funcarea.h"
 #include "pubpoint.h"
 
+int Floor::m_maxFloorId = 0;
+
 Floor::Floor(QGraphicsItem *parent)
     : PolygonEntity(parent)
 {
-    m_color = QColor(193, 193, 193);
+    m_color = QColor(193, 193, 193, 125);
+    m_id = ++m_maxFloorId;
 }
 
 Floor::Floor(PolygonEntity &polygon)

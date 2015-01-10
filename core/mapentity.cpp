@@ -62,6 +62,11 @@ void MapEntity::setCenter(const QPointF & center)
     emit centerChanged(m_center);
 }
 
+void MapEntity::setParentEntity(MapEntity *entity) {
+    this->setParent(entity);
+    this->setParentItem(entity);
+}
+
 bool MapEntity::load(const QJsonObject &jsonObject)
 {
     setObjectName( jsonObject["Name"].toString() );

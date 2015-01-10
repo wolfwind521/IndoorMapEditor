@@ -23,6 +23,7 @@ signals:
     void heightChanged( double height );
 private:
     double m_height;
+    static int m_maxFloorId;
 };
 
 #endif // FLOOR_H

@@ -6,23 +6,42 @@
 #include <QJsonValue>
 
 Building::Building(const QString & name, QGraphicsItem *parent)
-    : PolygonEntity(name, parent), m_underfloors(0), m_groundFloors(0)
+    : PolygonEntity(name, parent), m_underfloors(0), m_groundFloors(0), m_defaultFloor(1)
 {
     m_color = QColor(247, 247, 247);
 }
 
-Building::Building(PolygonEntity &polygon)
-{
+Building::Building(PolygonEntity &polygon) {
     new (this) Building("");
     copy(polygon);
 }
 
-int Building::floorNum(){
+int Building::floorNum() {
     return m_underfloors + m_groundFloors;
 }
 
-bool Building::load(const QJsonObject &jsonObject)
-{
+void Building::addFloor(Floor *floor) {
+    if(floor->id() > 0) {
+        m_groundFloors ++;
+    } else{
+        m_underfloors ++;
+    }
+    floor->setParentEntity(this);
+}
+
+void Building::deleteFloor(Floor *floor) {
+    if(floor->id() > 0) {
+        m_groundFloors --;
+    } else {
+        m_underfloors --;
+    }
+    floor->setParent(NULL);
+    floor->setParentItem(NULL);
+    delete floor;
+    floor = NULL;
+}
+
+bool Building::load(const QJsonObject &jsonObject) {
     const QJsonValue & dataValue = jsonObject["data"];
     if(dataValue.isUndefined()){
         return false;
