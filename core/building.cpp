@@ -6,23 +6,77 @@
 #include <QJsonValue>
 
 Building::Building(const QString & name, QGraphicsItem *parent)
-    : PolygonEntity(name, parent), m_underfloors(0), m_groundFloors(0)
+    : PolygonEntity(name, parent), m_underFloors(0), m_groundFloors(0), m_defaultFloor(1), m_height(0)
 {
     m_color = QColor(247, 247, 247);
 }
 
-Building::Building(PolygonEntity &polygon)
-{
+Building::Building(PolygonEntity &polygon) {
     new (this) Building("");
     copy(polygon);
 }
 
-int Building::floorNum(){
-    return m_underfloors + m_groundFloors;
+int Building::floorNum() const {
+    return m_underFloors + m_groundFloors;
 }
 
-bool Building::load(const QJsonObject &jsonObject)
-{
+int Building::underFloors() const {
+    return m_underFloors;
+}
+
+int Building::groundFloors() const {
+    return m_groundFloors;
+}
+
+double Building::height() const {
+    return m_height;
+}
+
+void Building::setHeight(double height) {
+    m_height = height;
+}
+
+void Building::addFloor(Floor *floor) {
+    if(floor->id() > 0) {
+        m_groundFloors ++;
+    } else{
+        m_underFloors ++;
+    }
+    floor->setParentEntity(this);
+    connect(floor, SIGNAL(idChanged(int,int)), this, SLOT(updateFloorIds(int,int)));
+}
+
+void Building::deleteFloor(Floor *floor) {
+    if(floor->id() > 0) {
+        m_groundFloors --;
+    } else {
+        m_underFloors --;
+    }
+    floor->setParent(NULL);
+    floor->setParentItem(NULL);
+    delete floor;
+    floor = NULL;
+}
+
+void Building::updateFloorIds(int oldId, int newId) {
+    if(oldId > 0 && newId < 0) {
+        m_groundFloors --;
+        m_underFloors ++;
+    } else if (oldId < 0 && newId > 0){
+        m_groundFloors ++;
+        m_underFloors --;
+    }
+}
+
+int Building::defaultFloor() const {
+    return m_defaultFloor;
+}
+
+void Building::setDefaultFloor(int floorId) {
+    m_defaultFloor = floorId;
+}
+
+bool Building::load(const QJsonObject &jsonObject) {
     const QJsonValue & dataValue = jsonObject["data"];
     if(dataValue.isUndefined()){
         return false;
@@ -38,7 +92,7 @@ bool Building::load(const QJsonObject &jsonObject)
     const QJsonObject & buildingObject = buildingValue.toObject();
     PolygonEntity::load(buildingObject);
 
-    m_underfloors = buildingObject["UnderFloors"].toInt();
+    m_underFloors = buildingObject["UnderFloors"].toInt();
     m_frontAngle = buildingObject["FrontAngle"].toDouble();
     m_defaultFloor = buildingObject["DefaultFloor"].toInt(1);
     m_groundFloors = buildingObject["GroundFloors"].toInt();
@@ -53,7 +107,7 @@ bool Building::load(const QJsonObject &jsonObject)
     m_key = buildingObject["_id"].toString();
 
     QVector<Floor*> allFloors;
-    allFloors.resize(m_underfloors + m_groundFloors);
+    allFloors.resize(m_underFloors + m_groundFloors);
 
     QJsonArray floorsArray = dataObject["Floors"].toArray();
     for (int i = 0; i < floorsArray.size(); ++i) {
@@ -65,9 +119,9 @@ bool Building::load(const QJsonObject &jsonObject)
         }
         int floorId = floor->id();
         if(floorId < 0) //underfloors
-            allFloors[floorId + m_underfloors] = floor;
+            allFloors[floorId + m_underFloors] = floor;
         else //groundfloors
-            allFloors[floorId - 1 + m_underfloors] = floor;
+            allFloors[floorId - 1 + m_underFloors] = floor;
     }
 
     for(int i = 0; i < allFloors.size(); i++)
@@ -81,7 +135,7 @@ bool Building::save(QJsonObject &jsonObject) const
     QJsonObject dataObject, buildingObject;
 
     PolygonEntity::save(buildingObject);
-    buildingObject["UnderFloors"] = m_underfloors;
+    buildingObject["UnderFloors"] = m_underFloors;
     buildingObject["FrontAngle"] = m_frontAngle;
     buildingObject["DefaultFloor"] = m_defaultFloor;
     buildingObject["GroundFloors"] = m_groundFloors;

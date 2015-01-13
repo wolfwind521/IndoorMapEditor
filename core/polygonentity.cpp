@@ -50,6 +50,7 @@ void PolygonEntity::copy(PolygonEntity &polygon)
 void PolygonEntity::setOutline(const QVector<QPoint> & points)
 {
    m_outline = QPolygon(points);
+   update();
 }
 
 const QPolygon & PolygonEntity::outline() const

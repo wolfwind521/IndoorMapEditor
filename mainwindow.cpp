@@ -3,6 +3,8 @@
 #include "./gui/documentview.h"
 #include "./gui/propertyview.h"
 #include "./gui/propviewfuncarea.h"
+#include "./gui/propviewbuilding.h"
+#include "./gui/propviewfloor.h"
 #include "./gui/scenemodel.h"
 #include "./core/building.h"
 #include "./core/scene.h"
@@ -39,12 +41,16 @@ MainWindow::MainWindow(QWidget *parent) :
     toolActionGroup->addAction(ui->actionPolygonTool);
     toolActionGroup->addAction(ui->actionPubPointTool);
 
+    //menus action
     connect(ui->actionOpen, SIGNAL(triggered()), this, SLOT(openFile()));
     connect(ui->actionNew, SIGNAL(triggered()), this, SLOT(newFile()));
     connect(ui->actionSave, SIGNAL(triggered()), this, SLOT(saveFile()));
     connect(ui->actionSaveAs, SIGNAL(triggered()), this, SLOT(saveAsFile()));
     connect(ui->actionClose, SIGNAL(triggered()), this, SLOT(closeFile()));
     connect(ui->actionPrint, SIGNAL(triggered()), this, SLOT(printFile()));
+    connect(ui->actionDelete, SIGNAL(triggered()), this, SLOT(deleteEntity()));
+
+    //tools action
     connect(ui->actionPolygonTool, SIGNAL(triggered()), this, SLOT(setPolygonTool()));
     connect(ui->actionSelectTool, SIGNAL(triggered()), this, SLOT(setSelectTool()));
     connect(ui->actionPubPointTool, SIGNAL(triggered()), this, SLOT(setPubPointTool()));
@@ -76,8 +82,9 @@ void MainWindow::openFile()
         //TODO: vector graphic file support
         QString fileName = QFileDialog::getOpenFileName(this,
                                                         tr("打开文件"), m_lastFilePath,
-                                                        tr("Json文件 (*.json)\n"
-                                                           "图像文件 (*.jpg *.png *.bmp)"));
+                                                        tr("全部文件 (*.json *.jpg *.jpeg *.png *.bmp *.gif)\n"
+                                                            "Json文件 (*.json)\n"
+                                                           "图像文件 (*.jpg *.jpeg *.png *.bmp *.gif)"));
         if(fileName.isEmpty())
             return;
 
@@ -86,8 +93,10 @@ void MainWindow::openFile()
         if(IOManager::loadFile(fileName, currentDocument()))
         {
             statusBar()->showMessage(tr("文件载入成功"), 2000);
-            setCurrentFile(fileName);
-
+            if(QFileInfo(fileName).suffix() == "json"){
+                setCurrentFile(fileName);
+            }
+            currentDocument()->scene()->showDefaultFloor();
             rebuildTreeView(); //rebuild the treeView
         }else{
             QMessageBox::warning(this,
@@ -178,6 +187,10 @@ void MainWindow::printFile()
 //    }
 }
 
+void MainWindow::deleteEntity(){
+    currentDocument()->scene()->deleteSelected();
+}
+
 void MainWindow::setCurrentFile(const QString & fileName){
     m_curFile = fileName;
     currentDocument()->setModified(false);
@@ -222,7 +235,11 @@ void MainWindow::updatePropertyView(MapEntity *mapEntity) {
         //ugly codes. should be replaced by a factory class later.
         if(className == "FuncArea"){
             m_propertyView = new PropViewFuncArea(ui->dockPropertyWidget);
-        }else {
+        }else if(className == "Building"){
+            m_propertyView = new PropViewBuilding(ui->dockPropertyWidget);
+        }else if(className == "Floor"){
+            m_propertyView = new PropViewFloor(ui->dockPropertyWidget);
+        }else{
             m_propertyView = new PropertyView(ui->dockPropertyWidget);
         }
         ui->dockPropertyWidget->setWidget(m_propertyView);

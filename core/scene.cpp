@@ -4,8 +4,10 @@
 #include "mapentity.h"
 #include "building.h"
 #include "floor.h"
+#include "imagelayer.h"
 #include "funcarea.h"
 #include "pubpoint.h"
+#include <QList>
 #include <QMenu>
 #include <QGraphicsSceneContextMenuEvent>
 
@@ -17,6 +19,7 @@ Scene::Scene(QObject *parent) :
 
 void Scene::reset(){
     QGraphicsScene::clear();
+    Floor::resetMaxFloorId();
     m_building = NULL;
     createRoot();
     setBuilding(new Building(tr("Unnamed")));
@@ -62,9 +65,10 @@ void Scene::setBuilding(Building *building)
 PolygonEntity* Scene::createPolygonByContext(){
     PolygonEntity *entity;
     if(m_building->children().empty() || m_curFloor == NULL){
-        entity = new Floor(m_building);
-        entity->setParent(m_building);
-        m_curFloor = static_cast<Floor*>(entity);
+        Floor * floor = new Floor(m_building);
+        m_building->addFloor(floor);
+        m_curFloor = floor;
+        entity = floor;
     }else{
         entity = new FuncArea(m_curFloor);
         entity->setParent(m_curFloor);
@@ -75,31 +79,39 @@ PolygonEntity* Scene::createPolygonByContext(){
 
 void Scene::addFuncArea(FuncArea *funcArea){
     if(m_curFloor != NULL){
-        funcArea->setParent(m_curFloor);
-        funcArea->setParentItem(m_curFloor);
+        funcArea->setParentEntity(m_curFloor);
     }else{
-        funcArea->setParent(m_building);
-        funcArea->setParentItem(m_building);
+        funcArea->setParentEntity(m_building);
     }
     emit buildingChanged();
 }
 
 void Scene::addFloor(Floor *floor){
     if(m_building != NULL){
-        floor->setParent(m_building);
-        floor->setParentItem(m_building);
+        m_building->addFloor(floor);
     }
     emit buildingChanged();
 }
 
 void Scene::addPubPoint(PubPoint *pubPoint){
     if(m_curFloor != NULL){
-        pubPoint->setParent(m_curFloor);
-        pubPoint->setParentItem(m_curFloor);
+        pubPoint->setParentEntity(m_curFloor);
     }else{
-        pubPoint->setParent(m_building);
-        pubPoint->setParentItem(m_building);
+        pubPoint->setParentEntity(m_building);
     }
+    emit buildingChanged();
+}
+
+void Scene::addImageLayer(ImageLayer *imageLayer) {
+//    if(m_curFloor != NULL) {
+//        imageLayer->setParentEntity(m_curFloor);
+//    }else{
+
+//    }
+    Floor *floor = new Floor();
+    addFloor(floor);
+    imageLayer->setParentEntity(floor);
+    m_curFloor = floor;
     emit buildingChanged();
 }
 
@@ -134,8 +146,12 @@ void Scene::convertSelectedToBuilding(){
 
 void Scene::convertSelectedToFloor(){
     PolygonEntity* selectedEntity = static_cast<PolygonEntity*>(selectedItems().at(0));
-    addFloor(new Floor(*selectedEntity));
-    deleteMapEntity(selectedEntity);
+    if(m_curFloor != NULL && m_curFloor->outline().empty()){
+        m_curFloor->setOutline(selectedEntity->outline());
+    }else{
+        addFloor(new Floor(*selectedEntity));
+    }
+     deleteMapEntity(selectedEntity);
     emit buildingChanged();
 }
 
@@ -146,20 +162,60 @@ void Scene::convertSelectedToFuncArea(){
     emit buildingChanged();
 }
 
+void Scene::deleteSelected(){
+    QList<QGraphicsItem*> items = selectedItems();
+    foreach (QGraphicsItem* item, items) {
+        deleteMapEntity(static_cast<MapEntity*>(item));
+    }
+}
+
 void Scene::deleteMapEntity(MapEntity *entity){
-    removeMapEntity(entity);
-    delete entity;
-    entity = NULL;
+    QString className = entity->metaObject()->className();
+    if(className == "Floor"){
+        m_building->deleteFloor(static_cast<Floor*>(entity));
+    }else{
+        removeMapEntity(entity);
+        delete entity;
+        entity = NULL;
+    }
 }
 
 void Scene::removeMapEntity(MapEntity *entity){
     entity->setParent(NULL);
     entity->setParentItem(NULL);
+    if(entity == m_curFloor){
+        m_curFloor = NULL;
+    }
     emit buildingChanged();
+}
+
+bool Scene::showFloor(int floorId) {
+    QObject *object;
+    bool found = false;
+    foreach(object, building()->children()){
+        Floor *floor = static_cast<Floor*>(object);
+        if(floor->id() == floorId){
+            floor->setVisible(true);
+            setCurrentFloor(floor);
+            found = true;
+        }else{
+            floor->setVisible(false);
+        }
+    }
+    update();
+    return found;
+}
+
+bool Scene::showDefaultFloor(){
+    return showFloor(m_building->defaultFloor());
 }
 
 void Scene::setCurrentFloor(Floor *floor){
     m_curFloor = floor;
+}
+
+Floor* Scene::currentFloor() const {
+    return m_curFloor;
 }
 
 void Scene::contextMenuEvent(QGraphicsSceneContextMenuEvent *event){

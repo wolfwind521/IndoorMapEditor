@@ -32,6 +32,7 @@ void PolygonTool::mouseReleaseEvent(QGraphicsSceneMouseEvent *event){
         //remove the last point
         m_polygon->removePoint(m_polygon->PointNum() - 1); //pop the end point
         m_polygon->computeCenter();
+        m_polygon->computeArea();
         m_start = true;
         m_isCreating = false;
 

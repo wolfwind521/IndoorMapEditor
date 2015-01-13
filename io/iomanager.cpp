@@ -1,7 +1,9 @@
 #include "iomanager.h"
 #include "../gui/documentview.h"
 #include "../core/building.h"
+#include "../core/floor.h"
 #include "../core/scene.h"
+#include "../core/imagelayer.h"
 #include "jsonloader.h"
 #include <QFileDialog>
 #include <QMessageBox>
@@ -25,15 +27,17 @@ bool IOManager::loadFile(const QString & fileName, DocumentView * doc) {
     }else if( (!suffix.compare("jpg", Qt::CaseInsensitive)) ||
              (!suffix.compare("png", Qt::CaseInsensitive)) ||
              (!suffix.compare("bmp", Qt::CaseInsensitive)) ||
-             (!suffix.compare("gif", Qt::CaseInsensitive)) )
+             (!suffix.compare("gif", Qt::CaseInsensitive)) ||
+             (!suffix.compare("jpeg", Qt::CaseInsensitive)) )
     {
-        QImage image(fileName);
-        if (image.isNull()) {
-            return false;
-        }else{
+        ImageLayer * imageLayer = new ImageLayer();
+        if(imageLayer->setImage(fileName)){
+            doc->scene()->addImageLayer(imageLayer);
             return true;
+        }else{
+            delete imageLayer;
+            return false;
         }
-
     }else{
         return false;
     }

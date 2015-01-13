@@ -34,7 +34,10 @@ SOURCES += main.cpp\
     gui/handle.cpp \
     cmd/addenittycommand.cpp \
     gui/propviewfuncarea.cpp \
-    core/imagelayer.cpp
+    core/imagelayer.cpp \
+    gui/propviewfloor.cpp \
+    gui/propviewbuilding.cpp \
+    tool/zoomtool.cpp
 
 HEADERS  += mainwindow.h \
     core/building.h \
@@ -58,7 +61,10 @@ HEADERS  += mainwindow.h \
     gui/handle.h \
     cmd/addenittycommand.h \
     gui/propviewfuncarea.h \
-    core/imagelayer.h
+    core/imagelayer.h \
+    gui/propviewfloor.h \
+    gui/propviewbuilding.h \
+    tool/zoomtool.h
 
 FORMS    += mainwindow.ui
 

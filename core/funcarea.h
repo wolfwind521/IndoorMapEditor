@@ -29,6 +29,8 @@ public:
     void setFuncType(const FUNC_TYPE type);
     QString shopNo() const;
     void setShopNo(const QString & shopNo);
+    int dianpingId() const;
+    void setDianpingId(int dpId);
 
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget);
 
@@ -38,6 +40,7 @@ private:
 
     FUNC_TYPE m_type;
     QString m_shopNo;
+    int     m_dianpingId; //temp
 };
 
 #endif // FUNCAREA_H

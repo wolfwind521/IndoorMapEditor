@@ -13,6 +13,8 @@
 #include <QString>
 #include <QGraphicsItem>
 
+class Floor;
+
 class Building : public PolygonEntity
 {
     Q_OBJECT
@@ -27,10 +29,21 @@ public:
     Building(PolygonEntity &polygon);
     bool load(const QJsonObject & jsonObject);
     bool save(QJsonObject & jsonObject) const;
-    int floorNum();
+    int floorNum() const;
+    int underFloors() const;
+    int groundFloors() const;
+    int defaultFloor() const;
+    void setDefaultFloor(int floorId);
+    double height() const;
+    void setHeight(double height);
 
+    void addFloor(Floor * floor);
+    void deleteFloor(Floor * floor);
+
+ private slots:
+    void updateFloorIds(int oldId, int newId);
 private:
-    int m_underfloors;
+    int m_underFloors;
     double m_frontAngle;
     int m_defaultFloor;
     double m_height;

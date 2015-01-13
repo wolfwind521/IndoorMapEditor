@@ -1,17 +1,22 @@
 #include "floor.h"
 #include "funcarea.h"
 #include "pubpoint.h"
+#include "imagelayer.h"
+
+int Floor::m_maxFloorId = 0;
 
 Floor::Floor(QGraphicsItem *parent)
-    : PolygonEntity(parent)
+    : PolygonEntity(parent), m_height(0)
 {
-    m_color = QColor(193, 193, 193);
+    m_color = QColor(193, 193, 193, 125);
+    m_id = ++m_maxFloorId;
 }
 
 Floor::Floor(PolygonEntity &polygon)
 {
     new (this) Floor();
     copy(polygon);
+    m_id = m_maxFloorId++;
 }
 
 bool Floor::load(const QJsonObject &jsonObject) {
@@ -19,6 +24,9 @@ bool Floor::load(const QJsonObject &jsonObject) {
     PolygonEntity::load(jsonObject);
     m_height = jsonObject["High"].toDouble();
     m_id = jsonObject["_id"].toInt();
+    if(m_id > m_maxFloorId){
+        m_maxFloorId = m_id;
+    }
 
     QJsonArray funcArray = jsonObject["FuncAreas"].toArray();
     for (int i = 0; i < funcArray.size(); ++i) {
@@ -41,6 +49,16 @@ bool Floor::load(const QJsonObject &jsonObject) {
         }
         pubPoint->setParent(this);
     }
+
+    QJsonArray imageArray = jsonObject["ImageLayer"].toArray();
+    for(int i = 0; i < imageArray.size(); ++i){
+        QJsonObject imageObject = imageArray[i].toObject();
+        ImageLayer* imageLayer = new ImageLayer(this);
+        if(!imageLayer->load(imageObject)){
+
+        }
+        imageLayer->setParent(this);
+    }
     return true;
 }
 
@@ -51,7 +69,7 @@ bool Floor::save(QJsonObject &jsonObject) const
     jsonObject["_id"] = m_id;
 
     //save the funcAreas and pubPoints
-    QJsonArray funcArray, pubArray;
+    QJsonArray funcArray, pubArray, imageArray;
     foreach (QObject* object, this->children()) {
         QString className = object->metaObject()->className();
         if(className == "FuncArea"){
@@ -62,10 +80,15 @@ bool Floor::save(QJsonObject &jsonObject) const
             QJsonObject pubObject;
             static_cast<PubPoint*>(object)->save(pubObject);
             pubArray.append(pubObject);
+        }else if(className == "ImageLayer"){
+            QJsonObject imageObject;
+            static_cast<ImageLayer*>(object)->save(imageObject);
+            imageArray.append(imageObject);
         }
     }
     jsonObject["FuncAreas"] = funcArray;
     jsonObject["PubPoint"] = pubArray;
+    jsonObject["ImageLayer"] = imageArray;
     return true;
 }
 
@@ -80,4 +103,8 @@ void Floor::setHeight(double height)
         return;
     m_height = height;
     emit heightChanged(m_height);
+}
+
+void Floor::resetMaxFloorId(){
+    m_maxFloorId = 0;
 }
