@@ -52,6 +52,8 @@ public:
     void deleteMapEntity(MapEntity *entity);
     void removeMapEntity(MapEntity *entity);
 
+    bool showFloor(int floorId);
+    bool showDefaultFloor();
     Floor* currentFloor() const;
     void setCurrentFloor(Floor* floor);
 signals:

@@ -19,6 +19,7 @@ Scene::Scene(QObject *parent) :
 
 void Scene::reset(){
     QGraphicsScene::clear();
+    Floor::resetMaxFloorId();
     m_building = NULL;
     createRoot();
     setBuilding(new Building(tr("Unnamed")));
@@ -107,8 +108,8 @@ void Scene::addImageLayer(ImageLayer *imageLayer) {
 //    }else{
 
 //    }
-    Floor *floor = new Floor(m_building);
-    floor->setParent(m_building);
+    Floor *floor = new Floor();
+    addFloor(floor);
     imageLayer->setParentEntity(floor);
     m_curFloor = floor;
     emit buildingChanged();
@@ -186,6 +187,27 @@ void Scene::removeMapEntity(MapEntity *entity){
         m_curFloor = NULL;
     }
     emit buildingChanged();
+}
+
+bool Scene::showFloor(int floorId) {
+    QObject *object;
+    bool found = false;
+    foreach(object, building()->children()){
+        Floor *floor = static_cast<Floor*>(object);
+        if(floor->id() == floorId){
+            floor->setVisible(true);
+            setCurrentFloor(floor);
+            found = true;
+        }else{
+            floor->setVisible(false);
+        }
+    }
+    update();
+    return found;
+}
+
+bool Scene::showDefaultFloor(){
+    return showFloor(m_building->defaultFloor());
 }
 
 void Scene::setCurrentFloor(Floor *floor){

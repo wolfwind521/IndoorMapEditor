@@ -41,6 +41,7 @@ public:
     int PointNum() const;
 
     const QPointF & computeCenter();
+    double computeArea();
 
     //QGraphicsItem functions
     QRectF boundingRect() const;
@@ -52,7 +53,7 @@ public:
     virtual bool save(QJsonObject & jsonObject) const;
 protected:
 
-    double computeArea();
+
 
     QPolygon m_outline;
     QColor m_color;

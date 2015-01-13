@@ -24,6 +24,11 @@ MapEntity::MapEntity(const QString &name, QGraphicsItem *parent) :
 //    emit nameChanged(m_name);
 //}
 
+bool MapEntity::isClassOf(const QString &className) const {
+    QString myClassName;
+    myClassName = this->metaObject()->className();
+    return (myClassName == className);
+}
 int MapEntity::id() const
 {
     return m_id;
@@ -33,8 +38,9 @@ void MapEntity::setId(const int id)
 {
     if(m_id == id)
         return;
+    int oldid = m_id;
     m_id = id;
-    emit idChanged(m_id);
+    emit idChanged(oldid, m_id);
 }
 
 const QString & MapEntity::enName() const

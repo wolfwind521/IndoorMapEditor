@@ -5,7 +5,7 @@
 FuncArea::FuncArea(QGraphicsItem *parent)
     : PolygonEntity(parent)
 {
-    m_color = QColor(239, 229, 217, 125);
+    m_color = QColor(248, 203, 173, 125);
     setObjectName(tr("unnamed"));
 }
 
@@ -36,12 +36,24 @@ void FuncArea::setShopNo(const QString &shopNo) {
     m_shopNo = shopNo;
 }
 
+int FuncArea::dianpingId() const {
+    return m_dianpingId;
+}
+
+void FuncArea::setDianpingId(int dpId) {
+    if(m_dianpingId == dpId)
+        return;
+
+    m_dianpingId = dpId;
+}
+
 bool FuncArea::load(const QJsonObject &jsonObject) {
     PolygonEntity::load(jsonObject);
 
     m_type = static_cast<FUNC_TYPE>(jsonObject["Type"].toString().toInt());
     m_id = jsonObject["_id"].toInt();
     m_shopNo = jsonObject["ShopNo"].toString();
+    m_dianpingId = jsonObject["dianping_id"].toInt();
     return true;
 }
 
@@ -51,6 +63,7 @@ bool FuncArea::save(QJsonObject &jsonObject) const {
     jsonObject["Type"] = QString::number(static_cast<int>(m_type));
     jsonObject["_id"] = m_id;
     jsonObject["ShopNo"] = m_shopNo;
+    jsonObject["dianping_id"] = m_dianpingId;
     return true;
 }
 

@@ -316,6 +316,18 @@
     <string>删除</string>
    </property>
   </action>
+  <action name="actionZoomTool">
+   <property name="icon">
+    <iconset resource="IndoorMapEditor.qrc">
+     <normaloff>:/src/icon/zoomin.png</normaloff>:/src/icon/zoomin.png</iconset>
+   </property>
+   <property name="text">
+    <string>放缩</string>
+   </property>
+   <property name="toolTip">
+    <string>缩放场景</string>
+   </property>
+  </action>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
  <resources>

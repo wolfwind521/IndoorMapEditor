@@ -22,11 +22,13 @@ public:
     virtual void setMapEntity(MapEntity * mapEntity);
 public slots:
    void updateShopNo(const QString &shopNo);
-    void updateArea(const QString &area);
+   void updateArea(const QString &area);
+   void updateDianpingId(const QString &dpId);
 
 private:
     QLineEdit* m_shopNoEdit;
     QLineEdit* m_areaEdit;
+    QLineEdit* m_dianpingIdEdit;
 };
 
 #endif // PROPVIEWFUNCAREA_H

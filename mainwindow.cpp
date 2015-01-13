@@ -3,6 +3,8 @@
 #include "./gui/documentview.h"
 #include "./gui/propertyview.h"
 #include "./gui/propviewfuncarea.h"
+#include "./gui/propviewbuilding.h"
+#include "./gui/propviewfloor.h"
 #include "./gui/scenemodel.h"
 #include "./core/building.h"
 #include "./core/scene.h"
@@ -80,7 +82,8 @@ void MainWindow::openFile()
         //TODO: vector graphic file support
         QString fileName = QFileDialog::getOpenFileName(this,
                                                         tr("打开文件"), m_lastFilePath,
-                                                        tr("Json文件 (*.json)\n"
+                                                        tr("全部文件 (*.json *.jpg *.jpeg *.png *.bmp *.gif)\n"
+                                                            "Json文件 (*.json)\n"
                                                            "图像文件 (*.jpg *.jpeg *.png *.bmp *.gif)"));
         if(fileName.isEmpty())
             return;
@@ -90,8 +93,10 @@ void MainWindow::openFile()
         if(IOManager::loadFile(fileName, currentDocument()))
         {
             statusBar()->showMessage(tr("文件载入成功"), 2000);
-            setCurrentFile(fileName);
-
+            if(QFileInfo(fileName).suffix() == "json"){
+                setCurrentFile(fileName);
+            }
+            currentDocument()->scene()->showDefaultFloor();
             rebuildTreeView(); //rebuild the treeView
         }else{
             QMessageBox::warning(this,
@@ -230,7 +235,11 @@ void MainWindow::updatePropertyView(MapEntity *mapEntity) {
         //ugly codes. should be replaced by a factory class later.
         if(className == "FuncArea"){
             m_propertyView = new PropViewFuncArea(ui->dockPropertyWidget);
-        }else {
+        }else if(className == "Building"){
+            m_propertyView = new PropViewBuilding(ui->dockPropertyWidget);
+        }else if(className == "Floor"){
+            m_propertyView = new PropViewFloor(ui->dockPropertyWidget);
+        }else{
             m_propertyView = new PropertyView(ui->dockPropertyWidget);
         }
         ui->dockPropertyWidget->setWidget(m_propertyView);

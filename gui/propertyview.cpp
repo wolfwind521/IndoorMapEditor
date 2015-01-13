@@ -36,12 +36,7 @@ void PropertyView::createConnections(){
 }
 
 bool PropertyView::match(const MapEntity *mapEntity) const {
-    QString className = mapEntity->metaObject()->className();
-    if(className == "FuncArea") { //TODO: more types
-        return false;
-    }else {
-        return true;
-    }
+    return false;
 }
 void PropertyView::setMapEntity(MapEntity * mapEntity){
     if(m_mapEntity != mapEntity){

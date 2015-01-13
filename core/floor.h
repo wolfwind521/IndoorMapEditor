@@ -19,6 +19,7 @@ public:
     //setters and getters
     double height() const;
     void setHeight(double height);
+    static void resetMaxFloorId();
 signals:
     void heightChanged( double height );
 private:

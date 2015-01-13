@@ -57,6 +57,7 @@ void DocumentView::printScene(QPrinter *printer){
     painter.end();
 }
 
+//selection from graphics view
 void DocumentView::updateSelection(){
     if(m_scene->selectedItems().size() > 0){
         MapEntity* selectedEntity = static_cast<MapEntity*>(m_scene->selectedItems().at(0));
@@ -66,13 +67,14 @@ void DocumentView::updateSelection(){
     }
 }
 
+//selection from tree view
 void DocumentView::updateSelection(const QModelIndex & index){
-    MapEntity* mapEntity = static_cast<MapEntity*>(index.internalPointer());
+    MapEntity *mapEntity = static_cast<MapEntity*>(index.internalPointer());
 
     //a floor selected, change the visible floor
     QString className = mapEntity->metaObject()->className();
     if( className == "Floor"){
-        QObject* floor;
+        QObject *floor;
         foreach (floor, m_scene->building()->children()) {
             static_cast<MapEntity*>(floor)->setVisible(false);
         }
@@ -98,6 +100,7 @@ void DocumentView::updateSelection(const QModelIndex & index){
     }
 
     mapEntity->setSelected(true);
+    emit selectionChanged(mapEntity);
 }
 
 Scene * DocumentView::scene() const{

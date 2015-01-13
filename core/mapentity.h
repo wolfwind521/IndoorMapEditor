@@ -15,6 +15,7 @@ public:
     explicit MapEntity(QGraphicsItem *parent = 0);
     explicit MapEntity(const QString & name, QGraphicsItem *parent = 0);
 
+    bool isClassOf(const QString &className) const;
     //setters and getters
 //    QString name() const;
 //    void setName(const QString & name);
@@ -35,7 +36,7 @@ public:
 signals:
     void nameChanged(const QString & name);
     void enNameChanged(const QString & name);
-    void idChanged(int id);
+    void idChanged(int oldId, int newId);
     void centerChanged(const QPointF & center);
 protected:
     //QString m_name;
