@@ -40,6 +40,8 @@ public:
     void addFloor(Floor * floor);
     void deleteFloor(Floor * floor);
 
+    QVector<Floor*> getFloors();
+
  private slots:
     void updateFloorIds(int oldId, int newId);
 private:

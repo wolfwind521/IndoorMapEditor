@@ -9,6 +9,7 @@
 #include <QGraphicsObject>
 #include <QUndoStack>
 #include <QtPrintSupport/QPrinter>
+#include <QApplication>
 
 
 DocumentView::DocumentView()
@@ -51,10 +52,27 @@ void DocumentView::clear()
 }
 
 void DocumentView::printScene(QPrinter *printer){
+    printer->setFromTo(1, m_scene->building()->floorNum());
+
     QPainter painter;
     painter.begin(printer);
-    m_scene->render(&painter, printer->pageRect(), m_scene->sceneRect(), Qt::KeepAspectRatio);
+    QFont font = QApplication::font("DocumentView");//save the old font
+    QFont printFont = QFont(font, painter.device());
+    printFont.setPixelSize(30);
+    QApplication::setFont(printFont, "DocumentView");
+
+    bool firstPage = true;
+    for(int page = printer->fromPage(); page <= printer->toPage(); ++page){
+        if(!firstPage)
+            printer->newPage();
+        QVector<Floor*> floors = m_scene->building()->getFloors();
+        m_scene->showFloor(floors[page-1]->id());
+        m_scene->render(&painter, printer->pageRect(), m_scene->sceneRect(), Qt::KeepAspectRatio);
+        firstPage = false;
+    }
     painter.end();
+
+    QApplication::setFont(font, "DocumentView");//restore the old font
 }
 
 //selection from graphics view

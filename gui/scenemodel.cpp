@@ -1,5 +1,6 @@
 #include "scenemodel.h"
 #include "../core/mapentity.h"
+#include "../core/funcarea.h"
 #include <QIcon>
 SceneModel::SceneModel(MapEntity *root, QObject *parent) :
     QAbstractItemModel(parent), m_root(root)
@@ -111,6 +112,12 @@ QVariant SceneModel::data(const QModelIndex &index, int role) const
             QString className = entity->metaObject()->className();
             if( className == "Floor") //if it's a floor, show the id and name together
                 return  entity->id();
+            if(className == "FuncArea"){
+                FuncArea *funcArea = static_cast<FuncArea*>(entity);
+                if(funcArea->dianpingId() != 0 && funcArea->dianpingId() != -1){
+                    return funcArea->objectName() + '(' + QString::number(funcArea->dianpingId()) + ')';
+                }
+            }
             return entity->objectName();
         }
     }

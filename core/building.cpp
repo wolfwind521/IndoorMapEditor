@@ -165,3 +165,13 @@ bool Building::save(QJsonObject &jsonObject) const
 
     return true;
 }
+
+QVector<Floor*> Building::getFloors() {
+    QVector<Floor*> floors;
+    QList<QGraphicsItem*> children = this->childItems();
+    QGraphicsItem* item;
+    foreach(item, children) {
+        floors.push_back(static_cast<Floor*>(item));
+    }
+    return floors;
+}

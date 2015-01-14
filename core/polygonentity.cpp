@@ -160,6 +160,7 @@ void PolygonEntity::paint(QPainter *painter, const QStyleOptionGraphicsItem *opt
 
     QColor borderColor = ((option->state & QStyle::State_Selected) || (option->state & QStyle::State_MouseOver) ) ? QColor(0, 160, 233) : m_color.darker();
 
+    //setZValue(100);
 
     painter->setBrush(fillColor);
     painter->setPen(QPen(borderColor, 1));

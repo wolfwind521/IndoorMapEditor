@@ -72,14 +72,15 @@ void FuncArea::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, 
 
     //paint the marker
     if(!m_center.isNull()){
+        //setZValue(1);
         painter->setBrush(QColor(22, 22, 22));
         painter->setPen(QPen(QColor(22, 22, 22)));
         painter->drawEllipse(m_center, 3, 3);
 
         //paint the text
         painter->setPen(QPen());
-        QFont font = QApplication::font();
-        font.setPixelSize(12);
+        QFont font = QApplication::font("DocumentView");
+        //font.setPixelSize(12);
         painter->setFont(font);
         painter->drawText(m_center, objectName());
     }
