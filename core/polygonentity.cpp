@@ -7,7 +7,7 @@
 PolygonEntity::PolygonEntity(QGraphicsItem *parent)
     :MapEntity(parent), m_area(0.0)
 {
-    setFlags(ItemIsSelectable | ItemIsMovable);
+    setFlags(ItemIsSelectable);
     setAcceptHoverEvents(true);
 }
 
@@ -15,7 +15,7 @@ PolygonEntity::PolygonEntity(const QString & name, QGraphicsItem *parent)
     : MapEntity(parent), m_area(0.0)
 {
     setObjectName(name);
-    setFlags(ItemIsSelectable | ItemIsMovable);
+    setFlags(ItemIsSelectable);
     setAcceptHoverEvents(true);
 }
 
