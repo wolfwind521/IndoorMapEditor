@@ -31,7 +31,7 @@ bool PubPoint::load(const QJsonObject &jsonObject)
     m_id = jsonObject["_id"].toInt();
 
     QJsonArray point = jsonObject["Outline"].toArray()[0].toArray()[0].toArray();
-    m_center = QPoint(point[0].toInt(), point[1].toInt());
+    m_center = QPoint(point[0].toInt(), -point[1].toInt());
     return true;
 }
 
@@ -43,7 +43,7 @@ bool PubPoint::save(QJsonObject &jsonObject) const
 
     QJsonArray point;
     point.append(m_center.x());
-    point.append(m_center.y());
+    point.append(-m_center.y());
 
     QJsonArray array0, array1;
     array0.append(point);

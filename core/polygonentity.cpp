@@ -66,7 +66,7 @@ bool PolygonEntity::load(const QJsonObject &jsonObject)
 
     const QJsonArray & jsonArray = jsonObject["Outline"].toArray()[0].toArray()[0].toArray();
     for(int i = 0; i < jsonArray.size() - 1; i+=2){
-        m_outline.append(QPoint(jsonArray[i].toInt(), jsonArray[i+1].toInt()));
+        m_outline.append(QPoint(jsonArray[i].toInt(), -jsonArray[i+1].toInt()));
     }
 
     if(m_area == 0){
@@ -85,7 +85,7 @@ bool PolygonEntity::save(QJsonObject &jsonObject) const
     QJsonArray jsonArray;
     for(int i = 0; i < m_outline.size(); i++){
         jsonArray.append(m_outline[i].x());
-        jsonArray.append(m_outline[i].y());
+        jsonArray.append(-m_outline[i].y());
     }
     QJsonArray array0,array1;
     array0.append(jsonArray);
