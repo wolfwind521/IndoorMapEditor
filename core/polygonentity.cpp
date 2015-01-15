@@ -158,7 +158,7 @@ void PolygonEntity::paint(QPainter *painter, const QStyleOptionGraphicsItem *opt
     //if selected
     QColor fillColor = (option->state & QStyle::State_Selected) ? m_color.darker(150) : m_color;
 
-    QColor borderColor = ((option->state & QStyle::State_Selected) || (option->state & QStyle::State_MouseOver) ) ? QColor(0, 160, 233) : m_color.darker();
+    QColor borderColor = ((option->state & QStyle::State_Selected) || (option->state & QStyle::State_MouseOver) ) ? QColor(0, 160, 233) : m_color.darker(250);
 
     //setZValue(100);
 

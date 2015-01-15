@@ -58,7 +58,7 @@ void DocumentView::printScene(QPrinter *printer){
     painter.begin(printer);
     QFont font = QApplication::font("DocumentView");//save the old font
     QFont printFont = QFont(font, painter.device());
-    printFont.setPixelSize(30);
+    printFont.setPixelSize(18);
     QApplication::setFont(printFont, "DocumentView");
 
     bool firstPage = true;

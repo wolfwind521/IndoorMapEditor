@@ -5,7 +5,7 @@
 FuncArea::FuncArea(QGraphicsItem *parent)
     : PolygonEntity(parent)
 {
-    m_color = QColor(248, 203, 173, 125);
+    m_color = QColor(248, 203, 173, 150);
     setObjectName(tr("unnamed"));
 }
 
