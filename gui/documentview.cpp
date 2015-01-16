@@ -8,14 +8,16 @@
 #include <QGraphicsScene>
 #include <QGraphicsObject>
 #include <QUndoStack>
+#include <QKeyEvent>
 #include <QtPrintSupport/QPrinter>
 #include <QApplication>
+#include <qmath.h>
 
 
 DocumentView::ViewStyle DocumentView::m_style = StyleDefault;
 
 DocumentView::DocumentView()
-    :m_isModified(false), m_selectable(true)
+    :m_isModified(false), m_selectable(true), m_ctrlKeyPressed(false), m_scale(0)
 {
     m_scene = new Scene(this);
     m_scene->reset();
@@ -146,3 +148,28 @@ void DocumentView::showTexts(bool show){
 DocumentView::ViewStyle DocumentView::viewStyle() {
     return m_style;
 }
+
+void DocumentView::keyPressEvent(QKeyEvent *event) {
+
+}
+
+void DocumentView::keyReleaseEvent(QKeyEvent *event){
+
+}
+
+void DocumentView::wheelEvent(QWheelEvent *event){
+    QGraphicsView::wheelEvent(event);
+}
+
+void DocumentView::zoomIn(int step){
+    m_scale += step;
+    float scale = qPow(2.0, m_scale / 50.0);
+    this->scale(scale,scale);
+}
+
+void DocumentView::zoomOut(int step){
+    m_scale -= step;
+    float scale = qPow(2.0, m_scale / 50.0);
+    this->scale(scale,scale);
+}
+

@@ -57,6 +57,9 @@
     </property>
     <addaction name="actionShowText"/>
     <addaction name="actionFont"/>
+    <addaction name="separator"/>
+    <addaction name="actionZoomIn"/>
+    <addaction name="actionZoomOut"/>
    </widget>
    <addaction name="menu_File"/>
    <addaction name="menu"/>
@@ -356,6 +359,33 @@
    </property>
    <property name="toolTip">
     <string>设置视图中的字体</string>
+   </property>
+  </action>
+  <action name="actionZoomIn">
+   <property name="icon">
+    <iconset resource="IndoorMapEditor.qrc">
+     <normaloff>:/src/icon/zoomin.png</normaloff>:/src/icon/zoomin.png</iconset>
+   </property>
+   <property name="text">
+    <string>放大</string>
+   </property>
+   <property name="toolTip">
+    <string>放大场景</string>
+   </property>
+  </action>
+  <action name="actionZoomOut">
+   <property name="icon">
+    <iconset resource="IndoorMapEditor.qrc">
+     <normaloff>:/src/icon/zoomout.png</normaloff>:/src/icon/zoomout.png</iconset>
+   </property>
+   <property name="text">
+    <string>缩小</string>
+   </property>
+   <property name="toolTip">
+    <string>缩小场景</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+-</string>
    </property>
   </action>
  </widget>
