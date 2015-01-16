@@ -32,6 +32,7 @@ class Scene : public QGraphicsScene
 {
     Q_OBJECT
 public:
+
     explicit Scene(QObject *parent = 0);
     void reset();
     void setSelectable(bool b);
@@ -42,6 +43,7 @@ public:
 
     //void addEntityByContext(PolygonEntity* polygon);
     PolygonEntity* createPolygonByContext();
+    void deletePolygonByContext(PolygonEntity* entity);
 
     void addFloor(Floor* floor);
     void addFuncArea(FuncArea* funcArea);

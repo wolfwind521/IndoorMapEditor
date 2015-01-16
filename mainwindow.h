@@ -40,6 +40,7 @@ public slots:
     void setPolygonTool();
     void setSelectTool();
     void setPubPointTool();
+    void setGraphicsViewFont();
 private:
     bool okToContinue();
     void addDocument(DocumentView* doc);

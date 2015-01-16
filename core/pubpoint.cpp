@@ -85,6 +85,7 @@ void PubPoint::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, 
 
     painter->setPen(QPen());
     QFont font = QApplication::font("DocumentView");
+    font.setPixelSize(font.pointSize());
     //font.setPixelSize(12);
     painter->setFont(font);
     painter->drawText(m_center, objectName());

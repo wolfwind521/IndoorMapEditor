@@ -12,6 +12,8 @@
 #include <QApplication>
 
 
+DocumentView::ViewStyle DocumentView::m_style = StyleDefault;
+
 DocumentView::DocumentView()
     :m_isModified(false), m_selectable(true)
 {
@@ -58,7 +60,6 @@ void DocumentView::printScene(QPrinter *printer){
     painter.begin(printer);
     QFont font = QApplication::font("DocumentView");//save the old font
     QFont printFont = QFont(font, painter.device());
-    printFont.setPixelSize(18);
     QApplication::setFont(printFont, "DocumentView");
 
     bool firstPage = true;
@@ -135,4 +136,13 @@ void DocumentView::setSelectable(bool b){
         }
         m_scene->setSelectable(m_selectable);
     }
+}
+
+void DocumentView::showTexts(bool show){
+    m_style ^= StyleShowShopName;
+    m_scene->update();
+}
+
+DocumentView::ViewStyle DocumentView::viewStyle() {
+    return m_style;
 }

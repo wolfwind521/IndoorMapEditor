@@ -51,8 +51,16 @@
     <addaction name="separator"/>
     <addaction name="actionDelete"/>
    </widget>
+   <widget class="QMenu" name="menu_2">
+    <property name="title">
+     <string>显示</string>
+    </property>
+    <addaction name="actionShowText"/>
+    <addaction name="actionFont"/>
+   </widget>
    <addaction name="menu_File"/>
    <addaction name="menu"/>
+   <addaction name="menu_2"/>
   </widget>
   <widget class="QToolBar" name="mainToolBar">
    <attribute name="toolBarArea">
@@ -326,6 +334,28 @@
    </property>
    <property name="toolTip">
     <string>缩放场景</string>
+   </property>
+  </action>
+  <action name="actionShowText">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="checked">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>显示店铺名称</string>
+   </property>
+   <property name="toolTip">
+    <string>显示视图中的店铺名称</string>
+   </property>
+  </action>
+  <action name="actionFont">
+   <property name="text">
+    <string>字体...</string>
+   </property>
+   <property name="toolTip">
+    <string>设置视图中的字体</string>
    </property>
   </action>
  </widget>

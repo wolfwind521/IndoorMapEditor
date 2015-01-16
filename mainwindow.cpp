@@ -14,6 +14,7 @@
 #include "./tool/selecttool.h"
 #include "./tool/pubpointtool.h"
 #include <QFileDialog>
+#include <QFontDialog>
 #include <QMessageBox>
 #include <QTreeView>
 #ifndef QT_NO_PRINTER
@@ -49,6 +50,7 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->actionClose, SIGNAL(triggered()), this, SLOT(closeFile()));
     connect(ui->actionPrint, SIGNAL(triggered()), this, SLOT(printFile()));
     connect(ui->actionDelete, SIGNAL(triggered()), this, SLOT(deleteEntity()));
+    connect(ui->actionFont, SIGNAL(triggered()), this, SLOT(setGraphicsViewFont()));
 
     //tools action
     connect(ui->actionPolygonTool, SIGNAL(triggered()), this, SLOT(setPolygonTool()));
@@ -64,6 +66,9 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(m_sceneTreeView, SIGNAL(clicked(QModelIndex)), m_docView, SLOT(updateSelection(QModelIndex)));
     connect(m_docView, SIGNAL(selectionChanged(MapEntity*)), this, SLOT(updatePropertyView(MapEntity*)));
     connect(m_docView->scene(), SIGNAL(buildingChanged()), this, SLOT(rebuildTreeView()));
+    connect(ui->actionShowText, SIGNAL(toggled(bool)), m_docView, SLOT(showTexts(bool)));
+
+
 }
 
 MainWindow::~MainWindow()
@@ -263,4 +268,12 @@ void MainWindow::setPubPointTool(){
     AbstractTool *tool = new PubPointTool(currentDocument());
     ToolManager::instance()->setTool(tool);
     currentDocument()->setSelectable(false);
+}
+
+void MainWindow::setGraphicsViewFont(){
+    bool ok;
+    QFont font = QFontDialog::getFont(&ok, QApplication::font("DocumentView"), this );
+    if ( ok ) {
+          QApplication::setFont(font,"DocumentView");
+    }
 }

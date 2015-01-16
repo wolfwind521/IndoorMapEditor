@@ -62,7 +62,7 @@ void Scene::setBuilding(Building *building)
 //    deleteMapEntity(polygon);
 //}
 
-PolygonEntity* Scene::createPolygonByContext(){
+PolygonEntity* Scene::createPolygonByContext() {
     PolygonEntity *entity;
     if(m_building->children().empty() || m_curFloor == NULL){
         Floor * floor = new Floor(m_building);
@@ -75,6 +75,15 @@ PolygonEntity* Scene::createPolygonByContext(){
     }
     emit buildingChanged();
     return entity;
+}
+
+void Scene::deletePolygonByContext(PolygonEntity *entity) {
+    if(entity->isClassOf("Floor")){
+        m_building->deleteFloor(static_cast<Floor*>(entity));
+    }else{
+        delete entity;
+        entity = NULL;
+    }
 }
 
 void Scene::addFuncArea(FuncArea *funcArea){

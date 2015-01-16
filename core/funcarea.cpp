@@ -1,4 +1,5 @@
 #include "funcarea.h"
+#include "../gui/documentview.h"
 #include <QPainter>
 #include <QApplication>
 
@@ -77,11 +78,14 @@ void FuncArea::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, 
         painter->setPen(QPen(QColor(22, 22, 22)));
         painter->drawEllipse(m_center, 3, 3);
 
-        //paint the text
-        painter->setPen(QPen());
-        QFont font = QApplication::font("DocumentView");
-        //font.setPixelSize(12);
-        painter->setFont(font);
-        painter->drawText(m_center, objectName());
+        if(DocumentView::viewStyle() & DocumentView::StyleShowShopName){
+            //paint the text
+            painter->setPen(QPen());
+            QFont font = QApplication::font("DocumentView");
+            font.setPixelSize(font.pointSize());
+            //font.setPixelSize(12);
+            painter->setFont(font);
+            painter->drawText(m_center, objectName());
+        }
     }
 }

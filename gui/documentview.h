@@ -19,6 +19,14 @@ class DocumentView : public QGraphicsView
 
     Q_OBJECT
 public:
+    enum ViewFlag{
+        StyleShowShopName =                0x00000001,
+        StyleShowCenter =             0x00000002,
+        //TODO more styles
+        StyleDefault = 0 | StyleShowShopName | StyleShowCenter
+    };
+    Q_DECLARE_FLAGS(ViewStyle, ViewFlag)
+
     DocumentView();
     ~DocumentView();
     Scene * scene() const;
@@ -27,6 +35,7 @@ public:
     void clear();
     void setSelectable(bool b);
     Building* building();
+    static ViewStyle viewStyle();
 
 signals:
     void selectionChanged(MapEntity * mapEntity);
@@ -35,12 +44,13 @@ public slots:
     void printScene(QPrinter *printer);
     void updateSelection(const QModelIndex & index);
     void updateSelection();
-
+    void showTexts(bool show);
 private:
     QUndoStack *m_undoStack;
     Scene *m_scene;
     bool m_isModified;
     bool m_selectable;
+    static ViewStyle m_style;
 };
 
 #endif // DOCUMENTVIEW_H
