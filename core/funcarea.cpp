@@ -85,7 +85,10 @@ void FuncArea::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, 
             font.setPixelSize(font.pointSize());
             //font.setPixelSize(12);
             painter->setFont(font);
-            painter->drawText(m_center, objectName());
+            QRect fontRect = QFontMetrics(font).boundingRect(objectName());
+            int width = fontRect.width();
+            int height = fontRect.height();
+            painter->drawText(QPoint(m_center.x()-width/2.0, m_center.y() - height/5.0), objectName());
         }
     }
 }

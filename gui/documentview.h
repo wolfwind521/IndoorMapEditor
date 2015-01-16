@@ -36,7 +36,7 @@ public:
     void setSelectable(bool b);
     Building* building();
     static ViewStyle viewStyle();
-
+    void zoom(int step);
 signals:
     void selectionChanged(MapEntity * mapEntity);
 
@@ -45,12 +45,22 @@ public slots:
     void updateSelection(const QModelIndex & index);
     void updateSelection();
     void showTexts(bool show);
+    //zooming
+    void zoomIn(int step = 1);
+    void zoomOut(int step = 1);
+    void fitView();
+protected:
+    void wheelEvent(QWheelEvent *event);
+    void keyPressEvent(QKeyEvent *event);
+    void keyReleaseEvent(QKeyEvent *event);
 private:
     QUndoStack *m_undoStack;
     Scene *m_scene;
     bool m_isModified;
     bool m_selectable;
     static ViewStyle m_style;
+    bool m_ctrlKeyPressed;
+    int m_scale;
 };
 
 #endif // DOCUMENTVIEW_H

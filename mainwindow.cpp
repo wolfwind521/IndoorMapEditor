@@ -67,8 +67,11 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(m_docView, SIGNAL(selectionChanged(MapEntity*)), this, SLOT(updatePropertyView(MapEntity*)));
     connect(m_docView->scene(), SIGNAL(buildingChanged()), this, SLOT(rebuildTreeView()));
     connect(ui->actionShowText, SIGNAL(toggled(bool)), m_docView, SLOT(showTexts(bool)));
+    connect(ui->actionZoomOut, SIGNAL(triggered()), m_docView, SLOT(zoomOut()));
+    connect(ui->actionZoomIn, SIGNAL(triggered()), m_docView, SLOT(zoomIn()));
+    connect(ui->actionResetZoom, SIGNAL(triggered()), m_docView, SLOT(fitView()));
 
-
+    QApplication::setFont(QFont("Helvetica [Cronyx]", 26),"DocumentView");
 }
 
 MainWindow::~MainWindow()
@@ -102,6 +105,7 @@ void MainWindow::openFile()
                 setCurrentFile(fileName);
             }
             currentDocument()->scene()->showDefaultFloor();
+            currentDocument()->fitView();
             rebuildTreeView(); //rebuild the treeView
         }else{
             QMessageBox::warning(this,

@@ -8,14 +8,16 @@
 #include <QGraphicsScene>
 #include <QGraphicsObject>
 #include <QUndoStack>
+#include <QKeyEvent>
 #include <QtPrintSupport/QPrinter>
 #include <QApplication>
+#include <qmath.h>
 
 
 DocumentView::ViewStyle DocumentView::m_style = StyleDefault;
 
 DocumentView::DocumentView()
-    :m_isModified(false), m_selectable(true)
+    :m_isModified(false), m_selectable(true), m_ctrlKeyPressed(false), m_scale(0)
 {
     m_scene = new Scene(this);
     m_scene->reset();
@@ -26,7 +28,6 @@ DocumentView::DocumentView()
     this->setRenderHints(QPainter::Antialiasing);
 
     connect(m_scene, SIGNAL(selectionChanged()), this, SLOT(updateSelection()));
-
 }
 
 DocumentView::~DocumentView()
@@ -145,4 +146,49 @@ void DocumentView::showTexts(bool show){
 
 DocumentView::ViewStyle DocumentView::viewStyle() {
     return m_style;
+}
+
+void DocumentView::keyPressEvent(QKeyEvent *event) {
+    if(event->key() == Qt::Key_Control){
+        m_ctrlKeyPressed = true;
+    }
+}
+
+void DocumentView::keyReleaseEvent(QKeyEvent *event){
+    if(event->key() == Qt::Key_Control){
+        m_ctrlKeyPressed = false;
+    }
+}
+
+void DocumentView::wheelEvent(QWheelEvent *event){
+
+    if(m_ctrlKeyPressed){
+        int numDegrees = event->delta() / 8;
+        int numSteps = numDegrees / 15;
+        zoom(numSteps);
+    }else{
+        QGraphicsView::wheelEvent(event);
+    }
+}
+
+void DocumentView::zoomIn(int step){
+    zoom(step);
+}
+
+void DocumentView::zoomOut(int step){
+    zoom(-step);
+}
+
+void DocumentView::zoom(int step){
+    m_scale += step;
+    float scale = qPow(2.0, m_scale / 50.0);
+    QMatrix matrix;
+    matrix.scale(scale, scale);
+    this->setMatrix(matrix);
+}
+
+void DocumentView::fitView(){
+    fitInView(this->sceneRect(),Qt::KeepAspectRatio);
+    qreal dx = matrix().m11();
+    m_scale = qLn(dx)/qLn(2.0) * 50.0;
 }
