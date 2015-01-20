@@ -1,4 +1,4 @@
-#include "documentview.h"
+﻿#include "documentview.h"
 #include "../core/building.h"
 #include "../core/mapentity.h"
 #include "../core/floor.h"
@@ -55,7 +55,10 @@ void DocumentView::clear()
 }
 
 void DocumentView::printScene(QPrinter *printer){
-    printer->setFromTo(1, m_scene->building()->floorNum());
+    int floorNum = m_scene->building()->floorNum();
+    if(floorNum == 0)
+        return;
+    printer->setFromTo(1, floorNum);
 
     QPainter painter;
     painter.begin(printer);
@@ -186,6 +189,12 @@ void DocumentView::zoom(int step){
     QMatrix matrix;
     matrix.scale(scale, scale);
     this->setMatrix(matrix);
+}
+
+void DocumentView::mousePressEvent(QMouseEvent *event){
+    if(event->button() == Qt::LeftButton){
+        QGraphicsView::mousePressEvent(event);
+    }
 }
 
 void DocumentView::fitView(){

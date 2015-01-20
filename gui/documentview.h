@@ -46,13 +46,14 @@ public slots:
     void updateSelection();
     void showTexts(bool show);
     //zooming
-    void zoomIn(int step = 1);
-    void zoomOut(int step = 1);
+    void zoomIn(int step = 2);
+    void zoomOut(int step = 2);
     void fitView();
 protected:
     void wheelEvent(QWheelEvent *event);
     void keyPressEvent(QKeyEvent *event);
     void keyReleaseEvent(QKeyEvent *event);
+    void mousePressEvent(QMouseEvent *event);
 private:
     QUndoStack *m_undoStack;
     Scene *m_scene;

@@ -1,12 +1,12 @@
-#include "mapentity.h"
+﻿#include "mapentity.h"
 
 MapEntity::MapEntity(QGraphicsItem *parent) :
-    QGraphicsObject(parent)
+    QGraphicsObject(parent), m_id(0)
 {
 }
 
 MapEntity::MapEntity(const QString &name, QGraphicsItem *parent) :
-    QGraphicsObject(parent)
+    QGraphicsObject(parent), m_id(0)
 {
     setObjectName(name);
 }

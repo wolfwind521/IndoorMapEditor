@@ -12,6 +12,8 @@ class AbstractTool : public QObject
     Q_OBJECT
 public:
     explicit AbstractTool(DocumentView *parent);
+    virtual ~AbstractTool();
+    bool isClassOf(const QString &className) const;
 
     virtual void mousePressEvent( QGraphicsSceneMouseEvent *event ) = 0;
     virtual void mouseReleaseEvent( QGraphicsSceneMouseEvent *event ) = 0;

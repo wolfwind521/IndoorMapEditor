@@ -1,4 +1,4 @@
-#include "funcarea.h"
+﻿#include "funcarea.h"
 #include "../gui/documentview.h"
 #include <QPainter>
 #include <QApplication>
@@ -7,7 +7,7 @@ FuncArea::FuncArea(QGraphicsItem *parent)
     : PolygonEntity(parent)
 {
     m_color = QColor(248, 203, 173, 150);
-    setObjectName(tr("unnamed"));
+    setObjectName(tr("未命名店铺"));
 }
 
 FuncArea::FuncArea(PolygonEntity &polygon)
