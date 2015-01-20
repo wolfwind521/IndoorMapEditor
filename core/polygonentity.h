@@ -1,4 +1,4 @@
-#ifndef POLYGONENTITY_H
+﻿#ifndef POLYGONENTITY_H
 #define POLYGONENTITY_H
 
 #include "mapentity.h"

@@ -1,4 +1,4 @@
-#include "polygonentity.h"
+﻿#include "polygonentity.h"
 #include <cmath>
 #include <QWidget>
 #include <QStyleOptionGraphicsItem>

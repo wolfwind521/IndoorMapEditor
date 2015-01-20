@@ -28,14 +28,13 @@ MainWindow::MainWindow(QWidget *parent) :
     ui(new Ui::MainWindow),
     m_maxRecentFiles(5),
     m_lastFilePath("."),
-    m_printer(NULL)
+    m_printer(NULL),
+    m_propertyView(NULL)
 {
     ui->setupUi(this);
 
     m_sceneTreeView = new QTreeView(ui->dockTreeWidget);
     ui->dockTreeWidget->setWidget(m_sceneTreeView);
-    m_propertyView = new PropertyView(ui->dockPropertyWidget);
-    ui->dockPropertyWidget->setWidget(m_propertyView);
 
     QActionGroup * toolActionGroup = new QActionGroup(this);
     toolActionGroup->addAction(ui->actionSelectTool);
@@ -71,7 +70,7 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->actionZoomIn, SIGNAL(triggered()), m_docView, SLOT(zoomIn()));
     connect(ui->actionResetZoom, SIGNAL(triggered()), m_docView, SLOT(fitView()));
 
-    QApplication::setFont(QFont("Microsoft YaHei", 26),"DocumentView");
+    QApplication::setFont(QFont(tr("微软雅黑"), 26),"DocumentView");
 }
 
 MainWindow::~MainWindow()
@@ -236,11 +235,16 @@ void MainWindow::rebuildTreeView(){
 }
 
 void MainWindow::updatePropertyView(MapEntity *mapEntity) {
-    if(mapEntity == NULL)
-        return;
-    QString className = mapEntity->metaObject()->className();
-    if(!m_propertyView->match(mapEntity)){
+    if(mapEntity == NULL && m_propertyView!=NULL){
         delete m_propertyView;
+        m_propertyView = NULL;
+        return;
+    }
+    QString className = mapEntity->metaObject()->className();
+
+    if(m_propertyView== NULL || !m_propertyView->match(mapEntity)){
+        if(m_propertyView != NULL)
+            delete m_propertyView;
         //ugly codes. should be replaced by a factory class later.
         if(className == "FuncArea"){
             m_propertyView = new PropViewFuncArea(ui->dockPropertyWidget);
@@ -276,6 +280,7 @@ void MainWindow::setPubPointTool(){
 
 void MainWindow::setGraphicsViewFont(){
     bool ok;
+    //QFontDialog::setCurrentFont(QApplication::font("DocumentView"));
     QFont font = QFontDialog::getFont(&ok, QApplication::font("DocumentView"), this );
     if ( ok ) {
           QApplication::setFont(font,"DocumentView");
