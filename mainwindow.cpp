@@ -71,7 +71,7 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->actionZoomIn, SIGNAL(triggered()), m_docView, SLOT(zoomIn()));
     connect(ui->actionResetZoom, SIGNAL(triggered()), m_docView, SLOT(fitView()));
 
-    QApplication::setFont(QFont("Helvetica [Cronyx]", 26),"DocumentView");
+    QApplication::setFont(QFont("Microsoft YaHei", 26),"DocumentView");
 }
 
 MainWindow::~MainWindow()
