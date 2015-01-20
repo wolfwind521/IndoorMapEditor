@@ -62,14 +62,15 @@ void DocumentView::printScene(QPrinter *printer){
     QFont font = QApplication::font("DocumentView");//save the old font
     QFont printFont = QFont(font, painter.device());
     QApplication::setFont(printFont, "DocumentView");
-
+    QRectF rect = m_scene->building()->boundingRect();
     bool firstPage = true;
     for(int page = printer->fromPage(); page <= printer->toPage(); ++page){
         if(!firstPage)
             printer->newPage();
         QVector<Floor*> floors = m_scene->building()->getFloors();
         m_scene->showFloor(floors[page-1]->id());
-        m_scene->render(&painter, printer->pageRect(), m_scene->sceneRect(), Qt::KeepAspectRatio);
+        QRectF newRect = rect.united(m_scene->currentFloor()->boundingRect()); //unite the building rect with the floor rect
+        m_scene->render(&painter, printer->pageRect(), newRect, Qt::KeepAspectRatio);
         firstPage = false;
     }
     painter.end();

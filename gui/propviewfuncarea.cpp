@@ -1,7 +1,9 @@
-#include "propviewfuncarea.h"
+﻿#include "propviewfuncarea.h"
 #include "../core/funcarea.h"
 #include <QLineEdit>
 #include <QFormLayout>
+
+#pragma execution_character_set("utf-8")
 
 PropViewFuncArea::PropViewFuncArea(QWidget *parent) :
     PropertyView(parent)
@@ -10,9 +12,9 @@ PropViewFuncArea::PropViewFuncArea(QWidget *parent) :
     m_areaEdit = new QLineEdit;
     m_dianpingIdEdit = new QLineEdit;
 
-    m_layout->addRow(tr("Shop No."), m_shopNoEdit);
-    m_layout->addRow(tr("Area"), m_areaEdit);
-    m_layout->addRow(tr("Dianping ID"), m_dianpingIdEdit);
+    m_layout->addRow(tr("铺位号"), m_shopNoEdit);
+    m_layout->addRow(tr("面积"), m_areaEdit);
+    m_layout->addRow(tr("点评 ID"), m_dianpingIdEdit);
 
     connect(m_shopNoEdit, SIGNAL(textEdited(QString)), this, SLOT(updateShopNo(QString)));
     connect(m_areaEdit, SIGNAL(textEdited(QString)), this, SLOT(updateArea(QString)));

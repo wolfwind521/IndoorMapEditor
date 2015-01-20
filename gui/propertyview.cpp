@@ -1,7 +1,9 @@
-#include "propertyview.h"
+﻿#include "propertyview.h"
 #include "../core/mapentity.h"
 #include <QFormLayout>
 #include <QLineEdit>
+
+#pragma execution_character_set("utf-8")
 
 PropertyView::PropertyView(QWidget *parent) :
     QWidget(parent), m_mapEntity(NULL)
@@ -23,8 +25,8 @@ void PropertyView::createWidgets(){
 
 void PropertyView::createLayout(){
     m_layout = new QFormLayout;
-    m_layout->addRow(tr("Name"), m_nameLineEdit);
-    m_layout->addRow(tr("EnglishName"), m_enNameLineEdit);
+    m_layout->addRow(tr("名称"), m_nameLineEdit);
+    m_layout->addRow(tr("英文名"), m_enNameLineEdit);
     m_layout->addRow(tr("id"), m_idEdit);
     setLayout(m_layout);
 }
