@@ -232,7 +232,7 @@ Floor* Scene::currentFloor() const {
 }
 
 void Scene::contextMenuEvent(QGraphicsSceneContextMenuEvent *event){
-    if(selectedItems().size() > 0){ //if sth selected
+    if(selectedItems().size() > 0 && ToolManager::instance()->currentTool().isClassOf("SelectTool")){ //if sth selected
         if(static_cast<MapEntity*>(selectedItems().at(0))->inherits("PolygonEntity")){ //if polygon entity selected
             if(m_polygonContextMenu == NULL){ //create the menu
                 m_polygonContextMenu = new QMenu();

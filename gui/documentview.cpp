@@ -188,6 +188,12 @@ void DocumentView::zoom(int step){
     this->setMatrix(matrix);
 }
 
+void DocumentView::mousePressEvent(QMouseEvent *event){
+    if(event->button() == Qt::LeftButton){
+        QGraphicsView::mousePressEvent(event);
+    }
+}
+
 void DocumentView::fitView(){
     fitInView(this->sceneRect(),Qt::KeepAspectRatio);
     qreal dx = matrix().m11();
