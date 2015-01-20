@@ -29,24 +29,27 @@ void PolygonTool::mouseReleaseEvent(QGraphicsSceneMouseEvent *event){
         //redraw
         m_polygon->update(m_polygon->boundingRect());
     }else if(event->button() == Qt::RightButton){//right button down, finish
-        //remove the last point
-        m_polygon->removePoint(m_polygon->PointNum() - 1); //pop the end point
+        if(m_isCreating){
+            //remove the last point
+            m_polygon->removePoint(m_polygon->PointNum() - 1); //pop the end point
 
-        if(m_polygon->PointNum() < 3){
-            m_doc->scene()->deletePolygonByContext(m_polygon);
-        }else{
-            m_polygon->computeCenter();
-            m_polygon->computeArea();
+            if(m_polygon->PointNum() < 3){
+                m_doc->scene()->deletePolygonByContext(m_polygon);
+            }else{
+                m_polygon->computeCenter();
+                m_polygon->computeArea();
 
-            //selection
-            m_doc->scene()->clearSelection();
-            m_polygon->setSelected(true);
-            m_doc->selectionChanged(m_polygon);
+                //selection
+                m_doc->scene()->clearSelection();
+                m_polygon->setSelected(true);
+                m_doc->selectionChanged(m_polygon);
+            }
+            m_start = true;
+            m_isCreating = false;
+            //redraw
+            m_doc->scene()->update();
+            event->accept();
         }
-        m_start = true;
-        m_isCreating = false;
-        //redraw
-        m_doc->scene()->update();
     }
 }
 

@@ -1,4 +1,4 @@
-#include "scene.h"
+﻿#include "scene.h"
 #include "../tool/toolmanager.h"
 #include "../tool/abstracttool.h"
 #include "mapentity.h"
@@ -11,6 +11,8 @@
 #include <QMenu>
 #include <QGraphicsSceneContextMenuEvent>
 
+#pragma execution_character_set("utf-8")
+
 Scene::Scene(QObject *parent) :
     QGraphicsScene(parent), m_selectable(true), m_root(NULL), m_building(NULL), m_polygonContextMenu(NULL), m_curFloor(NULL)
 {
@@ -22,7 +24,7 @@ void Scene::reset(){
     Floor::resetMaxFloorId();
     m_building = NULL;
     createRoot();
-    setBuilding(new Building(tr("Unnamed")));
+    setBuilding(new Building(tr("未命名建筑")));
     update();
 }
 
@@ -125,15 +127,15 @@ void Scene::addImageLayer(ImageLayer *imageLayer) {
 }
 
 void Scene::mousePressEvent( QGraphicsSceneMouseEvent *event ){
-    if(m_selectable)
-        QGraphicsScene::mousePressEvent(event);
     ToolManager::instance()->currentTool().mousePressEvent(event);
+    if(m_selectable && event->button() == Qt::LeftButton)
+        QGraphicsScene::mousePressEvent(event);
 }
 
 void Scene::mouseReleaseEvent( QGraphicsSceneMouseEvent *event ){
-    if(m_selectable)
-        QGraphicsScene::mouseReleaseEvent(event);
     ToolManager::instance()->currentTool().mouseReleaseEvent(event);
+    if(m_selectable && event->button() == Qt::LeftButton)
+        QGraphicsScene::mouseReleaseEvent(event);
 }
 
 void Scene::mouseMoveEvent( QGraphicsSceneMouseEvent *event ){
@@ -174,8 +176,10 @@ void Scene::convertSelectedToFuncArea(){
 void Scene::deleteSelected(){
     QList<QGraphicsItem*> items = selectedItems();
     foreach (QGraphicsItem* item, items) {
+        item->setSelected(false);
         deleteMapEntity(static_cast<MapEntity*>(item));
     }
+//    emit selectionChanged();
 }
 
 void Scene::deleteMapEntity(MapEntity *entity){
