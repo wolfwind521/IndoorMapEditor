@@ -1,8 +1,10 @@
-#include "propviewfloor.h"
+﻿#include "propviewfloor.h"
 #include "../core/floor.h"
 #include <QLineEdit>
 #include <QLabel>
 #include <QFormLayout>
+
+#pragma execution_character_set("utf-8")
 
 PropViewFloor::PropViewFloor(QWidget *parent) :
     PropertyView(parent)
@@ -11,9 +13,9 @@ PropViewFloor::PropViewFloor(QWidget *parent) :
     m_funcAreaNumLabel = new QLabel;
     m_pubPointNumLabel = new QLabel;
 
-    m_layout->addRow(tr("height"), m_heightEdit);
-    m_layout->addRow(tr("Number of Shops "), m_funcAreaNumLabel);
-    m_layout->addRow(tr("Number of PubPoints"), m_pubPointNumLabel);
+    m_layout->addRow(tr("高度"), m_heightEdit);
+    m_layout->addRow(tr("店铺数 "), m_funcAreaNumLabel);
+    m_layout->addRow(tr("设施数"), m_pubPointNumLabel);
 
     connect(m_heightEdit, SIGNAL(textEdited(QString)), this, SLOT(updateHeight(QString)));
 }

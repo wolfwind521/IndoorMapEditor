@@ -69,9 +69,8 @@ void DocumentView::printScene(QPrinter *printer){
             printer->newPage();
         QVector<Floor*> floors = m_scene->building()->getFloors();
         m_scene->showFloor(floors[page-1]->id());
-        if(rect.isEmpty())
-            rect = m_scene->currentFloor()->boundingRect();
-        m_scene->render(&painter, printer->pageRect(), rect, Qt::KeepAspectRatio);
+        QRectF newRect = rect.united(m_scene->currentFloor()->boundingRect()); //unite the building rect with the floor rect
+        m_scene->render(&painter, printer->pageRect(), newRect, Qt::KeepAspectRatio);
         firstPage = false;
     }
     painter.end();
