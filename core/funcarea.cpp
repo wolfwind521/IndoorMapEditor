@@ -67,8 +67,8 @@ bool FuncArea::load(const QJsonObject &jsonObject) {
     return true;
 }
 
-bool FuncArea::save(QJsonObject &jsonObject) const {
-    PolygonEntity::save(jsonObject);
+bool FuncArea::save(QJsonObject &jsonObject, double scale) const {
+    PolygonEntity::save(jsonObject, scale);
 
     jsonObject["Type"] = QString::number(static_cast<int>(m_type));
     jsonObject["_id"] = m_id;

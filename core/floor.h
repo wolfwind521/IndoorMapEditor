@@ -14,7 +14,7 @@ public:
     Floor(QGraphicsItem *parent = 0);
     Floor(PolygonEntity & polygon);
     bool load(const QJsonObject & jsonObject);
-    bool save(QJsonObject & jsonObject) const;
+    bool save(QJsonObject & jsonObject, double scale) const;
 
     //setters and getters
     double height() const;

@@ -1,4 +1,4 @@
-#include "mergetool.h"
+﻿#include "mergetool.h"
 #include "../gui/documentview.h"
 #include "../core/scene.h"
 #include "../core/polygonentity.h"

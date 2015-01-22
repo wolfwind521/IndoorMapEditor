@@ -80,7 +80,7 @@ bool MapEntity::load(const QJsonObject &jsonObject)
     return true;
 }
 
-bool MapEntity::save(QJsonObject &jsonObject) const
+bool MapEntity::save(QJsonObject &jsonObject, double scale) const
 {
     jsonObject["Name"] = objectName();
     jsonObject["Name_en"] = m_enName;

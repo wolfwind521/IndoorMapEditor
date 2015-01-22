@@ -30,7 +30,7 @@ MapEntity* JsonLoader::loadFile(const QString & fileName) {
        return building;
 }
 
-bool JsonLoader::saveFile(const QString &fileName, const MapEntity *mapEntity) {
+bool JsonLoader::saveFile(const QString &fileName, const MapEntity *mapEntity, double scale) {
 
     QFile file(fileName);
 
@@ -40,7 +40,7 @@ bool JsonLoader::saveFile(const QString &fileName, const MapEntity *mapEntity) {
     }
 
     QJsonObject jsonObject;
-    mapEntity->save(jsonObject);
+    mapEntity->save(jsonObject, scale);
     QJsonDocument saveDoc(jsonObject);
     file.write(saveDoc.toJson());
     return true;

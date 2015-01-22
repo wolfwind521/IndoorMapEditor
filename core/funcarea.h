@@ -23,7 +23,7 @@ public:
     FuncArea( const QString & name, const QPolygon& poly);
 
     bool load(const QJsonObject & jsonObject);
-    bool save(QJsonObject &jsonObject) const;
+    bool save(QJsonObject &jsonObject, double scale) const;
 
     //setters and getters
     FUNC_TYPE funcType() const;

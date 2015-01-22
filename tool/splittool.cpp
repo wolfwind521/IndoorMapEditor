@@ -1,4 +1,4 @@
-#include "splittool.h"
+﻿#include "splittool.h"
 #include "../gui/documentview.h"
 #include "../core/scene.h"
 #include "../core/funcarea.h"
@@ -24,11 +24,7 @@ QPolygon & SplitLine::line() {
 }
 
 QRectF SplitLine::boundingRect() const {
-<<<<<<< HEAD
     return m_line->boundingRect();
-=======
-    m_line->boundingRect();
->>>>>>> d91ec23879cc7e7d7c0485eb1796bee094db3aa8
 }
 
 QPainterPath SplitLine::shape() const {
@@ -39,7 +35,7 @@ QPainterPath SplitLine::shape() const {
 
 void SplitLine::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) {
     Q_UNUSED(widget);
-    QColor color = QColor(233, 160, 0);
+    QColor color = QColor(195, 13, 35);
     painter->setPen(QPen(color, 1));
     painter->drawPolyline(*m_line);
 }

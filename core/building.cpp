@@ -129,11 +129,11 @@ bool Building::load(const QJsonObject &jsonObject) {
     return true;
 }
 
-bool Building::save(QJsonObject &jsonObject) const
+bool Building::save(QJsonObject &jsonObject, double scale) const
 {
     QJsonObject dataObject, buildingObject;
 
-    PolygonEntity::save(buildingObject);
+    PolygonEntity::save(buildingObject, scale);
     buildingObject["UnderFloors"] = m_underFloors;
     buildingObject["FrontAngle"] = m_frontAngle;
     buildingObject["DefaultFloor"] = m_defaultFloor;
@@ -154,7 +154,7 @@ bool Building::save(QJsonObject &jsonObject) const
         if( className == "Floor"){
             QJsonObject floorObject;
             Floor* floor = static_cast<Floor*>(object);
-            floor->save(floorObject);
+            floor->save(floorObject, scale);
             floorsId += QString::number(floor->id()) + ",";
             floorArray.append(floorObject);
         }

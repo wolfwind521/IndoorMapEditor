@@ -15,6 +15,7 @@
 #include "./tool/pubpointtool.h"
 #include "./tool/mergetool.h"
 #include "./tool/splittool.h"
+#include "./tool/scaletool.h"
 #include <QFileDialog>
 #include <QFontDialog>
 #include <QMessageBox>
@@ -44,6 +45,7 @@ MainWindow::MainWindow(QWidget *parent) :
     toolActionGroup->addAction(ui->actionPubPointTool);
     toolActionGroup->addAction(ui->actionMergeTool);
     toolActionGroup->addAction(ui->actionSplitTool);
+    toolActionGroup->addAction(ui->actionScaleTool);
 
     //menus action
     connect(ui->actionOpen, SIGNAL(triggered()), this, SLOT(openFile()));
@@ -61,6 +63,7 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->actionPubPointTool, SIGNAL(triggered()), this, SLOT(setPubPointTool()));
     connect(ui->actionMergeTool, SIGNAL(triggered()), this, SLOT(setMergeTool()));
     connect(ui->actionSplitTool, SIGNAL(triggered()), this, SLOT(setSplitTool()));
+    connect(ui->actionScaleTool, SIGNAL(triggered()), this, SLOT(setScaleTool()));
 
     addDocument(new DocumentView());
     setCurrentFile("");
@@ -292,6 +295,12 @@ void MainWindow::setMergeTool(){
 
 void MainWindow::setSplitTool(){
     AbstractTool *tool = new SplitTool(currentDocument());
+    ToolManager::instance()->setTool(tool);
+    currentDocument()->setSelectable(false);
+}
+
+void MainWindow::setScaleTool(){
+    AbstractTool *tool = new ScaleTool(currentDocument());
     ToolManager::instance()->setTool(tool);
     currentDocument()->setSelectable(false);
 }
