@@ -1,4 +1,4 @@
-﻿#include "scaletool.h"
+#include "scaletool.h"
 #include "../gui/documentview.h"
 #include "../core/scene.h"
 #include <QGraphicsSceneMouseEvent>
