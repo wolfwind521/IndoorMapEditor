@@ -13,7 +13,7 @@ PropViewFuncArea::PropViewFuncArea(QWidget *parent) :
     m_dianpingIdEdit = new QLineEdit;
 
     m_layout->addRow(tr("铺位号"), m_shopNoEdit);
-    m_layout->addRow(tr("面积"), m_areaEdit);
+    m_layout->addRow(tr("面积（平方米）"), m_areaEdit);
     m_layout->addRow(tr("点评 ID"), m_dianpingIdEdit);
 
     connect(m_shopNoEdit, SIGNAL(textEdited(QString)), this, SLOT(updateShopNo(QString)));

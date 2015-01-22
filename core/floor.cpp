@@ -62,9 +62,9 @@ bool Floor::load(const QJsonObject &jsonObject) {
     return true;
 }
 
-bool Floor::save(QJsonObject &jsonObject) const
+bool Floor::save(QJsonObject &jsonObject, double scale) const
 {
-    PolygonEntity::save(jsonObject);
+    PolygonEntity::save(jsonObject, scale);
     jsonObject["High"] = m_height;
     jsonObject["_id"] = m_id;
 
@@ -74,15 +74,15 @@ bool Floor::save(QJsonObject &jsonObject) const
         QString className = object->metaObject()->className();
         if(className == "FuncArea"){
             QJsonObject funcObject;
-            static_cast<FuncArea*>(object)->save(funcObject);
+            static_cast<FuncArea*>(object)->save(funcObject, scale);
             funcArray.append(funcObject);
         }else if(className == "PubPoint"){
             QJsonObject pubObject;
-            static_cast<PubPoint*>(object)->save(pubObject);
+            static_cast<PubPoint*>(object)->save(pubObject, scale);
             pubArray.append(pubObject);
         }else if(className == "ImageLayer"){
             QJsonObject imageObject;
-            static_cast<ImageLayer*>(object)->save(imageObject);
+            static_cast<ImageLayer*>(object)->save(imageObject, scale);
             imageArray.append(imageObject);
         }
     }

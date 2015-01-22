@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>400</width>
-    <height>300</height>
+    <width>895</width>
+    <height>566</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -19,7 +19,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>400</width>
+     <width>895</width>
      <height>22</height>
     </rect>
    </property>
@@ -95,6 +95,10 @@
    <addaction name="separator"/>
    <addaction name="actionMergeTool"/>
    <addaction name="actionSplitTool"/>
+   <addaction name="separator"/>
+   <addaction name="actionScaleTool"/>
+   <addaction name="actionZoomIn"/>
+   <addaction name="actionZoomOut"/>
   </widget>
   <widget class="QDockWidget" name="dockTreeWidget">
    <property name="windowTitle">
@@ -435,6 +439,21 @@
    </property>
    <property name="toolTip">
     <string>分裂店铺工具</string>
+   </property>
+  </action>
+  <action name="actionScaleTool">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="IndoorMapEditor.qrc">
+     <normaloff>:/src/icon/scale.png</normaloff>:/src/icon/scale.png</iconset>
+   </property>
+   <property name="text">
+    <string>比例尺</string>
+   </property>
+   <property name="toolTip">
+    <string>比例尺工具</string>
    </property>
   </action>
  </widget>

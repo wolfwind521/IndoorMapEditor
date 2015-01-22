@@ -42,6 +42,7 @@ public slots:
     void setPubPointTool();
     void setMergeTool();
     void setSplitTool();
+    void setScaleTool();
     void setGraphicsViewFont();
 private:
     bool okToContinue();

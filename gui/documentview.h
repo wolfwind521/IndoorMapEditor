@@ -38,6 +38,8 @@ public:
     Building* building();
     static ViewStyle viewStyle();
     void zoom(int step);
+    void addScale(double s);
+    double getScale() const;
 signals:
     void selectionChanged(MapEntity * mapEntity);
 
@@ -63,6 +65,8 @@ private:
     static ViewStyle m_style;
     bool m_ctrlKeyPressed;
     int m_scale;
+    double m_scaleSum;
+    int m_scaleNum;
 };
 
 #endif // DOCUMENTVIEW_H

@@ -17,7 +17,7 @@
 DocumentView::ViewStyle DocumentView::m_style = StyleDefault;
 
 DocumentView::DocumentView()
-    :m_isModified(false), m_selectable(true), m_ctrlKeyPressed(false), m_scale(0)
+    :m_isModified(false), m_selectable(true), m_ctrlKeyPressed(false), m_scale(0), m_scaleSum(0.0), m_scaleNum(0)
 {
     m_scene = new Scene(this);
     m_scene->reset();
@@ -205,4 +205,13 @@ void DocumentView::fitView(){
     fitInView(this->sceneRect(),Qt::KeepAspectRatio);
     qreal dx = matrix().m11();
     m_scale = qLn(dx)/qLn(2.0) * 50.0;
+}
+
+void DocumentView::addScale(double s) {
+    m_scaleSum += s;
+    m_scaleNum ++;
+}
+
+double DocumentView::getScale() const {
+    return m_scaleNum == 0 ? 1.0 : m_scaleSum/m_scaleNum;
 }

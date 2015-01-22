@@ -48,8 +48,8 @@ bool ImageLayer::load(const QJsonObject &jsonObject) {
     return true;
 }
 
-bool ImageLayer::save(QJsonObject &jsonObject) const {
-    MapEntity::save(jsonObject);
+bool ImageLayer::save(QJsonObject &jsonObject, double scale) const {
+    MapEntity::save(jsonObject, scale);
     jsonObject["file"] = m_fileName;
     return true;
 }

@@ -51,7 +51,7 @@ public:
 
     //io
     virtual bool load(const QJsonObject & jsonObject);
-    virtual bool save(QJsonObject & jsonObject) const;
+    virtual bool save(QJsonObject & jsonObject, double scale) const;
 protected:
 
 

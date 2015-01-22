@@ -19,5 +19,6 @@
         <file>src/icon/shop.png</file>
         <file>src/icon/merge.png</file>
         <file>src/icon/split.png</file>
+        <file>src/icon/scale.png</file>
     </qresource>
 </RCC>
