@@ -1,12 +1,31 @@
 #include "selecttool.h"
 #include "../gui/documentview.h"
+#include "../core/scene.h"
+#include "../core/mapentity.h"
+#include <QMenu>
 #include <QGraphicsSceneMouseEvent>
+#include <QGraphicsSceneContextMenuEvent>
 
 SelectTool::SelectTool(DocumentView *doc) :
     AbstractTool(doc)
 {
 }
 
-void SelectTool::mouseReleaseEvent( QGraphicsSceneMouseEvent *event ){
-    event->accept();
+void SelectTool::contextMenuEvent(QGraphicsSceneContextMenuEvent *event) {
+    Scene *scene = m_doc->scene();
+    if(scene->selectedItems().size() > 0){ //if sth selected
+        if(static_cast<MapEntity*>(scene->selectedItems().at(0))->inherits("PolygonEntity")){ //if polygon entity selected
+            if(m_contextMenu == NULL){ //create the menu
+                m_contextMenu = new QMenu();
+                QAction *toBuildingAction = m_contextMenu->addAction("设为建筑");
+                QAction *toFloorAction = m_contextMenu->addAction("设为楼层");
+                QAction *toFuncAreaAction = m_contextMenu->addAction("设为房间");
+
+                connect(toBuildingAction, SIGNAL(triggered()), scene, SLOT(convertSelectedToBuilding()));
+                connect(toFloorAction, SIGNAL(triggered()), scene, SLOT(convertSelectedToFloor()));
+                connect(toFuncAreaAction, SIGNAL(triggered()), scene, SLOT(convertSelectedToFuncArea()));
+            }
+            m_contextMenu->exec(event->screenPos());
+        }
+    }
 }

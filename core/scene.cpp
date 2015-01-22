@@ -8,13 +8,12 @@
 #include "funcarea.h"
 #include "pubpoint.h"
 #include <QList>
-#include <QMenu>
-#include <QGraphicsSceneContextMenuEvent>
+#include <QGraphicsSceneMouseEvent>
 
 #pragma execution_character_set("utf-8")
 
 Scene::Scene(QObject *parent) :
-    QGraphicsScene(parent), m_selectable(true), m_root(NULL), m_building(NULL), m_polygonContextMenu(NULL), m_curFloor(NULL)
+    QGraphicsScene(parent), m_selectable(true), m_root(NULL), m_building(NULL), m_curFloor(NULL)
 {
     createRoot();
 }
@@ -232,20 +231,6 @@ Floor* Scene::currentFloor() const {
 }
 
 void Scene::contextMenuEvent(QGraphicsSceneContextMenuEvent *event){
-    if(selectedItems().size() > 0 && ToolManager::instance()->currentTool().isClassOf("SelectTool")){ //if sth selected
-        if(static_cast<MapEntity*>(selectedItems().at(0))->inherits("PolygonEntity")){ //if polygon entity selected
-            if(m_polygonContextMenu == NULL){ //create the menu
-                m_polygonContextMenu = new QMenu();
-                QAction *toBuildingAction = m_polygonContextMenu->addAction("设为建筑");
-                QAction *toFloorAction = m_polygonContextMenu->addAction("设为楼层");
-                QAction *toFuncAreaAction = m_polygonContextMenu->addAction("设为房间");
-
-                connect(toBuildingAction, SIGNAL(triggered()), this, SLOT(convertSelectedToBuilding()));
-                connect(toFloorAction, SIGNAL(triggered()), this, SLOT(convertSelectedToFloor()));
-                connect(toFuncAreaAction, SIGNAL(triggered()), this, SLOT(convertSelectedToFuncArea()));
-            }
-            m_polygonContextMenu->exec(event->screenPos());
-        }
-    }
+    ToolManager::instance()->currentTool().contextMenuEvent(event);
 }
 

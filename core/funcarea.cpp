@@ -4,16 +4,22 @@
 #include <QApplication>
 
 FuncArea::FuncArea(QGraphicsItem *parent)
-    : PolygonEntity(parent)
+    : PolygonEntity(parent), m_dianpingId(-1)
 {
     m_color = QColor(248, 203, 173, 150);
-    setObjectName(tr("未命名店铺"));
+    setObjectName(tr("未命名"));
 }
 
 FuncArea::FuncArea(PolygonEntity &polygon)
 {
     new (this) FuncArea();
     copy(polygon);
+}
+
+FuncArea::FuncArea( const QString & name, const QPolygon& poly)
+{
+    new (this) FuncArea();
+    m_outline = poly;
 }
 
 FUNC_TYPE FuncArea::funcType() const {

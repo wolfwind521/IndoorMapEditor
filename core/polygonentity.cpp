@@ -21,19 +21,19 @@ PolygonEntity::PolygonEntity(const QString & name, QGraphicsItem *parent)
 
 PolygonEntity::PolygonEntity(const QString & name, int id) :  m_area(0.0)
 {
-    setObjectName(name);
     m_id = id;
-    setFlags(ItemIsSelectable | ItemIsMovable);
+    setObjectName(name);
+    setFlags(ItemIsSelectable);
     setAcceptHoverEvents(true);
 }
 
-PolygonEntity::PolygonEntity(const QString & name, int id, QPolygon poly, double area)
-    :m_outline(poly), m_area(area)
+PolygonEntity::PolygonEntity(const QString & name, const QPolygon& poly)
+    :m_outline(poly)
 {
     setObjectName(name);
-    m_id = id;
-    setFlags(ItemIsSelectable | ItemIsMovable);
+    setFlags(ItemIsSelectable);
     setAcceptHoverEvents(true);
+    computeArea();
 }
 
 
@@ -53,7 +53,7 @@ void PolygonEntity::setOutline(const QVector<QPoint> & points)
    update();
 }
 
-const QPolygon & PolygonEntity::outline() const
+QPolygon & PolygonEntity::outline()
 {
     return m_outline;
 }

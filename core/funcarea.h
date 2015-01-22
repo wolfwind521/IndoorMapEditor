@@ -20,6 +20,7 @@ class FuncArea : public PolygonEntity
 public:
     FuncArea(QGraphicsItem *parent = 0);
     FuncArea(PolygonEntity &polygon);
+    FuncArea( const QString & name, const QPolygon& poly);
 
     bool load(const QJsonObject & jsonObject);
     bool save(QJsonObject &jsonObject) const;

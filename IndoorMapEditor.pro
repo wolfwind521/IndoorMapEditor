@@ -37,7 +37,9 @@ SOURCES += main.cpp\
     core/imagelayer.cpp \
     gui/propviewfloor.cpp \
     gui/propviewbuilding.cpp \
-    tool/zoomtool.cpp
+    tool/zoomtool.cpp \
+    tool/splittool.cpp \
+    tool/mergetool.cpp
 
 HEADERS  += mainwindow.h \
     core/building.h \
@@ -64,7 +66,9 @@ HEADERS  += mainwindow.h \
     core/imagelayer.h \
     gui/propviewfloor.h \
     gui/propviewbuilding.h \
-    tool/zoomtool.h
+    tool/zoomtool.h \
+    tool/splittool.h \
+    tool/mergetool.h
 
 FORMS    += mainwindow.ui
 

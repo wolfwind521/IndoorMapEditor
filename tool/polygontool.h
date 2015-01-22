@@ -14,8 +14,6 @@ public:
     virtual void mousePressEvent( QGraphicsSceneMouseEvent *event );
     virtual void mouseReleaseEvent( QGraphicsSceneMouseEvent *event );
     virtual void mouseMoveEvent(QGraphicsSceneMouseEvent *event);
-    virtual void keyPressEvent(QKeyEvent *event){}
-    virtual void keyReleaseEvent(QKeyEvent *event){}
 private:
     bool m_start;
     bool m_isCreating;

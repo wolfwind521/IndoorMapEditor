@@ -9,12 +9,7 @@ class SelectTool : public AbstractTool
 public:
     explicit SelectTool(DocumentView *doc);
 
-    virtual void mousePressEvent( QGraphicsSceneMouseEvent *event ){};
-    virtual void mouseReleaseEvent( QGraphicsSceneMouseEvent *event );
-    virtual void mouseMoveEvent(QGraphicsSceneMouseEvent *event){};
-    virtual void keyPressEvent(QKeyEvent *event) {};
-    virtual void keyReleaseEvent(QKeyEvent *event) {};
-
+    virtual void contextMenuEvent(QGraphicsSceneContextMenuEvent *event);
 };
 
 #endif // SELECTTOOL_H

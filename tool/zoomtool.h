@@ -7,6 +7,7 @@ class ZoomTool : public AbstractTool
 {
 public:
     ZoomTool(DocumentView *parent);
+    //TODO
     virtual void mousePressEvent( QGraphicsSceneMouseEvent *event ) {};
     virtual void mouseReleaseEvent( QGraphicsSceneMouseEvent *event ) {};
     virtual void mouseMoveEvent( QGraphicsSceneMouseEvent *event ){} ;
