@@ -17,8 +17,7 @@ class FuncArea;
 class PubPoint;
 class ImageLayer;
 class PolygonEntity;
-
-QT_FORWARD_DECLARE_CLASS(QMenu)
+QT_FORWARD_DECLARE_CLASS(QGraphicsSceneMouseEvent)
 
 enum DATA_TYPE{
     BUILDING,
@@ -76,7 +75,6 @@ private:
     MapEntity *m_root;
     Building *m_building;
     Floor *m_curFloor;
-    QMenu* m_polygonContextMenu;
 };
 
 #endif // SCENE_H

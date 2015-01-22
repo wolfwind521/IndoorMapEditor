@@ -34,6 +34,7 @@ public:
     void setModified(bool b);
     void clear();
     void setSelectable(bool b);
+    bool selectable() const;
     Building* building();
     static ViewStyle viewStyle();
     void zoom(int step);

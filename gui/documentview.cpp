@@ -143,6 +143,10 @@ void DocumentView::setSelectable(bool b){
     }
 }
 
+bool DocumentView::selectable() const{
+    return m_selectable;
+}
+
 void DocumentView::showTexts(bool show){
     m_style ^= StyleShowShopName;
     m_scene->update();

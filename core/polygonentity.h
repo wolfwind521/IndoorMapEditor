@@ -5,6 +5,7 @@
 #include <QString>
 #include <QJsonArray>
 #include <QGraphicsObject>
+#include <QPolygon>
 
 class PolygonEntity : public MapEntity
 {
@@ -13,12 +14,12 @@ public:
     PolygonEntity(QGraphicsItem *parent = 0);
     PolygonEntity(const QString & name, QGraphicsItem *parent = 0);
     PolygonEntity( const QString & name, int id);
-    PolygonEntity( const QString & name, int id, QPolygon poly, double area = -1);
+    PolygonEntity( const QString & name, const QPolygon& poly);
 
     //copy the data from @polygon, used in subclasses
     void copy(PolygonEntity &polygon);
     //setters and getters
-    const QPolygon & outline() const;
+    QPolygon & outline();
     void setOutline(const QVector<QPoint> & points);
     double area();
     void setArea(const double area);

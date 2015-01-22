@@ -20,7 +20,7 @@
      <x>0</x>
      <y>0</y>
      <width>400</width>
-     <height>21</height>
+     <height>22</height>
     </rect>
    </property>
    <widget class="QMenu" name="menu_File">
@@ -92,6 +92,9 @@
    <addaction name="actionSelectTool"/>
    <addaction name="actionPolygonTool"/>
    <addaction name="actionPubPointTool"/>
+   <addaction name="separator"/>
+   <addaction name="actionMergeTool"/>
+   <addaction name="actionSplitTool"/>
   </widget>
   <widget class="QDockWidget" name="dockTreeWidget">
    <property name="windowTitle">
@@ -401,6 +404,37 @@
    </property>
    <property name="toolTip">
     <string>重置场景缩放</string>
+   </property>
+  </action>
+  <action name="actionMergeTool">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="IndoorMapEditor.qrc">
+     <normaloff>:/src/icon/merge.png</normaloff>:/src/icon/merge.png</iconset>
+   </property>
+   <property name="text">
+    <string>合并
+</string>
+   </property>
+   <property name="toolTip">
+    <string>合并店铺</string>
+   </property>
+  </action>
+  <action name="actionSplitTool">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="IndoorMapEditor.qrc">
+     <normaloff>:/src/icon/split.png</normaloff>:/src/icon/split.png</iconset>
+   </property>
+   <property name="text">
+    <string>分裂</string>
+   </property>
+   <property name="toolTip">
+    <string>分裂店铺工具</string>
    </property>
   </action>
  </widget>

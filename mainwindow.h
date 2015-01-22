@@ -40,6 +40,8 @@ public slots:
     void setPolygonTool();
     void setSelectTool();
     void setPubPointTool();
+    void setMergeTool();
+    void setSplitTool();
     void setGraphicsViewFont();
 private:
     bool okToContinue();

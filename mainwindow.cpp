@@ -13,6 +13,8 @@
 #include "./tool/polygontool.h"
 #include "./tool/selecttool.h"
 #include "./tool/pubpointtool.h"
+#include "./tool/mergetool.h"
+#include "./tool/splittool.h"
 #include <QFileDialog>
 #include <QFontDialog>
 #include <QMessageBox>
@@ -40,6 +42,8 @@ MainWindow::MainWindow(QWidget *parent) :
     toolActionGroup->addAction(ui->actionSelectTool);
     toolActionGroup->addAction(ui->actionPolygonTool);
     toolActionGroup->addAction(ui->actionPubPointTool);
+    toolActionGroup->addAction(ui->actionMergeTool);
+    toolActionGroup->addAction(ui->actionSplitTool);
 
     //menus action
     connect(ui->actionOpen, SIGNAL(triggered()), this, SLOT(openFile()));
@@ -55,6 +59,8 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->actionPolygonTool, SIGNAL(triggered()), this, SLOT(setPolygonTool()));
     connect(ui->actionSelectTool, SIGNAL(triggered()), this, SLOT(setSelectTool()));
     connect(ui->actionPubPointTool, SIGNAL(triggered()), this, SLOT(setPubPointTool()));
+    connect(ui->actionMergeTool, SIGNAL(triggered()), this, SLOT(setMergeTool()));
+    connect(ui->actionSplitTool, SIGNAL(triggered()), this, SLOT(setSplitTool()));
 
     addDocument(new DocumentView());
     setCurrentFile("");
@@ -274,6 +280,18 @@ void MainWindow::setSelectTool(){
 
 void MainWindow::setPubPointTool(){
     AbstractTool *tool = new PubPointTool(currentDocument());
+    ToolManager::instance()->setTool(tool);
+    currentDocument()->setSelectable(false);
+}
+
+void MainWindow::setMergeTool(){
+    AbstractTool *tool = new MergeTool(currentDocument());
+    ToolManager::instance()->setTool(tool);
+    currentDocument()->setSelectable(true);
+}
+
+void MainWindow::setSplitTool(){
+    AbstractTool *tool = new SplitTool(currentDocument());
     ToolManager::instance()->setTool(tool);
     currentDocument()->setSelectable(false);
 }

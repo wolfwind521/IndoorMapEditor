@@ -10,10 +10,6 @@ public:
     explicit PubPointTool(DocumentView *doc);
 
     virtual void mouseReleaseEvent( QGraphicsSceneMouseEvent *event );
-    virtual void mousePressEvent( QGraphicsSceneMouseEvent *event ) {};
-    virtual void mouseMoveEvent( QGraphicsSceneMouseEvent *event ) {};
-    virtual void keyPressEvent(QKeyEvent *event){};
-    virtual void keyReleaseEvent(QKeyEvent *event){} ;
 };
 
 #endif // PUBPOINTTOOL_H
