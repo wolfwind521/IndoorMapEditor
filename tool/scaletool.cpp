@@ -5,6 +5,7 @@
 #include <QGraphicsLineItem>
 #include <QInputDialog>
 
+#pragma execution_character_set("utf-8")
 
 ScaleTool::ScaleTool(DocumentView *parent) :
     AbstractTool(parent), m_start(true), m_isCreating(false)

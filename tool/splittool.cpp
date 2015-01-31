@@ -1,4 +1,4 @@
-#include "splittool.h"
+﻿#include "splittool.h"
 #include "../gui/documentview.h"
 #include "../core/scene.h"
 #include "../core/funcarea.h"
