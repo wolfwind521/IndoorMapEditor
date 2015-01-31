@@ -1,4 +1,4 @@
-#include "scaletool.h"
+﻿#include "scaletool.h"
 #include "../gui/documentview.h"
 #include "../core/scene.h"
 #include <QGraphicsSceneMouseEvent>
@@ -36,7 +36,7 @@ void ScaleTool::mouseReleaseEvent(QGraphicsSceneMouseEvent *event) {
             m_scaleLine->setLine(line);
 
             bool ok;
-            double inputLength = QInputDialog::getDouble(m_doc, tr("设定比例尺"), tr("比例尺（单位：米）"), 0,
+            double inputLength = QInputDialog::getDouble(m_doc, "设定比例尺", "比例尺（单位：米）", 0,
                                                     -2147483647, 2147483647, 1, &ok);
             if (ok && inputLength != 0.0){
                 double scale =  inputLength / line.length() * 10; // change to decimeter
