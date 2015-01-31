@@ -105,6 +105,15 @@ bool Building::load(const QJsonObject &jsonObject) {
     m_version = buildingObject["Version"].toInt();
     m_type = (BUILDING_TYPE) buildingObject["Type"].toString().toInt();
     m_key = buildingObject["_id"].toString();
+    m_address = buildingObject["Address"].toString();
+    m_time = buildingObject["Time"].toString();
+    m_tel = buildingObject["Tel"].toString();
+
+    //for GaoDe maps. the remark is the floor names
+    QStringList floorNames;
+    if(!m_remark.isEmpty() && !m_remark.isNull()){
+        floorNames = m_remark.split("\"").at(4).split(",");
+    }
 
     QStringList floorsId = m_floorsId.split(",");
 
@@ -120,7 +129,11 @@ bool Building::load(const QJsonObject &jsonObject) {
             //TODO: show some warning
         }
         int floorId = floor->id();
-        allFloors[floorsId.indexOf(QString::number(floorId))] = floor;
+        int realId = floorsId.indexOf(QString::number(floorId));
+        allFloors[realId] = floor;
+        if(!floorNames.isEmpty()){
+            floor->setObjectName(floorNames.at(realId));
+        }
     }
 
     for(int i = 0; i < allFloors.size(); i++)
@@ -146,6 +159,9 @@ bool Building::save(QJsonObject &jsonObject, double scale) const
     buildingObject["Version"] = m_version;
     buildingObject["Type"] = QString::number(static_cast<int>(m_type));
     buildingObject["_id"] = m_key;
+    buildingObject["Address"] = m_address;
+    buildingObject["Time"] = m_time;
+    buildingObject["Tel"] = m_tel;
 
     QString floorsId;
     QJsonArray floorArray;
@@ -176,4 +192,70 @@ QVector<Floor*> Building::getFloors() {
         floors.push_back(static_cast<Floor*>(item));
     }
     return floors;
+}
+
+double Building::latitude() const{
+    return m_latitude;
+}
+
+void Building::setLatitude(double lat){
+    if(lat != m_latitude){
+        m_latitude = lat;
+        //TODO emit signal
+    }
+}
+
+double Building::longitude() const{
+    return m_longitude;
+}
+
+void Building::setLongitude(double lng) {
+    if(lng != m_longitude){
+        m_longitude = lng;
+        //TODO emit signal
+    }
+}
+
+const QString & Building::address() const{
+    return m_address;
+}
+
+void Building::setAddress(const QString &ad){
+    if(ad != m_address){
+        m_address = ad;
+        //TODO emit signal
+    }
+}
+
+const QString & Building::postCode() const{
+    return m_postCode;
+}
+
+void Building::setPostCode(const QString &pc){
+    if(pc != m_postCode){
+        m_postCode = pc;
+        //TODO emit signal
+    }
+}
+
+const QString & Building::time() const{
+    return m_time;
+}
+
+void Building::setTime(const QString &time){
+    if(time != m_time){
+        m_time = time;
+        //TODO emit signal
+    }
+}
+
+const QString & Building::tel() const{
+    return m_tel;
+}
+
+void Building::setTel(const QString &tel){
+    if(tel != m_tel){
+        m_tel = tel;
+        //TODO emit signal
+    }
 }

@@ -21,6 +21,7 @@ public slots:
     void updateName(const QString &name);
     void updateEnName(const QString &enName);
     void updateId(const QString &id);
+    void updateBrief(const QString &brief);
 protected:
     void createWidgets();
     void createLayout();
@@ -32,6 +33,7 @@ protected:
     QLineEdit * m_nameLineEdit;
     QLineEdit * m_enNameLineEdit;
     QLineEdit * m_idEdit;
+    QLineEdit * m_briefEdit;
 
 };
 

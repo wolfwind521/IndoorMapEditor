@@ -59,6 +59,13 @@ bool Floor::load(const QJsonObject &jsonObject) {
         }
         imageLayer->setParent(this);
     }
+
+    //for GaoDe maps. name is actually brief
+    QString name = jsonObject["Name"].toString();
+    if(!name[0].isUpper()){
+        m_brief = name;
+    }
+
     return true;
 }
 

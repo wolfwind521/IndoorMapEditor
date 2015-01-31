@@ -1,4 +1,5 @@
 ﻿#include "mapentity.h"
+#include <QJsonArray>
 
 MapEntity::MapEntity(QGraphicsItem *parent) :
     QGraphicsObject(parent), m_id(0)
@@ -11,18 +12,18 @@ MapEntity::MapEntity(const QString &name, QGraphicsItem *parent) :
     setObjectName(name);
 }
 
-//QString MapEntity::name() const
-//{
-//    return m_name;
-//}
+const QString &MapEntity::brief() const
+{
+    return m_brief;
+}
 
-//void MapEntity::setName(const QString & name)
-//{
-//    if(m_name == name)
-//        return;
-//    m_name = name;
-//    emit nameChanged(m_name);
-//}
+void MapEntity::setBrief(const QString & brief)
+{
+    if(m_brief == brief)
+        return;
+    m_brief = brief;
+    emit briefChanged(m_brief);
+}
 
 bool MapEntity::isClassOf(const QString &className) const {
     QString myClassName;
@@ -77,6 +78,11 @@ bool MapEntity::load(const QJsonObject &jsonObject)
 {
     setObjectName( jsonObject["Name"].toString() );
     m_enName = jsonObject["Name_en"].toString();
+    m_brief = jsonObject["Brief"].toString();
+    const QJsonArray & jsonArray = jsonObject["Center"].toArray();
+    if(jsonArray.size() == 2){
+        m_center = QPointF(jsonArray[0].toDouble(), -jsonArray[1].toDouble());
+    }
     return true;
 }
 
@@ -84,6 +90,7 @@ bool MapEntity::save(QJsonObject &jsonObject, double scale) const
 {
     jsonObject["Name"] = objectName();
     jsonObject["Name_en"] = m_enName;
+    jsonObject["Brief"] = m_brief;
     return true;
 }
 

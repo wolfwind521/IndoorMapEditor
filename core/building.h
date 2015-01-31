@@ -36,6 +36,18 @@ public:
     void setDefaultFloor(int floorId);
     double height() const;
     void setHeight(double height);
+    double latitude() const;
+    void setLatitude(double lat);
+    double longitude() const;
+    void setLongitude(double lng);
+    const QString & address() const;
+    void setAddress(const QString &ad);
+    const QString & postCode() const;
+    void setPostCode(const QString &pc);
+    const QString & time() const;
+    void setTime(const QString &time);
+    const QString & tel() const;
+    void setTel(const QString &tel);
 
     void addFloor(Floor * floor);
     void deleteFloor(Floor * floor);
@@ -58,6 +70,9 @@ private:
     int m_version;
     BUILDING_TYPE m_type;
     QString m_key;
+    QString m_address;
+    QString m_time;
+    QString m_tel;
 };
 
 #endif // BUILDING_H

@@ -110,8 +110,6 @@ QVariant SceneModel::data(const QModelIndex &index, int role) const
         if(index.column() == 0){
             MapEntity * entity = static_cast<MapEntity *>( index.internalPointer() );
             QString className = entity->metaObject()->className();
-            if( className == "Floor") //if it's a floor, show the id and name together
-                return  entity->id();
             if(className == "FuncArea"){
                 FuncArea *funcArea = static_cast<FuncArea*>(entity);
                 if(funcArea->dianpingId() != 0 && funcArea->dianpingId() != -1){

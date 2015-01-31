@@ -74,6 +74,11 @@ bool FuncArea::save(QJsonObject &jsonObject, double scale) const {
     jsonObject["_id"] = m_id;
     jsonObject["ShopNo"] = m_shopNo;
     jsonObject["dianping_id"] = m_dianpingId;
+
+    QJsonArray jsonArray;
+    jsonArray.append(m_center.x() *scale);
+    jsonArray.append(-m_center.y() *scale);
+    jsonObject["Center"] = jsonArray;
     return true;
 }
 
