@@ -1,25 +1,27 @@
 ﻿#include "polygonentity.h"
+#include "../math/gdiam.hpp"
 #include <cmath>
 #include <QWidget>
 #include <QStyleOptionGraphicsItem>
 #include <QPainter>
 
 PolygonEntity::PolygonEntity(QGraphicsItem *parent)
-    :MapEntity(parent), m_area(0.0)
+    :MapEntity(parent), m_area(0.0), m_frontAngle(0)
 {
     setFlags(ItemIsSelectable);
     setAcceptHoverEvents(true);
 }
 
 PolygonEntity::PolygonEntity(const QString & name, QGraphicsItem *parent)
-    : MapEntity(parent), m_area(0.0)
+    : MapEntity(parent), m_area(0.0), m_frontAngle(0)
 {
     setObjectName(name);
     setFlags(ItemIsSelectable);
     setAcceptHoverEvents(true);
 }
 
-PolygonEntity::PolygonEntity(const QString & name, int id) :  m_area(0.0)
+PolygonEntity::PolygonEntity(const QString & name, int id)
+    :  m_area(0.0), m_frontAngle(0)
 {
     m_id = id;
     setObjectName(name);
@@ -28,7 +30,7 @@ PolygonEntity::PolygonEntity(const QString & name, int id) :  m_area(0.0)
 }
 
 PolygonEntity::PolygonEntity(const QString & name, const QPolygon& poly)
-    :m_outline(poly)
+    :m_outline(poly), m_frontAngle(0)
 {
     setObjectName(name);
     setFlags(ItemIsSelectable);
@@ -72,9 +74,9 @@ bool PolygonEntity::load(const QJsonObject &jsonObject)
     if(m_area == 0){
         computeArea();
     }
-    if(m_center.isNull()){
-        computeCenter();
-    }
+
+    computeCenter(); //for diandao maps, the center is not right. so must recompute
+
     return true;
 }
 
@@ -165,6 +167,11 @@ void PolygonEntity::paint(QPainter *painter, const QStyleOptionGraphicsItem *opt
     painter->setBrush(fillColor);
     painter->setPen(QPen(borderColor, 1));
     painter->drawPolygon(m_outline);
+
+    if(m_frontAngle != 0){
+        painter->setPen(QPen(QColor(255, 0, 0), 2));
+        painter->drawLine(0,0,2000,2000*tan(m_frontAngle));
+    }
 }
 
 double PolygonEntity::computeArea()
@@ -202,4 +209,25 @@ const QPointF & PolygonEntity::computeCenter(){
     m_center = point;
     return m_center;
     emit centerChanged(m_center);
+}
+
+QPointF PolygonEntity::computeMainDir(){
+    gdiam_real *points;
+    int num = m_outline.size();
+    points = (gdiam_point)malloc( sizeof( gdiam_point_t ) * num );
+    for(int i=0; i<num; i++){
+        points[i*3] = m_outline[i].x();
+        points[i*3 + 1] = m_outline[i].y();
+        points[i*3 +2 ] = 0;
+    }
+    gdiam_point *pnt_arr = gdiam_convert((gdiam_real *)points, num);
+
+    gdiam_bbox obb = gdiam_approx_mvbb_grid_sample(pnt_arr, num, 5, 400);
+    obb.dump();
+
+    free(points);
+    free(pnt_arr);
+
+
+    return QPointF(double(obb.get_dir(0)[0]), double(obb.get_dir(0)[1]));
 }

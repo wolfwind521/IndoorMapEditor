@@ -11,6 +11,7 @@ greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 TARGET = IndoorMapEditor
 TEMPLATE = app
 
+CONFIG +=console
 
 SOURCES += main.cpp\
         mainwindow.cpp \
@@ -40,7 +41,10 @@ SOURCES += main.cpp\
     tool/zoomtool.cpp \
     tool/splittool.cpp \
     tool/mergetool.cpp \
-    tool/scaletool.cpp
+    tool/scaletool.cpp \
+    core/objecttreemodel.cpp \
+    math/gdiam.cpp \
+    tool/edittool.cpp
 
 HEADERS  += mainwindow.h \
     core/building.h \
@@ -70,7 +74,10 @@ HEADERS  += mainwindow.h \
     tool/zoomtool.h \
     tool/splittool.h \
     tool/mergetool.h \
-    tool/scaletool.h
+    tool/scaletool.h \
+    core/objecttreemodel.h \
+    math/gdiam.hpp \
+    tool/edittool.h
 
 FORMS    += mainwindow.ui
 

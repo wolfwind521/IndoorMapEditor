@@ -1,4 +1,4 @@
-#include "building.h"
+﻿#include "building.h"
 #include "floor.h"
 
 #include <QJsonObject>
@@ -139,6 +139,20 @@ bool Building::load(const QJsonObject &jsonObject) {
     for(int i = 0; i < allFloors.size(); i++)
         allFloors[i]->setParent(this);
 
+
+    //compute the fron angle
+     m_frontAngle = buildingObject["FrontAngle"].toDouble();
+     if(m_frontAngle == 0){
+         QPointF dir;
+         if(!m_outline.empty()){
+             dir = computeMainDir();
+         }else{
+            Floor *floor = getFloorById(1);
+            dir = floor->computeMainDir();
+         }
+         m_frontAngle = atan(dir.y()/dir.x());
+     }
+
     return true;
 }
 
@@ -192,6 +206,18 @@ QVector<Floor*> Building::getFloors() {
         floors.push_back(static_cast<Floor*>(item));
     }
     return floors;
+}
+
+Floor* Building::getFloorById(int id){
+    QList<QGraphicsItem*> children = this->childItems();
+    QGraphicsItem* item;
+    foreach(item, children) {
+        Floor *floor = static_cast<Floor*>(item);
+        if(floor->id() == id){
+            return floor;
+        }
+    }
+    return NULL;
 }
 
 double Building::latitude() const{

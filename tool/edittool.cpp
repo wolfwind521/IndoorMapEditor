@@ -1,5 +1,5 @@
-#include "edittool.h"
+﻿#include "edittool.h"
 
-EditTool::EditTool()
+EditTool::EditTool():AbstractTool(0)
 {
 }

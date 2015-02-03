@@ -41,8 +41,14 @@ public:
 
     int PointNum() const;
 
+    //compute the center
     const QPointF & computeCenter();
+
+    //compute the area
     double computeArea();
+
+    //compute the OBB (oriented bounding box) main direction
+    QPointF computeMainDir();
 
     //QGraphicsItem functions
     QRectF boundingRect() const;
@@ -54,7 +60,7 @@ public:
     virtual bool save(QJsonObject & jsonObject, double scale) const;
 protected:
 
-
+    double m_frontAngle;
 
     QPolygon m_outline;
     QColor m_color;

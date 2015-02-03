@@ -7,6 +7,7 @@
 #include "imagelayer.h"
 #include "funcarea.h"
 #include "pubpoint.h"
+#include <math.h>
 #include <QList>
 #include <QGraphicsSceneMouseEvent>
 

@@ -1,4 +1,4 @@
-/***************************************************
+﻿/***************************************************
  ** Building
  ** @brief: the model for building data
  ** @author: gaimeng
@@ -53,12 +53,13 @@ public:
     void deleteFloor(Floor * floor);
 
     QVector<Floor*> getFloors();
+    Floor *getFloorById(int id);
 
  private slots:
     void updateFloorIds(int oldId, int newId);
 private:
     int m_underFloors;
-    double m_frontAngle;
+
     int m_defaultFloor;
     double m_height;
     int m_groundFloors;
