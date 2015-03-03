@@ -30,6 +30,13 @@ PropViewFuncArea::PropViewFuncArea(QWidget *parent) :
     connect(m_queryButton, SIGNAL(clicked()), this, SLOT(onQuery()));
 }
 
+PropViewFuncArea::~PropViewFuncArea(){
+    if(m_webDlg != NULL){
+        delete m_webDlg;
+        m_webDlg = NULL;
+    }
+}
+
 bool PropViewFuncArea::match(const MapEntity *mapEntity) const {
     return mapEntity->isClassOf("FuncArea");
 }
@@ -56,8 +63,7 @@ void PropViewFuncArea::updateDianpingId(const QString &dpId) {
     static_cast<FuncArea*>(m_mapEntity)->setDianpingId(dpId.toInt());
 }
 
-void PropViewFuncArea::queryFinished(const QString &result){
-    static_cast<FuncArea*>(m_mapEntity)->setBrief(result);
+void PropViewFuncArea::queryFinished(){
     delete m_webDlg;
     m_webDlg = NULL;
 }
@@ -69,7 +75,7 @@ void PropViewFuncArea::onQuery(){
     m_webDlg = new QWebView();
     QObject::connect(m_webDlg->page()->mainFrame(), SIGNAL(javaScriptWindowObjectCleared()),
                      this, SLOT(addJsObject()));
-    m_webDlg->setUrl(QUrl("http://www.fangcheng.cn"));
+    m_webDlg->setUrl(QUrl("http://admin.fangcheng.cn/#/search"));
     m_webDlg->show();
 }
 

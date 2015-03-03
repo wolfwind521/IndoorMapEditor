@@ -77,7 +77,8 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(m_sceneTreeView, SIGNAL(clicked(QModelIndex)), m_docView, SLOT(updateSelection(QModelIndex)));
     connect(m_docView, SIGNAL(selectionChanged(MapEntity*)), this, SLOT(updatePropertyView(MapEntity*)));
     connect(m_docView->scene(), SIGNAL(buildingChanged()), this, SLOT(rebuildTreeView()));
-    connect(ui->actionShowText, SIGNAL(toggled(bool)), m_docView, SLOT(showTexts(bool)));
+    connect(ui->actionShowShopText, SIGNAL(toggled(bool)), m_docView, SLOT(showShopText(bool)));
+    connect(ui->actionShowPointText, SIGNAL(toggled(bool)), m_docView, SLOT(showPointText(bool)));
     connect(ui->actionZoomOut, SIGNAL(triggered()), m_docView, SLOT(zoomOut()));
     connect(ui->actionZoomIn, SIGNAL(triggered()), m_docView, SLOT(zoomIn()));
     connect(ui->actionResetZoom, SIGNAL(triggered()), m_docView, SLOT(fitView()));

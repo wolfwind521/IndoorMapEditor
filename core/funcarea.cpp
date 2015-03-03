@@ -1,4 +1,5 @@
 ﻿#include "funcarea.h"
+#include "textitem.h"
 #include "../gui/documentview.h"
 #include <QPainter>
 #include <QApplication>
@@ -61,6 +62,11 @@ bool FuncArea::load(const QJsonObject &jsonObject) {
     if(m_type == "-1" || m_type.size()>6){
         m_type = "0";
     }
+//    m_textItem = new TextItem;
+//    m_textItem->setZValue(1000.0);
+//    m_textItem->setPos(center());
+//    m_textItem->setPlainText(objectName());
+
     return true;
 }
 

@@ -20,10 +20,11 @@ class DocumentView : public QGraphicsView
     Q_OBJECT
 public:
     enum ViewFlag{
-        StyleShowShopName =                0x00000001,
-        StyleShowCenter =             0x00000002,
+        StyleShowShopName =  0x00000001,
+        StyleShowCenter =    0x00000002,
+        StyleShowPointText = 0x00000004,
         //TODO more styles
-        StyleDefault = 0 | StyleShowShopName | StyleShowCenter
+        StyleDefault = 0 | StyleShowShopName | StyleShowCenter | StyleShowPointText
     };
     Q_DECLARE_FLAGS(ViewStyle, ViewFlag)
 
@@ -48,7 +49,8 @@ public slots:
     void printCurrentView(QPrinter *printer);
     void updateSelection(const QModelIndex & index);
     void updateSelection();
-    void showTexts(bool show);
+    void showShopText(bool show);
+    void showPointText(bool show);
     //zooming
     void zoomIn(int step = 2);
     void zoomOut(int step = 2);

@@ -13,6 +13,8 @@ enum FUNC_TYPE
     //TODO: more types
 };
 
+class QGraphicsTextItem;
+
 class FuncArea : public PolygonEntity
 {
 
@@ -35,7 +37,7 @@ public:
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget);
 
 private:
-
+    QGraphicsTextItem *m_textItem;
     QString m_shopNo;
     int     m_dianpingId; //temp
 };

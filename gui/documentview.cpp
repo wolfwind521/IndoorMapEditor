@@ -154,8 +154,13 @@ bool DocumentView::selectable() const{
     return m_selectable;
 }
 
-void DocumentView::showTexts(bool show){
+void DocumentView::showShopText(bool show){
     m_style ^= StyleShowShopName;
+    m_scene->update();
+}
+
+void DocumentView::showPointText(bool show){
+    m_style ^= StyleShowPointText;
     m_scene->update();
 }
 

@@ -21,6 +21,7 @@ class PropViewFuncArea : public PropertyView
     Q_OBJECT
 public:
     explicit PropViewFuncArea(QWidget *parent = 0);
+    ~PropViewFuncArea();
     virtual bool match(const MapEntity *mapEntity) const;
     virtual void setMapEntity(MapEntity * mapEntity);
 public slots:
@@ -28,7 +29,7 @@ public slots:
    void updateArea(const QString &area);
    void updateDianpingId(const QString &dpId);
    void onQuery();
-   void queryFinished(const QString &result);
+   void queryFinished();
    void addJsObject();
 
 private:

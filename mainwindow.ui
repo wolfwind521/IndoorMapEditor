@@ -56,7 +56,8 @@
     <property name="title">
      <string>显示</string>
     </property>
-    <addaction name="actionShowText"/>
+    <addaction name="actionShowShopText"/>
+    <addaction name="actionShowPointText"/>
     <addaction name="actionFont"/>
     <addaction name="separator"/>
     <addaction name="actionZoomIn"/>
@@ -351,7 +352,7 @@
     <string>缩放场景</string>
    </property>
   </action>
-  <action name="actionShowText">
+  <action name="actionShowShopText">
    <property name="checkable">
     <bool>true</bool>
    </property>
@@ -467,6 +468,17 @@
    </property>
    <property name="toolTip">
     <string>打印当前视图</string>
+   </property>
+  </action>
+  <action name="actionShowPointText">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="checked">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>显示设施点</string>
    </property>
   </action>
  </widget>
