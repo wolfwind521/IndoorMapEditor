@@ -81,6 +81,13 @@ void DocumentView::printScene(QPrinter *printer){
     QApplication::setFont(font, "DocumentView");//restore the old font
 }
 
+void DocumentView::printCurrentView(QPrinter *printer){
+    QPainter painter;
+    painter.begin(printer);
+    this->render(&painter);
+    painter.end();
+}
+
 //selection from graphics view
 void DocumentView::updateSelection(){
     if(m_scene->selectedItems().size() > 0){

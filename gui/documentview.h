@@ -1,4 +1,4 @@
-#ifndef DOCUMENTVIEW_H
+﻿#ifndef DOCUMENTVIEW_H
 #define DOCUMENTVIEW_H
 
 #include <QGraphicsView>
@@ -45,6 +45,7 @@ signals:
 
 public slots:
     void printScene(QPrinter *printer);
+    void printCurrentView(QPrinter *printer);
     void updateSelection(const QModelIndex & index);
     void updateSelection();
     void showTexts(bool show);

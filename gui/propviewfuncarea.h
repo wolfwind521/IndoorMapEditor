@@ -1,4 +1,4 @@
-/***************************************************
+﻿/***************************************************
  ** PropViewFuncArea
  ** @brief: the property view for funcAreas
  ** @author: gaimeng
@@ -11,7 +11,10 @@
 #include "propertyview.h"
 
 class FuncArea;
+
 QT_FORWARD_DECLARE_CLASS(QLineEdit)
+QT_FORWARD_DECLARE_CLASS(QPushButton)
+QT_FORWARD_DECLARE_CLASS(QWebView)
 
 class PropViewFuncArea : public PropertyView
 {
@@ -24,11 +27,16 @@ public slots:
    void updateShopNo(const QString &shopNo);
    void updateArea(const QString &area);
    void updateDianpingId(const QString &dpId);
+   void onQuery();
+   void queryFinished(const QString &result);
+   void addJsObject();
 
 private:
+    QPushButton* m_queryButton;
     QLineEdit* m_shopNoEdit;
     QLineEdit* m_areaEdit;
     QLineEdit* m_dianpingIdEdit;
+    QWebView *m_webDlg;
 };
 
 #endif // PROPVIEWFUNCAREA_H

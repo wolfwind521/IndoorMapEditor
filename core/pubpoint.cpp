@@ -1,4 +1,4 @@
-#include "pubpoint.h"
+﻿#include "pubpoint.h"
 #include <QWidget>
 #include <QStyleOptionGraphicsItem>
 #include <QPainter>
@@ -11,34 +11,43 @@ PubPoint::PubPoint(QGraphicsItem *parent) :
     setFlags(ItemIsSelectable | ItemIsMovable);
 }
 
-PUB_TYPE PubPoint::pubType() const
-{
-    return m_type;
-}
-
-void PubPoint::setPubType(PUB_TYPE type)
-{
-    if(m_type == type)
-        return;
-    m_type = type;
-    emit pubTypeChanged(m_type);
-}
-
 bool PubPoint::load(const QJsonObject &jsonObject)
 {
     MapEntity::load(jsonObject);
-    m_type = static_cast<PUB_TYPE>(jsonObject["Type"].toString().toInt());
+    m_type = jsonObject["Type"].toString();
     m_id = jsonObject["_id"].toInt();
 
     QJsonArray point = jsonObject["Outline"].toArray()[0].toArray()[0].toArray();
     m_center = QPoint(point[0].toInt(), -point[1].toInt());
+
+    if(m_type == "0" || m_type == ""){
+        if(m_enName == "Gate"){
+            m_type = "22006";
+        }else if(m_enName == "Cashier"){
+            m_type = "11003";
+        }else if ( m_enName == "ATM"){
+            m_type = "11002";
+        }else if(m_enName == "Elevator"){
+            m_type = "21003";
+        }else if(m_enName == "Escalator"){
+            m_type = "21002";
+        }else if(m_enName == "Info"){
+            m_type = "11004";
+        }else if(m_enName == "Toilet" || m_enName == "AccessibleToilet"){
+            m_type = "11001";
+        }else if(m_enName == "Stair"){
+            m_type = "21001";
+        }else if(m_enName == "RestRoom"){
+            m_type = "11008";
+        }
+    }
     return true;
 }
 
 bool PubPoint::save(QJsonObject &jsonObject, double scale) const
 {
     MapEntity::save(jsonObject, scale);
-    jsonObject["Type"] = static_cast<int>(m_type);
+    jsonObject["Type"] = m_type;
     jsonObject["_id"] = m_id;
 
     QJsonArray point;

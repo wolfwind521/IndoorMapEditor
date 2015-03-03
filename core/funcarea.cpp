@@ -17,23 +17,14 @@ FuncArea::FuncArea(PolygonEntity &polygon)
 {
     new (this) FuncArea();
     copy(polygon);
+    m_dianpingId = -1;
 }
 
 FuncArea::FuncArea( const QString & name, const QPolygon& poly)
 {
     new (this) FuncArea();
     m_outline = poly;
-}
-
-FUNC_TYPE FuncArea::funcType() const {
-    return m_type;
-}
-
-void FuncArea::setFuncType(const FUNC_TYPE type) {
-    if(m_type == type)
-        return;
-    m_type = type;
-    emit funcTypeChanged(m_type);
+    m_dianpingId = -1;
 }
 
 QString FuncArea::shopNo() const {
@@ -60,17 +51,23 @@ void FuncArea::setDianpingId(int dpId) {
 bool FuncArea::load(const QJsonObject &jsonObject) {
     PolygonEntity::load(jsonObject);
 
-    m_type = static_cast<FUNC_TYPE>(jsonObject["Type"].toString().toInt());
+    m_type = jsonObject["Type"].toString();
     m_id = jsonObject["_id"].toInt();
     m_shopNo = jsonObject["ShopNo"].toString();
     m_dianpingId = jsonObject["dianping_id"].toInt();
+    if(m_dianpingId < 0 && m_dianpingId != -1){
+        m_dianpingId = -1;
+    }
+    if(m_type == "-1" || m_type.size()>6){
+        m_type = "0";
+    }
     return true;
 }
 
 bool FuncArea::save(QJsonObject &jsonObject, double scale) const {
     PolygonEntity::save(jsonObject, scale);
 
-    jsonObject["Type"] = QString::number(static_cast<int>(m_type));
+    jsonObject["Type"] = m_type;
     jsonObject["_id"] = m_id;
     jsonObject["ShopNo"] = m_shopNo;
     jsonObject["dianping_id"] = m_dianpingId;

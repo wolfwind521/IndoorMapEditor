@@ -1,4 +1,4 @@
-#include "mainwindow.h"
+﻿#include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include "./gui/documentview.h"
 #include "./gui/propertyview.h"
@@ -25,6 +25,8 @@
 #include <QtPrintSupport/QPrintDialog>
 #include <QtPrintSupport/QPrintPreviewDialog>
 #endif
+
+#pragma execution_character_set("utf-8")
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -54,6 +56,7 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->actionSaveAs, SIGNAL(triggered()), this, SLOT(saveAsFile()));
     connect(ui->actionClose, SIGNAL(triggered()), this, SLOT(closeFile()));
     connect(ui->actionPrint, SIGNAL(triggered()), this, SLOT(printFile()));
+    connect(ui->actionPrintCurrent, SIGNAL(triggered()), this, SLOT(printCurrent()));
     connect(ui->actionDelete, SIGNAL(triggered()), this, SLOT(deleteEntity()));
     connect(ui->actionFont, SIGNAL(triggered()), this, SLOT(setGraphicsViewFont()));
 
@@ -202,6 +205,23 @@ void MainWindow::printFile()
 //        currentDocument()->printScene(&painter);
 //        statusBar()->showMessage(tr("Printed %1").arg(windowFilePath()), 2000);
 //    }
+}
+
+void MainWindow::printCurrent(){
+    if(m_printer == NULL)
+        m_printer = new QPrinter(QPrinter::HighResolution);
+
+    if(!m_printer->isValid()){
+        QMessageBox::warning(this, tr("Error"),tr("No printer found"),QMessageBox::Ok);
+        return;
+    }
+
+    QPrintPreviewDialog preview(m_printer, this);
+
+    connect(&preview, SIGNAL(paintRequested(QPrinter*)),
+             currentDocument(), SLOT(printCurrentView(QPrinter*)));
+
+    preview.exec();
 }
 
 void MainWindow::deleteEntity(){

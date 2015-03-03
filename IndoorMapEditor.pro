@@ -4,14 +4,11 @@
 #
 #-------------------------------------------------
 
-QT       += core gui
-QT += printsupport
+QT       += core gui printsupport webkitwidgets
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
 TARGET = IndoorMapEditor
 TEMPLATE = app
-
-CONFIG +=console
 
 SOURCES += main.cpp\
         mainwindow.cpp \

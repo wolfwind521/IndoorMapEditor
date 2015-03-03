@@ -2,12 +2,12 @@
 #include <QJsonArray>
 
 MapEntity::MapEntity(QGraphicsItem *parent) :
-    QGraphicsObject(parent), m_id(0)
+    QGraphicsObject(parent), m_id(0), m_type("0")
 {
 }
 
 MapEntity::MapEntity(const QString &name, QGraphicsItem *parent) :
-    QGraphicsObject(parent), m_id(0)
+    QGraphicsObject(parent), m_id(0), m_type("0")
 {
     setObjectName(name);
 }
@@ -67,6 +67,17 @@ void MapEntity::setCenter(const QPointF & center)
         return;
     m_center = center;
     emit centerChanged(m_center);
+}
+
+const QString & MapEntity::type() {
+    return m_type;
+}
+
+void MapEntity::setType(const QString & type){
+    if(m_type == type)
+        return;
+    m_type = type;
+    emit typeChanged(m_type);
 }
 
 void MapEntity::setParentEntity(MapEntity *entity) {
