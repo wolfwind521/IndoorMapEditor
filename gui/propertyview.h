@@ -1,4 +1,4 @@
-#ifndef PROPERTYVIEW_H
+﻿#ifndef PROPERTYVIEW_H
 #define PROPERTYVIEW_H
 
 #include <QWidget>
@@ -22,6 +22,7 @@ public slots:
     void updateEnName(const QString &enName);
     void updateId(const QString &id);
     void updateBrief(const QString &brief);
+    void updateType(const QString &type);
 protected:
     void createWidgets();
     void createLayout();
@@ -32,6 +33,7 @@ protected:
 
     QLineEdit * m_nameLineEdit;
     QLineEdit * m_enNameLineEdit;
+    QLineEdit * m_typeEdit;
     QLineEdit * m_idEdit;
     QLineEdit * m_briefEdit;
 

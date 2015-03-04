@@ -81,6 +81,13 @@ void DocumentView::printScene(QPrinter *printer){
     QApplication::setFont(font, "DocumentView");//restore the old font
 }
 
+void DocumentView::printCurrentView(QPrinter *printer){
+    QPainter painter;
+    painter.begin(printer);
+    this->render(&painter);
+    painter.end();
+}
+
 //selection from graphics view
 void DocumentView::updateSelection(){
     if(m_scene->selectedItems().size() > 0){
@@ -147,8 +154,13 @@ bool DocumentView::selectable() const{
     return m_selectable;
 }
 
-void DocumentView::showTexts(bool show){
+void DocumentView::showShopText(bool show){
     m_style ^= StyleShowShopName;
+    m_scene->update();
+}
+
+void DocumentView::showPointText(bool show){
+    m_style ^= StyleShowPointText;
     m_scene->update();
 }
 

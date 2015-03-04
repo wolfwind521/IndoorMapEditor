@@ -20,5 +20,11 @@
         <file>src/icon/merge.png</file>
         <file>src/icon/split.png</file>
         <file>src/icon/scale.png</file>
+        <file>src/icon/ATM.png</file>
+        <file>src/icon/entry.png</file>
+        <file>src/icon/escalator.png</file>
+        <file>src/icon/lift.png</file>
+        <file>src/icon/stair.png</file>
+        <file>src/icon/toilet.png</file>
     </qresource>
 </RCC>

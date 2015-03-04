@@ -1,4 +1,4 @@
-#ifndef MAPENTITY_H
+﻿#ifndef MAPENTITY_H
 #define MAPENTITY_H
 
 #include <QGraphicsObject>
@@ -28,6 +28,9 @@ public:
     void setCenter(const QPointF & center);
     const QString & brief() const;
     void setBrief(const QString & brief);
+    const QString & type();
+    void setType(const QString & type);
+
     void setParentEntity(MapEntity* entity);
 
     QRectF boundingRect() const;
@@ -42,12 +45,14 @@ signals:
     void idChanged(int oldId, int newId);
     void centerChanged(const QPointF & center);
     void briefChanged(const QString & brief);
+    void typeChanged(const QString & type);
 protected:
     //QString m_name;
     QString m_enName;
     int m_id;
     QPointF m_center;
     QString m_brief;
+    QString m_type;
 
 
 };

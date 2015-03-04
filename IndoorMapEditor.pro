@@ -4,14 +4,11 @@
 #
 #-------------------------------------------------
 
-QT       += core gui
-QT += printsupport
+QT       += core gui printsupport webkitwidgets
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
 TARGET = IndoorMapEditor
 TEMPLATE = app
-
-CONFIG +=console
 
 SOURCES += main.cpp\
         mainwindow.cpp \
@@ -44,7 +41,8 @@ SOURCES += main.cpp\
     tool/scaletool.cpp \
     core/objecttreemodel.cpp \
     math/gdiam.cpp \
-    tool/edittool.cpp
+    tool/edittool.cpp \
+    core/textitem.cpp
 
 HEADERS  += mainwindow.h \
     core/building.h \
@@ -77,7 +75,8 @@ HEADERS  += mainwindow.h \
     tool/scaletool.h \
     core/objecttreemodel.h \
     math/gdiam.hpp \
-    tool/edittool.h
+    tool/edittool.h \
+    core/textitem.h
 
 FORMS    += mainwindow.ui
 

@@ -69,7 +69,7 @@ private:
     double m_latitude;
     double m_longitude;
     int m_version;
-    BUILDING_TYPE m_type;
+
     QString m_key;
     QString m_address;
     QString m_time;

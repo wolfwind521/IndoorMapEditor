@@ -1,4 +1,4 @@
-#include "propviewbuilding.h"
+﻿#include "propviewbuilding.h"
 #include "../core/building.h"
 #include <QLineEdit>
 #include <QTextEdit>
@@ -32,7 +32,7 @@ PropViewBuilding::PropViewBuilding(QWidget *parent):
 
     connect(m_heightEdit, SIGNAL(textEdited(QString)), this, SLOT(updateHeight(QString)));
     connect(m_defaultFloorEdit, SIGNAL(textEdited(QString)), this, SLOT(updateDefaultFloor(QString)));
-    connect(m_addressEdit, SIGNAL(textChanged()), this, SLOT(updateAddress(QString)));
+    connect(m_addressEdit, SIGNAL(textChanged(QString)), this, SLOT(updateAddress(QString)));
     connect(m_postCodeEdit, SIGNAL(textEdited(QString)), this, SLOT(updatePostCode(QString)));
     connect(m_longitudeEdit, SIGNAL(textEdited(QString)), this, SLOT(updateLongitudeEdit(QString)));
     connect(m_latitudeEdit, SIGNAL(textEdited(QString)), this, SLOT(updateLatitudeEdit(QString)));

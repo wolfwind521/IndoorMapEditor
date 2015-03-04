@@ -20,7 +20,7 @@
      <x>0</x>
      <y>0</y>
      <width>895</width>
-     <height>22</height>
+     <height>21</height>
     </rect>
    </property>
    <widget class="QMenu" name="menu_File">
@@ -35,6 +35,7 @@
     <addaction name="actionSave"/>
     <addaction name="actionSaveAs"/>
     <addaction name="separator"/>
+    <addaction name="actionPrintCurrent"/>
     <addaction name="actionPrint"/>
     <addaction name="separator"/>
    </widget>
@@ -55,7 +56,8 @@
     <property name="title">
      <string>显示</string>
     </property>
-    <addaction name="actionShowText"/>
+    <addaction name="actionShowShopText"/>
+    <addaction name="actionShowPointText"/>
     <addaction name="actionFont"/>
     <addaction name="separator"/>
     <addaction name="actionZoomIn"/>
@@ -350,7 +352,7 @@
     <string>缩放场景</string>
    </property>
   </action>
-  <action name="actionShowText">
+  <action name="actionShowShopText">
    <property name="checkable">
     <bool>true</bool>
    </property>
@@ -454,6 +456,29 @@
    </property>
    <property name="toolTip">
     <string>比例尺工具</string>
+   </property>
+  </action>
+  <action name="actionPrintCurrent">
+   <property name="icon">
+    <iconset resource="IndoorMapEditor.qrc">
+     <normaloff>:/src/icon/fileprint.png</normaloff>:/src/icon/fileprint.png</iconset>
+   </property>
+   <property name="text">
+    <string>打印当前页...</string>
+   </property>
+   <property name="toolTip">
+    <string>打印当前视图</string>
+   </property>
+  </action>
+  <action name="actionShowPointText">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="checked">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>显示设施点</string>
    </property>
   </action>
  </widget>

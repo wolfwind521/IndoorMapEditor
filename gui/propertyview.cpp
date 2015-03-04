@@ -22,6 +22,7 @@ void PropertyView::createWidgets(){
     m_enNameLineEdit = new QLineEdit;
     m_idEdit = new QLineEdit;
     m_briefEdit = new QLineEdit;
+    m_typeEdit = new QLineEdit;
 }
 
 void PropertyView::createLayout(){
@@ -29,6 +30,7 @@ void PropertyView::createLayout(){
     m_layout->addRow(tr("名称"), m_nameLineEdit);
     m_layout->addRow(tr("英文名"), m_enNameLineEdit);
     m_layout->addRow(tr("id"), m_idEdit);
+    m_layout->addRow(tr("类型"), m_typeEdit);
     m_layout->addRow(tr("备注"), m_briefEdit);
     setLayout(m_layout);
 }
@@ -38,6 +40,7 @@ void PropertyView::createConnections(){
     connect(m_enNameLineEdit, SIGNAL(textEdited(QString)), this, SLOT(updateEnName(QString)));
     connect(m_idEdit, SIGNAL(textEdited(QString)), this, SLOT(updateId(QString)));
     connect(m_briefEdit, SIGNAL(textEdited(QString)), this, SLOT(updateBrief(QString)));
+    connect(m_typeEdit, SIGNAL(textEdited(QString)), this, SLOT(updateType(QString)));
 }
 
 bool PropertyView::match(const MapEntity *mapEntity) const {
@@ -51,11 +54,13 @@ void PropertyView::setMapEntity(MapEntity * mapEntity){
             m_enNameLineEdit->setText(m_mapEntity->enName());
             m_idEdit->setText(QString::number(m_mapEntity->id()));
             m_briefEdit->setText(m_mapEntity->brief());
+            m_typeEdit->setText(m_mapEntity->type());
         }else{
             m_nameLineEdit->setText(QString());
             m_enNameLineEdit->setText(QString());
             m_idEdit->setText(QString());
             m_briefEdit->setText(QString());
+            m_typeEdit->setText(QString());
         }
     }
 }
@@ -77,4 +82,7 @@ void PropertyView::updateBrief(const QString &brief) {
     m_mapEntity->setBrief(brief);
 }
 
+void PropertyView::updateType(const QString &type) {
+    m_mapEntity->setType(type);
+}
 

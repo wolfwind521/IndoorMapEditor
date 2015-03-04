@@ -104,7 +104,7 @@ bool Building::load(const QJsonObject &jsonObject) {
     m_latitude = buildingObject["_yLat"].toDouble();
     m_longitude = buildingObject["_xLon"].toDouble();
     m_version = buildingObject["Version"].toInt();
-    m_type = (BUILDING_TYPE) buildingObject["Type"].toString().toInt();
+    m_type =  buildingObject["Type"].toString();
     m_key = buildingObject["_id"].toString();
     m_address = buildingObject["Address"].toString();
     m_time = buildingObject["Time"].toString();
@@ -172,7 +172,7 @@ bool Building::save(QJsonObject &jsonObject, double scale) const
     buildingObject["_yLat"] = m_latitude;
     buildingObject["_xLon"] = m_longitude;
     buildingObject["Version"] = m_version;
-    buildingObject["Type"] = QString::number(static_cast<int>(m_type));
+    buildingObject["Type"] =m_type;
     buildingObject["_id"] = m_key;
     buildingObject["Address"] = m_address;
     buildingObject["Time"] = m_time;
