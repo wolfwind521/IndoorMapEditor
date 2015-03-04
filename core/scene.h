@@ -1,4 +1,4 @@
-/****************************************************************************
+﻿/****************************************************************************
 ** Scene
 ** @brief: manage the scene. provide interface to modify the mapEntities.
 ** @author: gaimeng
@@ -57,13 +57,16 @@ public:
     bool showDefaultFloor();
     Floor* currentFloor() const;
     void setCurrentFloor(Floor* floor);
+
 signals:
     void buildingChanged();
+    void fontChanged(const QFont &font);
 public slots:
     void convertSelectedToBuilding();
     void convertSelectedToFloor();
     void convertSelectedToFuncArea();
 protected:
+    //virtual void event(QEvent *event);
     virtual void mousePressEvent( QGraphicsSceneMouseEvent *event );
     virtual void mouseReleaseEvent( QGraphicsSceneMouseEvent *event );
     virtual void mouseMoveEvent( QGraphicsSceneMouseEvent *event );

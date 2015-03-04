@@ -83,7 +83,7 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->actionZoomIn, SIGNAL(triggered()), m_docView, SLOT(zoomIn()));
     connect(ui->actionResetZoom, SIGNAL(triggered()), m_docView, SLOT(fitView()));
 
-    QApplication::setFont(QFont(tr("微软雅黑"), 26),"DocumentView");
+    m_docView->scene()->setFont(QFont(tr("微软雅黑"), 26));
 }
 
 MainWindow::~MainWindow()
@@ -329,8 +329,9 @@ void MainWindow::setScaleTool(){
 void MainWindow::setGraphicsViewFont(){
     bool ok;
     //QFontDialog::setCurrentFont(QApplication::font("DocumentView"));
-    QFont font = QFontDialog::getFont(&ok, QApplication::font("DocumentView"), this );
+    QGraphicsScene *scene = currentDocument()->scene();
+    QFont font = QFontDialog::getFont(&ok, scene->font(), this );
     if ( ok ) {
-          QApplication::setFont(font,"DocumentView");
+          scene->setFont(font);
     }
 }

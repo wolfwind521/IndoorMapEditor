@@ -41,8 +41,7 @@ SOURCES += main.cpp\
     tool/scaletool.cpp \
     core/objecttreemodel.cpp \
     math/gdiam.cpp \
-    tool/edittool.cpp \
-    core/textitem.cpp
+    tool/edittool.cpp
 
 HEADERS  += mainwindow.h \
     core/building.h \
@@ -75,8 +74,7 @@ HEADERS  += mainwindow.h \
     tool/scaletool.h \
     core/objecttreemodel.h \
     math/gdiam.hpp \
-    tool/edittool.h \
-    core/textitem.h
+    tool/edittool.h
 
 FORMS    += mainwindow.ui
 

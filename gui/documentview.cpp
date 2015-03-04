@@ -62,9 +62,9 @@ void DocumentView::printScene(QPrinter *printer){
 
     QPainter painter;
     painter.begin(printer);
-    QFont font = QApplication::font("DocumentView");//save the old font
+    QFont font = m_scene->font();
     QFont printFont = QFont(font, painter.device());
-    QApplication::setFont(printFont, "DocumentView");
+    m_scene->setFont(printFont);
     QRectF rect = m_scene->building()->boundingRect();
     bool firstPage = true;
     for(int page = printer->fromPage(); page <= printer->toPage(); ++page){
@@ -77,8 +77,7 @@ void DocumentView::printScene(QPrinter *printer){
         firstPage = false;
     }
     painter.end();
-
-    QApplication::setFont(font, "DocumentView");//restore the old font
+    m_scene->setFont(font);//restore the old font
 }
 
 void DocumentView::printCurrentView(QPrinter *printer){

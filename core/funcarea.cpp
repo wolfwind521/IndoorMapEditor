@@ -1,8 +1,9 @@
 ﻿#include "funcarea.h"
-#include "textitem.h"
+
 #include "../gui/documentview.h"
 #include <QPainter>
 #include <QApplication>
+#include <QGraphicsTextItem>
 
 
 #pragma execution_character_set("utf-8")
@@ -62,10 +63,16 @@ bool FuncArea::load(const QJsonObject &jsonObject) {
     if(m_type == "-1" || m_type.size()>6){
         m_type = "0";
     }
-//    m_textItem = new TextItem;
-//    m_textItem->setZValue(1000.0);
-//    m_textItem->setPos(center());
-//    m_textItem->setPlainText(objectName());
+    m_textItem = new QGraphicsTextItem(this);
+
+
+    m_textItem->setPos(center());
+    m_textItem->setPlainText(objectName());
+    m_textItem->setFlag(QGraphicsItem::ItemIsMovable);
+    //m_textItem->setTextInteractionFlags(Qt::TextEditorInteraction);
+
+
+    //connect(m_textItem->te, SIGNAL())
 
     return true;
 }
@@ -96,16 +103,22 @@ void FuncArea::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, 
         painter->drawEllipse(m_center, 3, 3);
 
         if(DocumentView::viewStyle() & DocumentView::StyleShowShopName){
-            //paint the text
-            painter->setPen(QPen());
-            QFont font = QApplication::font("DocumentView");
-            font.setPixelSize(font.pointSize());
-            //font.setPixelSize(12);
-            painter->setFont(font);
-            QRect fontRect = QFontMetrics(font).boundingRect(objectName());
-            int width = fontRect.width();
-            int height = fontRect.height();
-            painter->drawText(QPoint(m_center.x()-width/2.0, m_center.y() - height/5.0), objectName());
+//            //paint the text
+//            painter->setPen(QPen());
+//            QFont font = scene()->font();
+//            font.setPixelSize(font.pointSize());
+//            //font.setPixelSize(12);
+//            painter->setFont(font);
+//            QRect fontRect = QFontMetrics(font).boundingRect(objectName());
+//            int width = fontRect.width();
+//            int height = fontRect.height();
+//            painter->drawText(QPoint(m_center.x()-width/2.0, m_center.y() - height/5.0), objectName());
+
+            m_textItem->setFont(scene()->font());
+            m_textItem->setZValue(1000.0);
+            m_textItem->show();
+        }else{
+            m_textItem->hide();
         }
     }
 }
