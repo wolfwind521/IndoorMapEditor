@@ -64,18 +64,22 @@ void PropViewFuncArea::updateDianpingId(const QString &dpId) {
 }
 
 void PropViewFuncArea::queryFinished(){
-    delete m_webDlg;
-    m_webDlg = NULL;
+//    delete m_webDlg;
+//    m_webDlg = NULL;
 }
 
 void PropViewFuncArea::onQuery(){
     if(m_webDlg != NULL){
         delete m_webDlg;
     }
+    FuncArea* funcArea = static_cast<FuncArea*>(m_mapEntity);
     m_webDlg = new QWebView();
     QObject::connect(m_webDlg->page()->mainFrame(), SIGNAL(javaScriptWindowObjectCleared()),
                      this, SLOT(addJsObject()));
-    m_webDlg->setUrl(QUrl("http://admin.fangcheng.cn/#/search"));
+    QUrl url("http://192.168.1.9:3000/detail#/search/"+funcArea->objectName()+"/"+funcArea->type()+"/");
+    qDebug()<<url;
+    m_webDlg->setUrl(url);
+    m_webDlg->setWindowFlags(Qt::WindowStaysOnTopHint);
     m_webDlg->show();
 }
 

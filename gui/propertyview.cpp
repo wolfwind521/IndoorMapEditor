@@ -80,6 +80,7 @@ void PropertyView::updateId(const QString &id) {
 
 void PropertyView::updateBrief(const QString &brief) {
     m_mapEntity->setBrief(brief);
+    m_briefEdit->setText(brief);
 }
 
 void PropertyView::updateType(const QString &type) {
