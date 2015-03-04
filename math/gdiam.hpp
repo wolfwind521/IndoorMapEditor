@@ -24,6 +24,7 @@
 #define  __GDIAM__H
 
 #include <assert.h>
+#include <math.h>
 
 #define  GDIAM_DIM   3
 typedef  double  gdiam_real;

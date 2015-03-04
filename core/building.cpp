@@ -1,5 +1,6 @@
 ﻿#include "building.h"
 #include "floor.h"
+#include <math.h>
 
 #include <QJsonObject>
 #include <QJsonArray>
