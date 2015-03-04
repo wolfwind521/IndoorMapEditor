@@ -27,11 +27,11 @@ void PropertyView::createWidgets(){
 
 void PropertyView::createLayout(){
     m_layout = new QFormLayout;
-    m_layout->addRow(tr("名称"), m_nameLineEdit);
-    m_layout->addRow(tr("英文名"), m_enNameLineEdit);
+    m_layout->addRow(tr("<b><font color=red>名称</font></b>"), m_nameLineEdit);
+    m_layout->addRow(tr("<b><font color=red>英文名</font></b>"), m_enNameLineEdit);
     m_layout->addRow(tr("id"), m_idEdit);
     m_layout->addRow(tr("类型"), m_typeEdit);
-    m_layout->addRow(tr("备注"), m_briefEdit);
+    m_layout->addRow(tr("<b><font color=red>备注</font></b>"), m_briefEdit);
     setLayout(m_layout);
 }
 

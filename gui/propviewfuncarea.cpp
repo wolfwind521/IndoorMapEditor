@@ -17,11 +17,11 @@ PropViewFuncArea::PropViewFuncArea(QWidget *parent) :
     m_shopNoEdit = new QLineEdit;
     m_areaEdit = new QLineEdit;
     m_dianpingIdEdit = new QLineEdit;
-    m_queryButton = new QPushButton(tr("查询"));
+    m_queryButton = new QPushButton(tr("品牌关联"));
 
-    m_layout->addRow(tr("铺位号"), m_shopNoEdit);
+    m_layout->addRow(tr("<b><font color=red>铺位号</font></b>"), m_shopNoEdit);
     m_layout->addRow(tr("面积（平方米）"), m_areaEdit);
-    m_layout->addRow(tr("点评 ID"), m_dianpingIdEdit);
+    m_layout->addRow(tr("<b><font color=red>点评 ID</font></b>"), m_dianpingIdEdit);
     m_layout->insertRow(0,m_queryButton);
 
     connect(m_shopNoEdit, SIGNAL(textEdited(QString)), this, SLOT(updateShopNo(QString)));
@@ -64,6 +64,7 @@ void PropViewFuncArea::updateDianpingId(const QString &dpId) {
 }
 
 void PropViewFuncArea::queryFinished(){
+//    m_webDlg->close();
 //    delete m_webDlg;
 //    m_webDlg = NULL;
 }
@@ -76,8 +77,7 @@ void PropViewFuncArea::onQuery(){
     m_webDlg = new QWebView();
     QObject::connect(m_webDlg->page()->mainFrame(), SIGNAL(javaScriptWindowObjectCleared()),
                      this, SLOT(addJsObject()));
-    QUrl url("http://admin.fangcheng.cn/#/search/"+funcArea->objectName()+"/"+funcArea->type()+"/");
-    qDebug()<<url;
+    QUrl url("http://admin.fangcheng.cn/#/search/"+funcArea->objectName()+"/"+QString::number(funcArea->type().toInt())+"/");
     m_webDlg->setUrl(url);
     m_webDlg->setWindowFlags(Qt::WindowStaysOnTopHint);
     m_webDlg->show();
