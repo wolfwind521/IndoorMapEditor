@@ -149,7 +149,8 @@ bool Building::load(const QJsonObject &jsonObject) {
              dir = computeMainDir();
          }else{
             Floor *floor = getFloorById(1);
-            dir = floor->computeMainDir();
+            if(floor != NULL)
+                dir = floor->computeMainDir();
          }
          m_frontAngle = atan(dir.y()/dir.x());
      }

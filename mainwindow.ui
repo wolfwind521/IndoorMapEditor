@@ -58,6 +58,7 @@
     </property>
     <addaction name="actionShowShopText"/>
     <addaction name="actionShowPointText"/>
+    <addaction name="actionShowDir"/>
     <addaction name="actionFont"/>
     <addaction name="separator"/>
     <addaction name="actionZoomIn"/>
@@ -479,6 +480,17 @@
    </property>
    <property name="text">
     <string>显示设施点</string>
+   </property>
+  </action>
+  <action name="actionShowDir">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>显示主轴向</string>
+   </property>
+   <property name="toolTip">
+    <string>显示主轴向</string>
    </property>
   </action>
  </widget>

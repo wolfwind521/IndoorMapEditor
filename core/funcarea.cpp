@@ -13,6 +13,14 @@ FuncArea::FuncArea(QGraphicsItem *parent)
 {
     m_color = QColor(248, 203, 173, 150);
     setObjectName(tr("未命名"));
+
+    m_textItem = new QGraphicsTextItem(this);
+    m_textItem->setPos(center());
+    m_textItem->setPlainText(objectName());
+    m_textItem->setFlag(QGraphicsItem::ItemIsMovable);
+
+    connect(this, SIGNAL(objectNameChanged(QString)), this, SLOT(updateName(QString)));
+    connect(this, SIGNAL(centerChanged(QPointF)), this, SLOT(updateCenter(QPointF)) );
 }
 
 FuncArea::FuncArea(PolygonEntity &polygon)
@@ -20,6 +28,9 @@ FuncArea::FuncArea(PolygonEntity &polygon)
     new (this) FuncArea();
     copy(polygon);
     m_dianpingId = -1;
+
+    m_textItem->setPlainText(objectName());
+    m_textItem->setPos(center());
 }
 
 FuncArea::FuncArea( const QString & name, const QPolygon& poly)
@@ -27,6 +38,7 @@ FuncArea::FuncArea( const QString & name, const QPolygon& poly)
     new (this) FuncArea();
     m_outline = poly;
     m_dianpingId = -1;
+    m_textItem->setPos(center());
 }
 
 QString FuncArea::shopNo() const {
@@ -63,16 +75,8 @@ bool FuncArea::load(const QJsonObject &jsonObject) {
     if(m_type == "-1" || m_type.size()>6){
         m_type = "0";
     }
-    m_textItem = new QGraphicsTextItem(this);
-
-
     m_textItem->setPos(center());
     m_textItem->setPlainText(objectName());
-    m_textItem->setFlag(QGraphicsItem::ItemIsMovable);
-    //m_textItem->setTextInteractionFlags(Qt::TextEditorInteraction);
-
-
-    //connect(m_textItem->te, SIGNAL())
 
     return true;
 }
@@ -90,6 +94,14 @@ bool FuncArea::save(QJsonObject &jsonObject, double scale) const {
     jsonArray.append(-m_center.y() *scale);
     jsonObject["Center"] = jsonArray;
     return true;
+}
+
+void FuncArea::updateName(const QString &name){
+    m_textItem->setPlainText(name);
+}
+
+void FuncArea::updateCenter(const QPointF &center){
+    m_textItem->setPos(center);
 }
 
 void FuncArea::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget){
@@ -115,7 +127,7 @@ void FuncArea::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, 
 //            painter->drawText(QPoint(m_center.x()-width/2.0, m_center.y() - height/5.0), objectName());
 
             m_textItem->setFont(scene()->font());
-            m_textItem->setZValue(1000.0);
+            //m_textItem->setZValue(1000.0);
             m_textItem->show();
         }else{
             m_textItem->hide();

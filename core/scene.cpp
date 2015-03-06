@@ -216,6 +216,7 @@ bool Scene::showFloor(int floorId) {
         }
     }
     update();
+
     return found;
 }
 

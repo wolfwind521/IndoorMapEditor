@@ -36,6 +36,9 @@ public:
 
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget);
 
+private slots:
+    void updateName(const QString &name);
+    void updateCenter(const QPointF &center);
 private:
     QGraphicsTextItem *m_textItem;
     QString m_shopNo;

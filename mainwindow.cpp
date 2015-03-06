@@ -16,6 +16,9 @@
 #include "./tool/mergetool.h"
 #include "./tool/splittool.h"
 #include "./tool/scaletool.h"
+#include <QTimer>
+#include <QCloseEvent>
+#include <QSettings>
 #include <QFileDialog>
 #include <QFontDialog>
 #include <QMessageBox>
@@ -34,7 +37,8 @@ MainWindow::MainWindow(QWidget *parent) :
     m_maxRecentFiles(5),
     m_lastFilePath("."),
     m_printer(NULL),
-    m_propertyView(NULL)
+    m_propertyView(NULL),
+    m_timer(NULL)
 {
     ui->setupUi(this);
 
@@ -49,6 +53,16 @@ MainWindow::MainWindow(QWidget *parent) :
     toolActionGroup->addAction(ui->actionSplitTool);
     toolActionGroup->addAction(ui->actionScaleTool);
 
+    //recent file actions
+    QMenu *recentFileMenu = new QMenu(this);
+    m_recentFileActions.resize(m_maxRecentFiles);
+    for(int i = 0; i < m_recentFileActions.size(); i++){
+        m_recentFileActions[i]= new QAction(this);
+        m_recentFileActions[i]->setVisible(false);
+        connect(m_recentFileActions[i], SIGNAL(triggered()), this, SLOT(openRecentFile()));
+        recentFileMenu->addAction(m_recentFileActions[i]);
+    }
+    ui->actionRecent->setMenu(recentFileMenu);
     //menus action
     connect(ui->actionOpen, SIGNAL(triggered()), this, SLOT(openFile()));
     connect(ui->actionNew, SIGNAL(triggered()), this, SLOT(newFile()));
@@ -79,16 +93,37 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(m_docView->scene(), SIGNAL(buildingChanged()), this, SLOT(rebuildTreeView()));
     connect(ui->actionShowShopText, SIGNAL(toggled(bool)), m_docView, SLOT(showShopText(bool)));
     connect(ui->actionShowPointText, SIGNAL(toggled(bool)), m_docView, SLOT(showPointText(bool)));
+    connect(ui->actionShowDir, SIGNAL(toggled(bool)), m_docView, SLOT(showDirection(bool)));
     connect(ui->actionZoomOut, SIGNAL(triggered()), m_docView, SLOT(zoomOut()));
     connect(ui->actionZoomIn, SIGNAL(triggered()), m_docView, SLOT(zoomIn()));
     connect(ui->actionResetZoom, SIGNAL(triggered()), m_docView, SLOT(fitView()));
 
     m_docView->scene()->setFont(QFont(tr("微软雅黑"), 26));
+
+    //autosave
+    m_autoSaveTime = 300000; //autosave every 5min
+    m_timer = new QTimer(this);
+    connect(m_timer, SIGNAL(timeout()), this, SLOT(autoSave()) );
+    m_timer->start(m_autoSaveTime);
+
+
+    readSettings();
+    QSettings settings("Wolfwind", "IndoorMapEditor");
+    settings.setValue("normallyClosed", false);
 }
 
 MainWindow::~MainWindow()
 {
     delete ui;
+}
+
+void MainWindow::closeEvent(QCloseEvent *event){
+    if(okToContinue()){
+        writeSettings();
+        event->accept();
+    }else{
+        event->ignore();
+    }
 }
 
 DocumentView *MainWindow::currentDocument() const
@@ -105,25 +140,16 @@ void MainWindow::openFile()
                                                         tr("全部文件 (*.json *.jpg *.jpeg *.png *.bmp *.gif)\n"
                                                             "Json文件 (*.json)\n"
                                                            "图像文件 (*.jpg *.jpeg *.png *.bmp *.gif)"));
-        if(fileName.isEmpty())
-            return;
+        if(!fileName.isEmpty())
+            openDocument(fileName);
+    }
+}
 
-        m_lastFilePath = QFileInfo(fileName).absoluteFilePath();//save the last path
-
-        if(IOManager::loadFile(fileName, currentDocument()))
-        {
-            statusBar()->showMessage(tr("文件载入成功"), 2000);
-            if(QFileInfo(fileName).suffix() == "json"){
-                setCurrentFile(fileName);
-            }
-            currentDocument()->scene()->showDefaultFloor();
-            currentDocument()->fitView();
-            rebuildTreeView(); //rebuild the treeView
-        }else{
-            QMessageBox::warning(this,
-                                tr("Parse error"),
-                                tr("文件载入失败\n%1").arg(fileName));
-            return;
+void MainWindow::openRecentFile(){
+    if(okToContinue()){
+        QAction *action = qobject_cast<QAction *>(sender());
+        if(action){
+            openDocument(action->data().toString());
         }
     }
 }
@@ -132,6 +158,28 @@ void MainWindow::addDocument(DocumentView *doc) {
     //TODO: connect the slots
     m_docView = doc;
     this->setCentralWidget(doc);
+}
+
+void MainWindow::openDocument(const QString &fileName){
+    m_lastFilePath = QFileInfo(fileName).absoluteFilePath();//save the last path
+    currentDocument()->clear();
+    if(IOManager::loadFile(fileName, currentDocument()))
+    {
+         rebuildTreeView(); //rebuild the treeView
+        statusBar()->showMessage(tr("文件载入成功"), 2000);
+        if(QFileInfo(fileName).suffix() == "json"){
+            setCurrentFile(fileName);
+            autoSave();
+        }
+        currentDocument()->scene()->showDefaultFloor();
+        currentDocument()->fitView();
+
+    }else{
+        QMessageBox::warning(this,
+                            tr("Parse error"),
+                            tr("文件载入失败\n%1").arg(fileName));
+        return;
+    }
 }
 
 bool MainWindow::saveDocument(const QString &fileName){
@@ -169,7 +217,12 @@ bool MainWindow::saveAsFile()
         return false;
     }
 
-    saveDocument(fileName);
+    return saveDocument(fileName);
+}
+
+void MainWindow::autoSave(){
+    QString tmpDir = QDir::tempPath();
+    IOManager::saveFile(tmpDir + "/autoSaveFile.json", currentDocument());
 }
 
 void MainWindow::closeFile()
@@ -238,9 +291,55 @@ void MainWindow::setCurrentFile(const QString & fileName){
         shownName = QFileInfo(fileName).fileName();
         m_recentFiles.removeAll(m_curFile);
         m_recentFiles.prepend(m_curFile);
-        //TODO: update actions
+        updateRecentFileActions();
     }
     setWindowTitle(tr("%1[*] - %2").arg(shownName).arg(tr("IndoorMap Editor")));
+}
+
+void MainWindow::readSettings(){
+    QSettings settings("Wolfwind", "IndoorMapEditor");
+
+    bool normallyClosed = settings.value("normallyClosed", false).toBool();
+    if(!normallyClosed){
+        QString path = QDir::tempPath();
+        QFileInfo fileInfo(path + "/autoSaveFile.json");
+        if(fileInfo.exists()){
+            int r = QMessageBox::warning(this, tr("Warning"),
+                                         tr("发现意外关闭时的缓存文件，是否恢复？"),
+                                         QMessageBox::Yes | QMessageBox::No );
+            if(r == QMessageBox::Yes){
+                //open the autosave file
+                openDocument(fileInfo.absoluteFilePath());
+            }
+        }
+    }
+
+    m_recentFiles = settings.value("recentFiles").toStringList();
+    updateRecentFileActions();
+}
+
+void MainWindow::writeSettings(){
+    QSettings settings("Wolfwind", "IndoorMapEditor");
+    settings.setValue("recentFiles", m_recentFiles);
+    settings.setValue("normallyClosed", true);
+}
+
+void MainWindow::updateRecentFileActions(){
+    QMutableStringListIterator i(m_recentFiles);
+    while(i.hasNext()){
+        if(!QFile::exists(i.next()))
+            i.remove();
+    }
+    for(int j = 0; j < m_recentFileActions.size(); j++){
+        if(j < m_recentFiles.count()){
+            QString text = tr("&%1 %2").arg(j+1).arg( QFileInfo(m_recentFiles[j]).fileName());
+            m_recentFileActions[j]->setText(text);
+            m_recentFileActions[j]->setData(m_recentFiles[j]);
+            m_recentFileActions[j]->setVisible(true);
+        }else{
+            m_recentFileActions[j]->setVisible(false);
+        }
+    }
 }
 
 bool MainWindow::okToContinue(){

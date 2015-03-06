@@ -5,6 +5,8 @@
 #include <QLabel>
 #include <QFormLayout>
 
+#pragma execution_character_set("utf-8")
+
 PropViewBuilding::PropViewBuilding(QWidget *parent):
     PropertyView(parent)
 {
@@ -32,7 +34,7 @@ PropViewBuilding::PropViewBuilding(QWidget *parent):
 
     connect(m_heightEdit, SIGNAL(textEdited(QString)), this, SLOT(updateHeight(QString)));
     connect(m_defaultFloorEdit, SIGNAL(textEdited(QString)), this, SLOT(updateDefaultFloor(QString)));
-    connect(m_addressEdit, SIGNAL(textChanged(QString)), this, SLOT(updateAddress(QString)));
+    connect(m_addressEdit, SIGNAL(textEdited(QString)), this, SLOT(updateAddress(QString)));
     connect(m_postCodeEdit, SIGNAL(textEdited(QString)), this, SLOT(updatePostCode(QString)));
     connect(m_longitudeEdit, SIGNAL(textEdited(QString)), this, SLOT(updateLongitudeEdit(QString)));
     connect(m_latitudeEdit, SIGNAL(textEdited(QString)), this, SLOT(updateLatitudeEdit(QString)));

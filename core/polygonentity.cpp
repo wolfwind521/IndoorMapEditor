@@ -1,5 +1,6 @@
 ﻿#include "polygonentity.h"
 #include "../math/gdiam.hpp"
+#include "../gui/documentview.h"
 #include <cmath>
 #include <QWidget>
 #include <QStyleOptionGraphicsItem>
@@ -168,7 +169,7 @@ void PolygonEntity::paint(QPainter *painter, const QStyleOptionGraphicsItem *opt
     painter->setPen(QPen(borderColor, 1));
     painter->drawPolygon(m_outline);
 
-    if(m_frontAngle != 0){
+    if(DocumentView::viewStyle() & DocumentView::StyleShowDirection && m_frontAngle != 0){
         painter->setPen(QPen(QColor(255, 0, 0), 2));
         painter->drawLine(0,0,2000,2000*tan(m_frontAngle));
     }
@@ -207,8 +208,9 @@ const QPointF & PolygonEntity::computeCenter(){
     }
     point /= qreal(count);
     m_center = point;
-    return m_center;
+
     emit centerChanged(m_center);
+    return m_center;
 }
 
 QPointF PolygonEntity::computeMainDir(){

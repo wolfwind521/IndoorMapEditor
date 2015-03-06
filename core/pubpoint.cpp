@@ -65,7 +65,7 @@ bool PubPoint::save(QJsonObject &jsonObject, double scale) const
 
 QRectF PubPoint::boundingRect() const
 {
-    const int padding = 5;
+    const int padding = 15;
     QRectF rect(m_center, m_center);
     rect.adjust(-padding, -padding, padding, padding);
     return rect;

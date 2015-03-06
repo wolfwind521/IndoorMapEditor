@@ -23,6 +23,7 @@ public:
         StyleShowShopName =  0x00000001,
         StyleShowCenter =    0x00000002,
         StyleShowPointText = 0x00000004,
+        StyleShowDirection =      0x00000008,
         //TODO more styles
         StyleDefault = 0 | StyleShowShopName | StyleShowCenter | StyleShowPointText
     };
@@ -51,6 +52,7 @@ public slots:
     void updateSelection();
     void showShopText(bool show);
     void showPointText(bool show);
+    void showDirection(bool show);
     //zooming
     void zoomIn(int step = 2);
     void zoomOut(int step = 2);

@@ -163,6 +163,11 @@ void DocumentView::showPointText(bool show){
     m_scene->update();
 }
 
+void DocumentView::showDirection(bool show){
+    m_style ^= StyleShowDirection;
+    m_scene->update();
+}
+
 DocumentView::ViewStyle DocumentView::viewStyle() {
     return m_style;
 }
@@ -213,7 +218,7 @@ void DocumentView::mousePressEvent(QMouseEvent *event){
 }
 
 void DocumentView::fitView(){
-    fitInView(this->sceneRect(),Qt::KeepAspectRatio);
+    fitInView(m_scene->currentFloor()->boundingRect(),Qt::KeepAspectRatio);
     qreal dx = matrix().m11();
     m_scale = qLn(dx)/qLn(2.0) * 50.0;
 }
