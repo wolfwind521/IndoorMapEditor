@@ -78,6 +78,7 @@ void PropViewFuncArea::onQuery(){
     QObject::connect(m_webDlg->page()->mainFrame(), SIGNAL(javaScriptWindowObjectCleared()),
                      this, SLOT(addJsObject()));
     QUrl url("http://admin.fangcheng.cn/#/search/"+funcArea->objectName()+"/mapId/"+QString::number(funcArea->type().toInt())+"/");
+    //QUrl url("http://127.0.0.1:3001/#/search/"+funcArea->objectName()+"/mapId/"+QString::number(funcArea->type().toInt())+"/");
     m_webDlg->setUrl(url);
     m_webDlg->setWindowFlags(Qt::WindowStaysOnTopHint);
     m_webDlg->show();

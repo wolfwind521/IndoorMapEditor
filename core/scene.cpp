@@ -145,10 +145,11 @@ void Scene::mouseMoveEvent( QGraphicsSceneMouseEvent *event ){
 }
 
 bool Scene::event(QEvent *event){
-    QGraphicsScene::event(event);
+
     if(event->type() == QEvent::FontChange){
         emit fontChanged(font());
     }
+    return QGraphicsScene::event(event);
 
 }
 
