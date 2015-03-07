@@ -35,10 +35,12 @@ public:
     void setDianpingId(int dpId);
 
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget);
-
+protected:
+    QVariant itemChange(GraphicsItemChange change, const QVariant &value);
 private slots:
     void updateName(const QString &name);
     void updateCenter(const QPointF &center);
+    void updateFont(const QFont &font);
 private:
     QGraphicsTextItem *m_textItem;
     QString m_shopNo;

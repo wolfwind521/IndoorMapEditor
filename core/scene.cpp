@@ -144,6 +144,14 @@ void Scene::mouseMoveEvent( QGraphicsSceneMouseEvent *event ){
     ToolManager::instance()->currentTool().mouseMoveEvent(event);
 }
 
+bool Scene::event(QEvent *event){
+    QGraphicsScene::event(event);
+    if(event->type() == QEvent::FontChange){
+        emit fontChanged(font());
+    }
+
+}
+
 void Scene::setSelectable(bool b){
     m_selectable = b;
 }

@@ -70,7 +70,7 @@ protected:
     virtual void mousePressEvent( QGraphicsSceneMouseEvent *event );
     virtual void mouseReleaseEvent( QGraphicsSceneMouseEvent *event );
     virtual void mouseMoveEvent( QGraphicsSceneMouseEvent *event );
-
+    bool event(QEvent *event);
     //context menu
     void contextMenuEvent(QGraphicsSceneContextMenuEvent * event);
 private:

@@ -104,6 +104,20 @@ void FuncArea::updateCenter(const QPointF &center){
     m_textItem->setPos(center);
 }
 
+QVariant FuncArea::itemChange(GraphicsItemChange change, const QVariant &value){
+    if(change == ItemSceneHasChanged && scene()){
+        m_textItem->setFont(scene()->font());
+        connect(scene(), SIGNAL(fontChanged(QFont)), this, SLOT(updateFont(QFont)) );
+        return 0;
+    }else{
+        return QGraphicsItem::itemChange(change, value);
+    }
+}
+
+void FuncArea::updateFont(const QFont &font){
+    m_textItem->setFont(font);
+}
+
 void FuncArea::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget){
     PolygonEntity::paint(painter, option, widget);
 
@@ -126,7 +140,7 @@ void FuncArea::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, 
 //            int height = fontRect.height();
 //            painter->drawText(QPoint(m_center.x()-width/2.0, m_center.y() - height/5.0), objectName());
 
-            m_textItem->setFont(scene()->font());
+            //m_textItem->setFont(scene()->font());
             //m_textItem->setZValue(1000.0);
             m_textItem->show();
         }else{
