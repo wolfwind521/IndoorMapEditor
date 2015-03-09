@@ -280,6 +280,7 @@ void MainWindow::printCurrent(){
 
 void MainWindow::deleteEntity(){
     currentDocument()->scene()->deleteSelected();
+    rebuildTreeView();
 }
 
 void MainWindow::setCurrentFile(const QString & fileName){
@@ -310,6 +311,7 @@ void MainWindow::readSettings(){
             if(r == QMessageBox::Yes){
                 //open the autosave file
                 openDocument(fileInfo.absoluteFilePath());
+                m_curFile.clear();
             }
         }
     }

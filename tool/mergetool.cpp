@@ -65,11 +65,14 @@ void MergeTool::mergeSelectedItems() {
             polyArray.push_back(poly);
         }
     }
-    PolygonEntity *polygon = merge(polyArray);
-    FuncArea *newArea = new FuncArea(*polygon);
-    newArea->computeArea();
-    newArea->computeCenter();
-    newArea->setParentEntity(scene->currentFloor());
+    if(polyArray.size() >= 2){
+        PolygonEntity *polygon = merge(polyArray);
+        FuncArea *newArea = new FuncArea(*polygon);
+        newArea->computeArea();
+        newArea->computeCenter();
+        newArea->setParentEntity(scene->currentFloor());
+    }
+    scene->clearSelection();
 }
 
 PolygonEntity* MergeTool::merge(QVector<PolygonEntity *> &polygons) {

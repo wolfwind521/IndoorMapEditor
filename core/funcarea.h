@@ -45,6 +45,7 @@ private:
     QGraphicsTextItem *m_textItem;
     QString m_shopNo;
     int     m_dianpingId; //temp
+    bool m_connected; //slots have been connected
 };
 
 #endif // FUNCAREA_H

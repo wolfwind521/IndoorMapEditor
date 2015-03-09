@@ -9,7 +9,7 @@
 #pragma execution_character_set("utf-8")
 
 FuncArea::FuncArea(QGraphicsItem *parent)
-    : PolygonEntity(parent), m_dianpingId(-1)
+    : PolygonEntity(parent), m_dianpingId(-1), m_connected(false)
 {
     m_color = QColor(248, 203, 173, 150);
     setObjectName(tr("未命名"));
@@ -105,10 +105,13 @@ void FuncArea::updateCenter(const QPointF &center){
 }
 
 QVariant FuncArea::itemChange(GraphicsItemChange change, const QVariant &value){
-    if(change == ItemSceneHasChanged && scene()){
-        m_textItem->setFont(scene()->font());
-        connect(scene(), SIGNAL(fontChanged(QFont)), this, SLOT(updateFont(QFont)) );
-        return 0;
+    if(change == ItemVisibleHasChanged){
+        if(scene() && !m_connected){
+            m_textItem->setFont(scene()->font());
+            connect(scene(), SIGNAL(fontChanged(QFont)), this, SLOT(updateFont(QFont)) );
+            m_connected = true;
+            return 0;
+        }
     }else{
         return QGraphicsItem::itemChange(change, value);
     }
