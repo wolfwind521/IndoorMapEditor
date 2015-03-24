@@ -454,7 +454,11 @@ void MainWindow::onSearch(){
     }else if(m_searchResults.size() > 1){
         ui->preResultButton->setVisible(true);
         ui->nextResultButton->setVisible(true);
+        ui->preResultButton->setEnabled(false);
         ui->nextResultButton->setEnabled(true);
+    }else{
+        ui->preResultButton->setVisible(false);
+        ui->nextResultButton->setVisible(false);
     }
     currentDocument()->scene()->selectMapEntity((m_searchResultIter.next()));
 
@@ -466,6 +470,7 @@ void MainWindow::selectPreviousResult(){
     ui->nextResultButton->setEnabled(true);
     if(!m_searchResultIter.hasPrevious()){
         ui->preResultButton->setEnabled(false);
+        m_searchResultIter.next();
     }
 }
 
@@ -474,6 +479,7 @@ void MainWindow::selectNextResult(){
     ui->preResultButton->setEnabled(true);
     if(!m_searchResultIter.hasNext() ){
         ui->nextResultButton->setEnabled(false);
+        m_searchResultIter.previous();
     }
 
 }
