@@ -44,6 +44,7 @@ int main(int argc, char *argv[])
         QFileInfo openInfo = QFileInfo(openPath);
         QFileInfo saveInfo = QFileInfo(savePath);
         if(openInfo.isFile() && !(openInfo.suffix().compare("json",  Qt::CaseInsensitive))){ //a json file
+            qDebug()<<"loading "<< openPath;
             if(IOManager::loadFile(openPath, w.currentDocument())){
                 qDebug()<<"file "<< openPath <<"opened successfully";
                  //TODO: handle more commands
@@ -73,8 +74,9 @@ int main(int argc, char *argv[])
                     QFileInfo fileInfo = list.at(i);
                     QString suffix = fileInfo.suffix();
                     if(!suffix.compare("json",  Qt::CaseInsensitive) ){
+                        qDebug()<<"loading "<<fileInfo.absoluteFilePath();
                         if(IOManager::loadFile(fileInfo.absoluteFilePath(), w.currentDocument())){
-                            qDebug()<<"file "<< openPath <<"opened successfully";
+                            qDebug()<<"file "<< fileInfo.absoluteFilePath() <<"opened successfully";
 
                             //TODO: handle more commands
 

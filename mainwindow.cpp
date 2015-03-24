@@ -38,12 +38,14 @@ MainWindow::MainWindow(QWidget *parent) :
     m_lastFilePath("."),
     m_printer(NULL),
     m_propertyView(NULL),
-    m_timer(NULL)
+    m_timer(NULL),
+    m_searchResultIter(m_searchResults)
 {
     ui->setupUi(this);
 
     m_sceneTreeView = new QTreeView(ui->dockTreeWidget);
-    ui->dockTreeWidget->setWidget(m_sceneTreeView);
+    //ui->dockTreeWidget->setWidget(m_sceneTreeView);
+    ui->verticalLayout->addWidget(m_sceneTreeView);
 
     QActionGroup * toolActionGroup = new QActionGroup(this);
     toolActionGroup->addAction(ui->actionSelectTool);
@@ -97,6 +99,11 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->actionZoomOut, SIGNAL(triggered()), m_docView, SLOT(zoomOut()));
     connect(ui->actionZoomIn, SIGNAL(triggered()), m_docView, SLOT(zoomIn()));
     connect(ui->actionResetZoom, SIGNAL(triggered()), m_docView, SLOT(fitView()));
+    connect(ui->searchButton, SIGNAL(clicked()), this, SLOT(onSearch()) );
+    ui->preResultButton->setVisible(false);
+    ui->nextResultButton->setVisible(false);
+    connect(ui->preResultButton, SIGNAL(clicked()), this, SLOT(selectPreviousResult()) );
+    connect(ui->nextResultButton, SIGNAL(clicked()), this, SLOT(selectNextResult()) );
 
     m_docView->scene()->setFont(QFont(tr("微软雅黑"), 26));
 
@@ -435,4 +442,38 @@ void MainWindow::setGraphicsViewFont(){
     if ( ok ) {
           scene->setFont(font);
     }
+}
+
+void MainWindow::onSearch(){
+    QString searchText = ui->searchEdit->text();
+    m_searchResults = currentDocument()->scene()->findMapEntity(searchText);
+    m_searchResultIter = QListIterator<MapEntity*>(m_searchResults);
+    if(m_searchResults.isEmpty()){
+        QMessageBox::warning(this, tr("搜索结果"),(QString("未找到 ")+searchText),QMessageBox::Ok);
+        return;
+    }else if(m_searchResults.size() > 1){
+        ui->preResultButton->setVisible(true);
+        ui->nextResultButton->setVisible(true);
+        ui->nextResultButton->setEnabled(true);
+    }
+    currentDocument()->scene()->selectMapEntity((m_searchResultIter.next()));
+
+}
+
+void MainWindow::selectPreviousResult(){
+
+    currentDocument()->scene()->selectMapEntity((m_searchResultIter.previous()));
+    ui->nextResultButton->setEnabled(true);
+    if(!m_searchResultIter.hasPrevious()){
+        ui->preResultButton->setEnabled(false);
+    }
+}
+
+void MainWindow::selectNextResult(){
+    currentDocument()->scene()->selectMapEntity((m_searchResultIter.next()));
+    ui->preResultButton->setEnabled(true);
+    if(!m_searchResultIter.hasNext() ){
+        ui->nextResultButton->setEnabled(false);
+    }
+
 }

@@ -10,6 +10,7 @@
 #include <math.h>
 #include <QList>
 #include <QGraphicsSceneMouseEvent>
+#include <QMessageBox>
 
 #pragma execution_character_set("utf-8")
 
@@ -194,7 +195,12 @@ void Scene::deleteSelected(){
 void Scene::deleteMapEntity(MapEntity *entity){
     QString className = entity->metaObject()->className();
     if(className == "Floor"){
-        m_building->deleteFloor(static_cast<Floor*>(entity));
+        int r = QMessageBox::warning(0, tr("Warning"),
+                                     tr("确定删除楼层？删除楼层会删掉楼层内所有店铺？"),
+                                     QMessageBox::Yes | QMessageBox::No );
+        if(r == QMessageBox::Yes){
+            m_building->deleteFloor(static_cast<Floor*>(entity));
+        }
     }else{
         removeMapEntity(entity);
         delete entity;
@@ -245,3 +251,18 @@ void Scene::contextMenuEvent(QGraphicsSceneContextMenuEvent *event){
     ToolManager::instance()->currentTool().contextMenuEvent(event);
 }
 
+QList<MapEntity *> Scene::findMapEntity(const QString &name){
+    //TODO: better stategies
+    return m_root->findChildren<MapEntity*>(name);
+}
+
+void Scene::selectMapEntity(MapEntity *entity){
+    if(entity != NULL && entity->isClassOf("FuncArea")){
+        clearSelection();
+        Floor *floor = static_cast<Floor*>(entity->parentObject());
+        if(floor != NULL){
+            showFloor(floor->id());
+        }
+        entity->setSelected(true);
+    }
+}

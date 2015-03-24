@@ -58,6 +58,9 @@ public:
     Floor* currentFloor() const;
     void setCurrentFloor(Floor* floor);
 
+    QList<MapEntity *> findMapEntity(const QString & name);
+    void selectMapEntity(MapEntity* entity); //select the funcArea and change the floor
+
 signals:
     void buildingChanged();
     void fontChanged(const QFont &font);

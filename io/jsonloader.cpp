@@ -40,8 +40,11 @@ bool JsonLoader::saveFile(const QString &fileName, const MapEntity *mapEntity, d
     }
 
     QJsonObject jsonObject;
-    mapEntity->save(jsonObject, scale);
-    QJsonDocument saveDoc(jsonObject);
-    file.write(saveDoc.toJson());
-    return true;
+    if(mapEntity->save(jsonObject, scale)){
+        QJsonDocument saveDoc(jsonObject);
+        file.write(saveDoc.toJson());
+        return true;
+    }else{
+        return false;
+    }
 }

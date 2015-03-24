@@ -5,6 +5,7 @@
 #include <QJsonObject>
 #include <QJsonArray>
 #include <QJsonValue>
+#include <QMessageBox>
 
 Building::Building(const QString & name, QGraphicsItem *parent)
     : PolygonEntity(name, parent), m_underFloors(0), m_groundFloors(0), m_defaultFloor(1), m_height(0)
@@ -168,7 +169,7 @@ bool Building::save(QJsonObject &jsonObject, double scale) const
     buildingObject["DefaultFloor"] = m_defaultFloor;
     buildingObject["GroundFloors"] = m_groundFloors;
     buildingObject["Adcode"] = m_postCode;
-    buildingObject["Remark"] = m_remark;
+    //buildingObject["Remark"] = m_remark;
     buildingObject["High"] = m_height;
     buildingObject["_yLat"] = m_latitude;
     buildingObject["_xLon"] = m_longitude;
@@ -181,16 +182,28 @@ bool Building::save(QJsonObject &jsonObject, double scale) const
 
     QString floorsId;
     QJsonArray floorArray;
+    QList<int> tmpList;
     foreach(QObject* object, this->children()){
         QString className = object->metaObject()->className();
         if( className == "Floor"){
             QJsonObject floorObject;
             Floor* floor = static_cast<Floor*>(object);
             floor->save(floorObject, scale);
-            floorsId += QString::number(floor->id()) + ",";
+            //floorsId += QString::number(floor->id()) + ",";
+            if(tmpList.indexOf(floor->id()) == -1){
+                tmpList << floor->id();
+            }else{
+                 QMessageBox::warning(0, tr("错误"),tr("存在楼层id重复，请检查"),QMessageBox::Ok);
+                 return false;
+            }
             floorArray.append(floorObject);
         }
     }
+    qSort(tmpList);
+    foreach(int id, tmpList){
+        floorsId += QString::number(id) + ",";
+    }
+
     floorsId.chop(1);
     buildingObject["FloorsId"] = floorsId;
     dataObject["Floors"] = floorArray;

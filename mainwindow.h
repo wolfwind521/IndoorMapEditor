@@ -2,6 +2,7 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
+#include <QListIterator>
 
 namespace Ui {
 class MainWindow;
@@ -48,6 +49,10 @@ public slots:
     void setSplitTool();
     void setScaleTool();
     void setGraphicsViewFont();
+
+    void onSearch();
+    void selectPreviousResult();
+    void selectNextResult();
 protected:
     void closeEvent(QCloseEvent *event);
 private:
@@ -73,6 +78,9 @@ private:
     QPrinter *m_printer;
     QTimer *m_timer;
     int m_autoSaveTime;
+
+    QList<MapEntity *> m_searchResults;
+    QListIterator<MapEntity *> m_searchResultIter;
 };
 
 #endif // MAINWINDOW_H

@@ -9,7 +9,7 @@
 #pragma execution_character_set("utf-8")
 
 FuncArea::FuncArea(QGraphicsItem *parent)
-    : PolygonEntity(parent), m_dianpingId(-1), m_connected(false)
+    : PolygonEntity(parent), m_dianpingId(-1), m_connected(false), m_mateId(0)
 {
     m_color = QColor(248, 203, 173, 150);
     setObjectName(tr("未命名"));
@@ -62,6 +62,16 @@ void FuncArea::setDianpingId(int dpId) {
     m_dianpingId = dpId;
 }
 
+void FuncArea::setMateId(int id){
+    if(m_mateId == id)
+        return;
+    m_mateId = id;
+}
+
+int FuncArea::mateId() const {
+    return m_mateId;
+}
+
 bool FuncArea::load(const QJsonObject &jsonObject) {
     PolygonEntity::load(jsonObject);
 
@@ -69,6 +79,7 @@ bool FuncArea::load(const QJsonObject &jsonObject) {
     m_id = jsonObject["_id"].toInt();
     m_shopNo = jsonObject["ShopNo"].toString();
     m_dianpingId = jsonObject["dianping_id"].toInt();
+    m_mateId = jsonObject["MateId"].toInt();
     if(m_dianpingId < 0 && m_dianpingId != -1){
         m_dianpingId = -1;
     }
@@ -88,6 +99,7 @@ bool FuncArea::save(QJsonObject &jsonObject, double scale) const {
     jsonObject["_id"] = m_id;
     jsonObject["ShopNo"] = m_shopNo;
     jsonObject["dianping_id"] = m_dianpingId;
+    jsonObject["MateId"] = m_mateId;
 
     QJsonArray jsonArray;
     jsonArray.append(m_center.x() *scale);

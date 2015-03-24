@@ -4,6 +4,7 @@
 #include <QLineEdit>
 #include <QtWebKitWidgets/QWebView>
 #include <QtWebKitWidgets/QWebFrame>
+#include <QHBoxLayout>
 #include <QPushButton>
 #include <QFormLayout>
 
@@ -18,16 +19,24 @@ PropViewFuncArea::PropViewFuncArea(QWidget *parent) :
     m_areaEdit = new QLineEdit;
     m_dianpingIdEdit = new QLineEdit;
     m_queryButton = new QPushButton(tr("品牌关联"));
+    m_checkDianpingBtn = new QPushButton(tr("检查"));
+    m_mateIdEdit = new QLineEdit;
 
     m_layout->addRow(tr("<b><font color=red>铺位号</font></b>"), m_shopNoEdit);
     m_layout->addRow(tr("面积（平方米）"), m_areaEdit);
-    m_layout->addRow(tr("<b><font color=red>点评 ID</font></b>"), m_dianpingIdEdit);
+    QHBoxLayout *dianpingLayout = new QHBoxLayout();
+    dianpingLayout->addWidget(m_dianpingIdEdit);
+    dianpingLayout->addWidget(m_checkDianpingBtn);
+    m_layout->addRow(tr("<b><font color=red>点评 ID</font></b>"), dianpingLayout);
     m_layout->insertRow(0,m_queryButton);
+    m_layout->addRow(tr("同铺id"), m_mateIdEdit);
 
     connect(m_shopNoEdit, SIGNAL(textEdited(QString)), this, SLOT(updateShopNo(QString)));
     connect(m_areaEdit, SIGNAL(textEdited(QString)), this, SLOT(updateArea(QString)));
     connect(m_dianpingIdEdit, SIGNAL(textEdited(QString)), this, SLOT(updateDianpingId(QString)));
     connect(m_queryButton, SIGNAL(clicked()), this, SLOT(onQuery()));
+    connect(m_mateIdEdit, SIGNAL(textEdited(QString)), this, SLOT(updateMateId(QString)) );
+    connect(m_checkDianpingBtn, SIGNAL(clicked()), this, SLOT(onCheckDianpingId()));
 }
 
 PropViewFuncArea::~PropViewFuncArea(){
@@ -48,6 +57,7 @@ void PropViewFuncArea::setMapEntity(MapEntity *mapEntity){
         m_shopNoEdit->setText(funcArea->shopNo());
         m_areaEdit->setText(QString::number(funcArea->area()));
         m_dianpingIdEdit->setText(QString::number(funcArea->dianpingId()));
+        m_mateIdEdit->setText(QString::number(funcArea->mateId()));
     }
 }
 
@@ -61,6 +71,10 @@ void PropViewFuncArea::updateArea(const QString &area) {
 
 void PropViewFuncArea::updateDianpingId(const QString &dpId) {
     static_cast<FuncArea*>(m_mapEntity)->setDianpingId(dpId.toInt());
+}
+
+void PropViewFuncArea::updateMateId(const QString &mateId){
+    static_cast<FuncArea*>(m_mapEntity)->setMateId(mateId.toInt());
 }
 
 void PropViewFuncArea::queryFinished(){
@@ -86,4 +100,15 @@ void PropViewFuncArea::onQuery(){
 
 void PropViewFuncArea::addJsObject(){
     m_webDlg->page()->mainFrame()->addToJavaScriptWindowObject(QString("indoorMap"), this);
+}
+
+void PropViewFuncArea::onCheckDianpingId(){
+    if(m_webDlg != NULL){
+        delete m_webDlg;
+    }
+    m_webDlg = new QWebView();
+    QUrl url("http://www.dianping.com/shop/" + QString::number(static_cast<FuncArea*>(m_mapEntity)->dianpingId()));
+    m_webDlg->setUrl(url);
+    m_webDlg->setWindowFlags(Qt::WindowStaysOnTopHint);
+    m_webDlg->show();
 }

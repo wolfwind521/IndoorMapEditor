@@ -28,15 +28,19 @@ public slots:
    void updateShopNo(const QString &shopNo);
    void updateArea(const QString &area);
    void updateDianpingId(const QString &dpId);
+   void updateMateId(const QString &mateId);
    void onQuery();
    void queryFinished();
    void addJsObject();
+   void onCheckDianpingId();
 
 private:
-    QPushButton* m_queryButton;
-    QLineEdit* m_shopNoEdit;
-    QLineEdit* m_areaEdit;
-    QLineEdit* m_dianpingIdEdit;
+    QPushButton *m_queryButton;
+    QLineEdit *m_shopNoEdit;
+    QLineEdit *m_areaEdit;
+    QLineEdit *m_dianpingIdEdit;
+    QPushButton *m_checkDianpingBtn;
+    QLineEdit *m_mateIdEdit;
     QWebView *m_webDlg;
 };
 

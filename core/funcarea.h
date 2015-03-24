@@ -33,6 +33,8 @@ public:
     void setShopNo(const QString & shopNo);
     int dianpingId() const;
     void setDianpingId(int dpId);
+    void setMateId(int id);
+    int mateId() const;
 
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget);
 protected:
@@ -46,6 +48,7 @@ private:
     QString m_shopNo;
     int     m_dianpingId; //temp
     bool m_connected; //slots have been connected
+    int m_mateId;     //if this id is not 0, it is the same funcarea with another one
 };
 
 #endif // FUNCAREA_H
