@@ -23,6 +23,8 @@
 #include <QFontDialog>
 #include <QMessageBox>
 #include <QTreeView>
+#include <QListWidgetItem>
+#include <QListWidget>
 #ifndef QT_NO_PRINTER
 #include <QtPrintSupport/QPrinter>
 #include <QtPrintSupport/QPrintDialog>
@@ -75,6 +77,7 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->actionPrintCurrent, SIGNAL(triggered()), this, SLOT(printCurrent()));
     connect(ui->actionDelete, SIGNAL(triggered()), this, SLOT(deleteEntity()));
     connect(ui->actionFont, SIGNAL(triggered()), this, SLOT(setGraphicsViewFont()));
+    connect(ui->actionFindRepeat, SIGNAL(triggered()), this, SLOT(findAllRepeat()));
 
     //tools action
     connect(ui->actionPolygonTool, SIGNAL(triggered()), this, SLOT(setPolygonTool()));
@@ -313,7 +316,7 @@ void MainWindow::readSettings(){
         QFileInfo fileInfo(path + "/autoSaveFile.json");
         if(fileInfo.exists()){
             int r = QMessageBox::warning(this, tr("Warning"),
-                                         tr("发现意外关闭时的缓存文件，是否恢复？"),
+                                         tr("发现意外关闭时的缓存文件，是否恢复？<b><font color=red>若您之前已保存了所需文件，请选择“否”并手动打开之前保存的文件。</font></b>"),
                                          QMessageBox::Yes | QMessageBox::No );
             if(r == QMessageBox::Yes){
                 //open the autosave file
@@ -482,4 +485,29 @@ void MainWindow::selectNextResult(){
         m_searchResultIter.previous();
     }
 
+}
+
+void MainWindow::findAllRepeat(){
+    QListWidget *listWidget = new QListWidget(this);
+
+    const QList<QList<MapEntity*> > & result = currentDocument()->scene()->findAllRepeat();
+    foreach(const QList<MapEntity*> & list, result){
+        MapEntity *mapEntity;
+        foreach(mapEntity, list){
+            QListWidgetItem * listItem = new QListWidgetItem(mapEntity->objectName()+" @ "+mapEntity->parent()->objectName(), listWidget);
+            listItem->setData(Qt::UserRole, QVariant::fromValue(mapEntity));
+        }
+    }
+
+    connect(listWidget, SIGNAL(itemClicked(QListWidgetItem*)), this, SLOT(outputItemClicked(QListWidgetItem*)));
+
+    ui->dockOutputWidget->setWidget(listWidget);
+    ui->dockOutputWidget->setVisible(true);
+}
+
+void MainWindow::outputItemClicked(QListWidgetItem* item){
+    MapEntity* mapEntity = item->data(Qt::UserRole).value<MapEntity*>();
+    if(mapEntity != NULL){
+        currentDocument()->scene()->selectMapEntity(mapEntity);
+    }
 }

@@ -46,6 +46,8 @@
     <addaction name="actionUndo"/>
     <addaction name="actionRedo"/>
     <addaction name="separator"/>
+    <addaction name="actionFindRepeat"/>
+    <addaction name="separator"/>
     <addaction name="actionAddFloor"/>
     <addaction name="actionAddFuncArea"/>
     <addaction name="actionAddPubpoint"/>
@@ -163,6 +165,12 @@
     <number>2</number>
    </attribute>
    <widget class="QWidget" name="dockPropWidgetContents"/>
+  </widget>
+  <widget class="QDockWidget" name="dockOutputWidget">
+   <attribute name="dockWidgetArea">
+    <number>8</number>
+   </attribute>
+   <widget class="QWidget" name="dockWidgetContents"/>
   </widget>
   <action name="actionOpen">
    <property name="icon">
@@ -527,6 +535,14 @@
    </property>
    <property name="toolTip">
     <string>显示主轴向</string>
+   </property>
+  </action>
+  <action name="actionFindRepeat">
+   <property name="text">
+    <string>检查同铺</string>
+   </property>
+   <property name="toolTip">
+    <string>检查所有相同品牌的店铺</string>
    </property>
   </action>
  </widget>

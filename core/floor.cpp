@@ -115,3 +115,16 @@ void Floor::setHeight(double height)
 void Floor::resetMaxFloorId(){
     m_maxFloorId = 0;
 }
+
+QList<FuncArea*> Floor::getFuncAreas() const{
+    QList<FuncArea*> funcAreas;
+    const QList<QGraphicsItem*> & children = this->childItems();
+    QGraphicsItem* item;
+    foreach(item, children){
+        FuncArea* funcArea = dynamic_cast<FuncArea*>(item);
+        if(funcArea != NULL){
+            funcAreas.append(funcArea);
+        }
+    }
+    return funcAreas;
+}

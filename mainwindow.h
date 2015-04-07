@@ -15,6 +15,7 @@ class MapEntity;
 QT_FORWARD_DECLARE_CLASS(QTreeView)
 QT_FORWARD_DECLARE_CLASS(QPrinter)
 QT_FORWARD_DECLARE_CLASS(QCloseEvent)
+QT_FORWARD_DECLARE_CLASS(QListWidgetItem)
 
 class MainWindow : public QMainWindow
 {
@@ -53,6 +54,9 @@ public slots:
     void onSearch();
     void selectPreviousResult();
     void selectNextResult();
+
+    void findAllRepeat();
+    void outputItemClicked(QListWidgetItem* item);
 protected:
     void closeEvent(QCloseEvent *event);
 private:

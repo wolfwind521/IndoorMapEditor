@@ -256,6 +256,37 @@ QList<MapEntity *> Scene::findMapEntity(const QString &name){
     return m_root->findChildren<MapEntity*>(name);
 }
 
+QList<QList<MapEntity*> > Scene::findAllRepeat(){
+    QList<QList<MapEntity*> > result;
+    QHash<QString, MapEntity* > hash;
+    if(m_building != NULL){
+        const QVector<Floor*> & floors = m_building->getFloors();
+        Floor* floor;
+        foreach(floor, floors){
+            Q_ASSERT_X(floor != NULL, "findAllRepeat", "floor is NULL");
+            FuncArea* funcArea;
+            const QList<FuncArea *> & funcAreas = floor->getFuncAreas();
+            foreach (funcArea, funcAreas) {
+                QString name = funcArea->objectName();
+                if(name.compare("非开放区域") && name.compare("中空") && name.compare("空铺")){
+                    hash.insertMulti(funcArea->objectName(), funcArea);
+                }
+
+            }
+        }
+    }
+
+    const QList<QString> & keys = hash.uniqueKeys();
+    foreach (const QString & key, keys) {
+        const QList<MapEntity*> & list = hash.values(key);
+        if(list.size() > 1){
+            result.append(list);
+        }
+    }
+
+    return result;
+}
+
 void Scene::selectMapEntity(MapEntity *entity){
     if(entity != NULL && entity->isClassOf("FuncArea")){
         clearSelection();

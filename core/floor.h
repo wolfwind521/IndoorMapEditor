@@ -4,6 +4,8 @@
 #include "polygonentity.h"
 #include <QJsonObject>
 
+class FuncArea;
+
 class Floor : public PolygonEntity
 {
     Q_OBJECT
@@ -15,6 +17,8 @@ public:
     Floor(PolygonEntity & polygon);
     bool load(const QJsonObject & jsonObject);
     bool save(QJsonObject & jsonObject, double scale) const;
+
+    QList<FuncArea*> getFuncAreas() const;
 
     //setters and getters
     double height() const;
