@@ -52,6 +52,7 @@ public slots:
     void setGraphicsViewFont();
 
     void onSearch();
+    void onFind();
     void selectPreviousResult();
     void selectNextResult();
 

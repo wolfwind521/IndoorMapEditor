@@ -14,7 +14,7 @@ PropViewBuilding::PropViewBuilding(QWidget *parent):
     m_groundFloorsLabel = new QLabel;
     m_heightEdit = new QLineEdit;
     m_defaultFloorEdit = new QLineEdit;
-    m_addressEdit = new QTextEdit;
+    m_addressEdit = new QLineEdit;
     m_postCodeEdit = new QLineEdit;
     m_latitudeEdit = new QLineEdit;
     m_longitudeEdit = new QLineEdit;

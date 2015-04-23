@@ -55,6 +55,8 @@ public:
     QVector<Floor*> getFloors();
     Floor *getFloorById(int id);
 
+    virtual void transformEntity(const QMatrix &matrix);
+
  private slots:
     void updateFloorIds(int oldId, int newId);
 private:

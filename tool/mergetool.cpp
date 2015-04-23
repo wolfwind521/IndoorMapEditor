@@ -61,7 +61,7 @@ void MergeTool::mergeSelectedItems() {
     QVector<PolygonEntity*> polyArray;
     foreach(QGraphicsItem* item, itemList) {
         PolygonEntity* poly = dynamic_cast<PolygonEntity*>(item);
-        if(poly->isClassOf("FuncArea")){
+        if(poly != NULL && poly->isClassOf("FuncArea")){
             polyArray.push_back(poly);
         }
     }

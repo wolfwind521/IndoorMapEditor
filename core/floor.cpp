@@ -1,4 +1,4 @@
-#include "floor.h"
+﻿#include "floor.h"
 #include "funcarea.h"
 #include "pubpoint.h"
 #include "imagelayer.h"
@@ -127,4 +127,19 @@ QList<FuncArea*> Floor::getFuncAreas() const{
         }
     }
     return funcAreas;
+}
+
+
+void Floor::transformEntity(const QMatrix &mat)
+{
+    PolygonEntity::transformEntity(mat);
+
+    const QList<QGraphicsItem*> & children = this->childItems();
+    foreach (QGraphicsItem* item, children) {
+        MapEntity *mapEntity = static_cast<MapEntity*>(item);
+        if(mapEntity != NULL){
+            mapEntity->transformEntity(mat);
+        }
+    }
+
 }

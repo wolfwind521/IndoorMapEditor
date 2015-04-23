@@ -233,3 +233,8 @@ QPointF PolygonEntity::computeMainDir(){
 
     return QPointF(double(obb.get_dir(0)[0]), double(obb.get_dir(0)[1]));
 }
+
+void PolygonEntity::transformEntity(const QMatrix &matrix){
+    MapEntity::transformEntity(matrix);
+    m_outline = matrix.map(m_outline);
+}

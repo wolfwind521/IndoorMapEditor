@@ -18,7 +18,7 @@ FuncArea::FuncArea(QGraphicsItem *parent)
     m_textItem->setPos(center());
     m_textItem->setPlainText(objectName());
     m_textItem->setFlag(QGraphicsItem::ItemIsMovable);
-
+    //m_textItem->setFlag(QGraphicsItem::ItemIsSelectable);
     connect(this, SIGNAL(objectNameChanged(QString)), this, SLOT(updateName(QString)));
     connect(this, SIGNAL(centerChanged(QPointF)), this, SLOT(updateCenter(QPointF)) );
 }
@@ -51,6 +51,16 @@ void FuncArea::setShopNo(const QString &shopNo) {
     m_shopNo = shopNo;
 }
 
+void FuncArea::setCategory( int cate){
+    if(m_category == cate)
+        return;
+    m_category = cate;
+}
+
+int FuncArea::category() const{
+    return m_category;
+}
+
 int FuncArea::dianpingId() const {
     return m_dianpingId;
 }
@@ -76,6 +86,7 @@ bool FuncArea::load(const QJsonObject &jsonObject) {
     PolygonEntity::load(jsonObject);
 
     m_type = jsonObject["Type"].toString();
+    m_category = jsonObject["Category"].toInt();
     m_id = jsonObject["_id"].toInt();
     m_shopNo = jsonObject["ShopNo"].toString();
     m_dianpingId = jsonObject["dianping_id"].toInt();
@@ -100,6 +111,7 @@ bool FuncArea::save(QJsonObject &jsonObject, double scale) const {
     jsonObject["ShopNo"] = m_shopNo;
     jsonObject["dianping_id"] = m_dianpingId;
     jsonObject["MateId"] = m_mateId;
+    jsonObject["Category"] = m_category;
 
     QJsonArray jsonArray;
     jsonArray.append(m_center.x() *scale);

@@ -1,4 +1,4 @@
-#ifndef FLOOR_H
+﻿#ifndef FLOOR_H
 #define FLOOR_H
 
 #include "polygonentity.h"
@@ -24,6 +24,9 @@ public:
     double height() const;
     void setHeight(double height);
     static void resetMaxFloorId();
+
+    //transform
+    virtual void transformEntity(const QMatrix &matrix);
 signals:
     void heightChanged( double height );
 private:

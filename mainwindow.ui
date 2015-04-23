@@ -20,7 +20,7 @@
      <x>0</x>
      <y>0</y>
      <width>895</width>
-     <height>22</height>
+     <height>21</height>
     </rect>
    </property>
    <widget class="QMenu" name="menu_File">
@@ -46,6 +46,10 @@
     <addaction name="actionUndo"/>
     <addaction name="actionRedo"/>
     <addaction name="separator"/>
+    <addaction name="actionRotate"/>
+    <addaction name="actionFlip"/>
+    <addaction name="separator"/>
+    <addaction name="actionFind"/>
     <addaction name="actionFindRepeat"/>
     <addaction name="separator"/>
     <addaction name="actionAddFloor"/>
@@ -543,6 +547,33 @@
    </property>
    <property name="toolTip">
     <string>检查所有相同品牌的店铺</string>
+   </property>
+  </action>
+  <action name="actionRotate">
+   <property name="text">
+    <string>旋转...</string>
+   </property>
+   <property name="toolTip">
+    <string>旋转地图</string>
+   </property>
+  </action>
+  <action name="actionFlip">
+   <property name="text">
+    <string>对称...</string>
+   </property>
+   <property name="toolTip">
+    <string>对称翻转地图</string>
+   </property>
+  </action>
+  <action name="actionFind">
+   <property name="text">
+    <string>查找...</string>
+   </property>
+   <property name="toolTip">
+    <string>查找店铺</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+F</string>
    </property>
   </action>
  </widget>

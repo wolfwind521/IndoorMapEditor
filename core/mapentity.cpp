@@ -114,3 +114,8 @@ void MapEntity::paint(QPainter *painter, const QStyleOptionGraphicsItem *option,
 {
 
 }
+
+void MapEntity::transformEntity(const QMatrix &matrix){
+    m_center = matrix.map(m_center);
+    emit centerChanged(m_center);
+}

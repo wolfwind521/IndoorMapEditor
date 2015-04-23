@@ -187,7 +187,7 @@ void SplitTool::mouseReleaseEvent(QGraphicsSceneMouseEvent *event) {
     //if the selected item is not a FuncArea
     QGraphicsItem *item = scene->selectedItems().at(0);
     PolygonEntity* poly = dynamic_cast<PolygonEntity*>(item);
-    if(!poly->isClassOf("FuncArea")){
+    if(poly == NULL || !poly->isClassOf("FuncArea")){
         QMessageBox::warning(m_doc, tr(""),tr("请先选中一个店铺"),QMessageBox::Ok);
         return;
     }

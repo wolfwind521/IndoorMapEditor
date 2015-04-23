@@ -11,8 +11,10 @@
 #include <QKeyEvent>
 #include <QtPrintSupport/QPrinter>
 #include <QApplication>
+#include <QInputDialog>
 #include <qmath.h>
 
+#pragma execution_character_set("utf-8")
 
 DocumentView::ViewStyle DocumentView::m_style = StyleDefault;
 
@@ -90,7 +92,12 @@ void DocumentView::printCurrentView(QPrinter *printer){
 //selection from graphics view
 void DocumentView::updateSelection(){
     if(m_scene->selectedItems().size() > 0){
-        MapEntity* selectedEntity = static_cast<MapEntity*>(m_scene->selectedItems().at(0));
+        QGraphicsItem* item = m_scene->selectedItems().at(0);
+        QGraphicsTextItem* textItem = qgraphicsitem_cast<QGraphicsTextItem*>(item);
+        if(item != NULL){
+            item = item->parentItem();
+        }
+        MapEntity* selectedEntity = static_cast<MapEntity*>(item);
         emit selectionChanged(selectedEntity);
     }else{
         emit selectionChanged(NULL);
@@ -230,4 +237,34 @@ void DocumentView::addScale(double s) {
 
 double DocumentView::getScale() const {
     return m_scaleNum == 0 ? 1.0 : m_scaleSum/m_scaleNum;
+}
+
+void DocumentView::onRotate(){
+    bool ok;
+    int angle = QInputDialog::getInt(this, tr("旋转地图"),
+                                     tr("顺时针角度(0~360):"), 0, 0, 360, 1, &ok);
+    if (ok){
+        QMatrix mat;
+        mat.rotate(angle);
+        m_scene->transformMap(mat);
+    }
+}
+
+void DocumentView::onFlip(){
+    QString item1 = tr("水平对称(d←→b)");
+    QString item2 = tr("垂直对称(甲←→由)");
+    QStringList items;
+    items << item1 << item2;
+    bool ok;
+    QString item = QInputDialog::getItem(this, tr("对称翻转"),
+                                             tr("选择对称方向"), items, 0, false, &ok);
+    if (ok && !item.isEmpty()){
+        QMatrix mat;
+        if(!item.compare(item1)){
+            mat.scale(-1, 1);
+        }else if(!item.compare(item2)){
+            mat.scale(1, -1);
+        }
+        m_scene->transformMap(mat);
+    }
 }

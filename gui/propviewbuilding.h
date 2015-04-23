@@ -1,4 +1,4 @@
-#ifndef PROPVIEWBUILDING_H
+﻿#ifndef PROPVIEWBUILDING_H
 #define PROPVIEWBUILDING_H
 
 #include "propertyview.h"
@@ -34,7 +34,7 @@ private:
     QLineEdit *m_heightEdit;
     QLineEdit *m_defaultFloorEdit;
 
-    QTextEdit *m_addressEdit;
+    QLineEdit *m_addressEdit;
     QLineEdit *m_postCodeEdit;
     QLineEdit *m_latitudeEdit;
     QLineEdit *m_longitudeEdit;

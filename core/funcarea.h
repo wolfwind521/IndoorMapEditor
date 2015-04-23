@@ -31,6 +31,8 @@ public:
     //setters and getters
     QString shopNo() const;
     void setShopNo(const QString & shopNo);
+    int category() const;
+    void setCategory(int cate);
     int dianpingId() const;
     void setDianpingId(int dpId);
     void setMateId(int id);
@@ -46,6 +48,7 @@ private slots:
 private:
     QGraphicsTextItem *m_textItem;
     QString m_shopNo;
+    int m_category;
     int     m_dianpingId; //temp
     bool m_connected; //slots have been connected
     int m_mateId;     //if this id is not 0, it is the same funcarea with another one

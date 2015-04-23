@@ -297,3 +297,12 @@ void Scene::selectMapEntity(MapEntity *entity){
         entity->setSelected(true);
     }
 }
+
+void Scene::transformMap(const QMatrix &mat)
+{
+    if(m_curFloor != NULL){//rotate current floor
+        m_curFloor->transformEntity(mat);
+    }else{ //rotate the whole building
+        m_building->transformEntity(mat);
+    }
+}

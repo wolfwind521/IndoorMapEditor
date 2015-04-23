@@ -218,7 +218,10 @@ QVector<Floor*> Building::getFloors() {
     QList<QGraphicsItem*> children = this->childItems();
     QGraphicsItem* item;
     foreach(item, children) {
-        floors.push_back(static_cast<Floor*>(item));
+        Floor *floor = static_cast<Floor*>(item);
+        if(floor != NULL){
+            floors.push_back(floor);
+        }
     }
     return floors;
 }
@@ -228,7 +231,7 @@ Floor* Building::getFloorById(int id){
     QGraphicsItem* item;
     foreach(item, children) {
         Floor *floor = static_cast<Floor*>(item);
-        if(floor->id() == id){
+        if(floor != NULL && floor->id() == id){
             return floor;
         }
     }
@@ -298,5 +301,18 @@ void Building::setTel(const QString &tel){
     if(tel != m_tel){
         m_tel = tel;
         //TODO emit signal
+    }
+}
+
+void Building::transformEntity(const QMatrix &matrix){
+    PolygonEntity::transformEntity(matrix);
+
+    QList<QGraphicsItem*> children = this->childItems();
+    QGraphicsItem* item;
+    foreach(item, children) {
+        Floor *floor = static_cast<Floor*>(item);
+        if(floor != NULL){
+            floor->transformEntity(matrix);
+        }
     }
 }

@@ -42,6 +42,7 @@ public:
     void zoom(int step);
     void addScale(double s);
     double getScale() const;
+
 signals:
     void selectionChanged(MapEntity * mapEntity);
 
@@ -57,6 +58,9 @@ public slots:
     void zoomIn(int step = 2);
     void zoomOut(int step = 2);
     void fitView();
+    void onRotate();
+    void onFlip();
+
 protected:
     void wheelEvent(QWheelEvent *event);
     void keyPressEvent(QKeyEvent *event);

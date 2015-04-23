@@ -63,6 +63,8 @@ public:
 
     QList<QList<MapEntity*> > findAllRepeat();
 
+    void transformMap(const QMatrix &matrix);
+
 signals:
     void buildingChanged();
     void fontChanged(const QFont &font);

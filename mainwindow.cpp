@@ -25,6 +25,7 @@
 #include <QTreeView>
 #include <QListWidgetItem>
 #include <QListWidget>
+#include <QInputDialog>
 #ifndef QT_NO_PRINTER
 #include <QtPrintSupport/QPrinter>
 #include <QtPrintSupport/QPrintDialog>
@@ -78,6 +79,7 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->actionDelete, SIGNAL(triggered()), this, SLOT(deleteEntity()));
     connect(ui->actionFont, SIGNAL(triggered()), this, SLOT(setGraphicsViewFont()));
     connect(ui->actionFindRepeat, SIGNAL(triggered()), this, SLOT(findAllRepeat()));
+    connect(ui->actionFind, SIGNAL(triggered()), this, SLOT(onFind()));
 
     //tools action
     connect(ui->actionPolygonTool, SIGNAL(triggered()), this, SLOT(setPolygonTool()));
@@ -102,6 +104,8 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->actionZoomOut, SIGNAL(triggered()), m_docView, SLOT(zoomOut()));
     connect(ui->actionZoomIn, SIGNAL(triggered()), m_docView, SLOT(zoomIn()));
     connect(ui->actionResetZoom, SIGNAL(triggered()), m_docView, SLOT(fitView()));
+    connect(ui->actionRotate, SIGNAL(triggered()), m_docView,  SLOT(onRotate()));
+    connect(ui->actionFlip, SIGNAL(triggered()), m_docView, SLOT(onFlip()));
     connect(ui->searchButton, SIGNAL(clicked()), this, SLOT(onSearch()) );
     ui->preResultButton->setVisible(false);
     ui->nextResultButton->setVisible(false);
@@ -237,7 +241,12 @@ void MainWindow::autoSave(){
 
 void MainWindow::closeFile()
 {
+    if(okToContinue()){
+        currentDocument()->clear();
+        setCurrentFile("");
 
+        rebuildTreeView();
+    }
 }
 
 void MainWindow::exportFile()
@@ -485,6 +494,32 @@ void MainWindow::selectNextResult(){
         m_searchResultIter.previous();
     }
 
+}
+
+void MainWindow::onFind(){
+    bool ok;
+    QString searchText = QInputDialog::getText(this, tr("搜索"),
+                                             tr("名称:"), QLineEdit::Normal,
+                                             QString(), &ok);
+    if (ok && !searchText.isEmpty()){
+        m_searchResults = currentDocument()->scene()->findMapEntity(searchText);
+
+        if(m_searchResults.isEmpty()){
+            QMessageBox::warning(this, tr("搜索结果"),(QString("未找到 ")+searchText),QMessageBox::Ok);
+            return;
+        }else{
+            QListWidget *listWidget = new QListWidget(this);
+            foreach(MapEntity *mapEntity, m_searchResults){
+                QListWidgetItem * listItem = new QListWidgetItem(mapEntity->objectName()+" @ "+mapEntity->parent()->objectName(), listWidget);
+                listItem->setData(Qt::UserRole, QVariant::fromValue(mapEntity));
+            }
+            connect(listWidget, SIGNAL(itemClicked(QListWidgetItem*)), this, SLOT(outputItemClicked(QListWidgetItem*)));
+
+            ui->dockOutputWidget->setWidget(listWidget);
+            ui->dockOutputWidget->setVisible(true);
+        }
+        currentDocument()->scene()->selectMapEntity((m_searchResultIter.next()));
+    }
 }
 
 void MainWindow::findAllRepeat(){
