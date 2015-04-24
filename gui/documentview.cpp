@@ -94,8 +94,8 @@ void DocumentView::updateSelection(){
     if(m_scene->selectedItems().size() > 0){
         QGraphicsItem* item = m_scene->selectedItems().at(0);
         QGraphicsTextItem* textItem = qgraphicsitem_cast<QGraphicsTextItem*>(item);
-        if(item != NULL){
-            item = item->parentItem();
+        if(textItem != NULL){
+            item = textItem->parentItem();
         }
         MapEntity* selectedEntity = static_cast<MapEntity*>(item);
         emit selectionChanged(selectedEntity);
