@@ -2,7 +2,7 @@
 #define FUNCAREA_H
 
 #include "polygonentity.h"
-
+#include <QHash>
 #include <QString>
 #include <QJsonObject>
 
@@ -38,6 +38,10 @@ public:
     void setMateId(int id);
     int mateId() const;
 
+    const QStringList typeStringList() const;
+    virtual QString getTypeName();
+    virtual void updateByTypeName(const QString &name);
+
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget);
 protected:
     QVariant itemChange(GraphicsItemChange change, const QVariant &value);
@@ -52,6 +56,7 @@ private:
     int     m_dianpingId; //temp
     bool m_connected; //slots have been connected
     int m_mateId;     //if this id is not 0, it is the same funcarea with another one
+    static QHash<QString, int> m_typeHash;
 };
 
 #endif // FUNCAREA_H

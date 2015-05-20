@@ -31,6 +31,10 @@ public:
     const QString & type();
     void setType(const QString & type);
 
+    virtual const QStringList typeStringList() const{return QStringList();}
+    virtual QString getTypeName(){return QString();}
+    virtual void updateByTypeName(const QString &typeName){}
+
     void setParentEntity(MapEntity* entity);
 
     QRectF boundingRect() const;

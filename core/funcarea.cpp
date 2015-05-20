@@ -8,11 +8,28 @@
 
 #pragma execution_character_set("utf-8")
 
+
+QHash<QString, int> FuncArea::m_typeHash;
+
 FuncArea::FuncArea(QGraphicsItem *parent)
     : PolygonEntity(parent), m_dianpingId(-1), m_connected(false), m_mateId(0)
 {
     m_color = QColor(248, 203, 173, 150);
     setObjectName(tr("未命名"));
+
+    FuncArea::m_typeHash["未设置"] = 0;
+    FuncArea::m_typeHash["中空区域"] = 100;
+    FuncArea::m_typeHash["封闭区域"] = 300;
+    FuncArea::m_typeHash["空铺"] = 400;
+    FuncArea::m_typeHash["餐饮"] = 101;
+    FuncArea::m_typeHash["购物"] = 102;
+    FuncArea::m_typeHash["美妆丽人"] = 103;
+    FuncArea::m_typeHash["亲子儿童"] = 104;
+    FuncArea::m_typeHash["生活服务"] = 105;
+    FuncArea::m_typeHash["教育培训"] = 106;
+    FuncArea::m_typeHash["生活方式"] = 107;
+    FuncArea::m_typeHash["休闲娱乐"] = 108;
+    FuncArea::m_typeHash["其他"] = 109;
 
     m_textItem = new QGraphicsTextItem(this);
     m_textItem->setPos(center());
@@ -173,5 +190,32 @@ void FuncArea::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, 
         }else{
             m_textItem->hide();
         }
+    }
+}
+
+const QStringList FuncArea::typeStringList() const{
+    QStringList typeList;
+    typeList<<"未设置"<<"中空区域"<<"封闭区域"<<"空铺"<<"餐饮"<<"购物"<<"美妆丽人"<<"亲子儿童"<<"生活服务"<<"教育培训"<<"生活方式"<<"休闲娱乐"<<"其他";
+    return typeList;
+}
+
+QString FuncArea::getTypeName(){
+
+    if(m_category == 0){//if category is undefined
+        int type = m_type.toInt();
+        return FuncArea::m_typeHash.key(type);
+    }else{
+        return FuncArea::m_typeHash.key(m_category);
+    }
+}
+void FuncArea::updateByTypeName(const QString &typeName){
+    int value = FuncArea::m_typeHash[typeName];
+    if(value == 100 || value == 300 || value == 400){
+        setCategory(0);
+        setType(QString::number(value));
+//        setObjectName(typeName);
+//        setEnName(QString());
+    }else{
+        setCategory(value);
     }
 }

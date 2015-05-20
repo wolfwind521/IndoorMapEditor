@@ -20,10 +20,10 @@ class PropViewFuncArea : public PropertyView
 {
     Q_OBJECT
 public:
-    explicit PropViewFuncArea(QWidget *parent = 0);
+    explicit PropViewFuncArea(MapEntity *mapEntity, QWidget *parent = 0);
     ~PropViewFuncArea();
     virtual bool match(const MapEntity *mapEntity) const;
-    virtual void setMapEntity(MapEntity * mapEntity);
+    virtual void updateWidgets();
 public slots:
    void updateShopNo(const QString &shopNo);
    void updateArea(const QString &area);
@@ -35,6 +35,7 @@ public slots:
    void onCheckDianpingId();
 
 private:
+
     QPushButton *m_queryButton;
     QLineEdit *m_shopNoEdit;
     QLineEdit *m_areaEdit;
@@ -42,6 +43,7 @@ private:
     QPushButton *m_checkDianpingBtn;
     QLineEdit *m_mateIdEdit;
     QWebView *m_webDlg;
+    FuncArea *m_funcArea;
 };
 
 #endif // PROPVIEWFUNCAREA_H

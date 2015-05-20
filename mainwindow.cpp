@@ -397,17 +397,18 @@ void MainWindow::updatePropertyView(MapEntity *mapEntity) {
             delete m_propertyView;
         //ugly codes. should be replaced by a factory class later.
         if(className == "FuncArea"){
-            m_propertyView = new PropViewFuncArea(ui->dockPropertyWidget);
+            m_propertyView = new PropViewFuncArea(mapEntity, ui->dockPropertyWidget);
         }else if(className == "Building"){
-            m_propertyView = new PropViewBuilding(ui->dockPropertyWidget);
+            m_propertyView = new PropViewBuilding(mapEntity, ui->dockPropertyWidget);
         }else if(className == "Floor"){
-            m_propertyView = new PropViewFloor(ui->dockPropertyWidget);
+            m_propertyView = new PropViewFloor(mapEntity, ui->dockPropertyWidget);
         }else{
-            m_propertyView = new PropertyView(ui->dockPropertyWidget);
+            m_propertyView = new PropertyView(mapEntity, ui->dockPropertyWidget);
         }
         ui->dockPropertyWidget->setWidget(m_propertyView);
+    }else{
+        m_propertyView->setMapEntity(mapEntity);
     }
-    m_propertyView->setMapEntity(mapEntity);
 }
 
 void MainWindow::setPolygonTool(){

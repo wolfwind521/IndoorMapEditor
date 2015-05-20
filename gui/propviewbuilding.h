@@ -13,11 +13,11 @@ class PropViewBuilding : public PropertyView
 {
     Q_OBJECT
 public:
-    explicit PropViewBuilding(QWidget *parent = 0);
+    explicit PropViewBuilding(MapEntity *mapEntity, QWidget *parent = 0);
     ~PropViewBuilding();
 
     virtual bool match(const MapEntity * mapEntity) const;
-    virtual void setMapEntity(MapEntity * mapEntity);
+    virtual void updateWidgets();
 public slots:
     void updateHeight(const QString &height);
     void updateDefaultFloor(const QString &floorid);
@@ -27,6 +27,7 @@ public slots:
     void updateLongitudeEdit(const QString &lng);
     void updateTimeEdit(const QString & time);
     void updateTelEdit(const QString & tel);
+
 private:
     QLabel *m_underFloorsLabel;
     QLabel *m_groundFloorsLabel;

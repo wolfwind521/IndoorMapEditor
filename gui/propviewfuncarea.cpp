@@ -7,14 +7,17 @@
 #include <QHBoxLayout>
 #include <QPushButton>
 #include <QFormLayout>
+#include <QComboBox>
 
 #pragma comment(lib,"Qt5Widgets.lib")
 #pragma comment(lib,"Qt5WebKitWidgets.lib")
 #pragma execution_character_set("utf-8")
 
-PropViewFuncArea::PropViewFuncArea(QWidget *parent) :
-    PropertyView(parent), m_webDlg(NULL)
+PropViewFuncArea::PropViewFuncArea(MapEntity *mapEntity, QWidget *parent) :
+    PropertyView(mapEntity, parent), m_webDlg(NULL)
 {
+    m_funcArea = static_cast<FuncArea*>(mapEntity);
+
     m_shopNoEdit = new QLineEdit;
     m_areaEdit = new QLineEdit;
     m_dianpingIdEdit = new QLineEdit;
@@ -30,6 +33,8 @@ PropViewFuncArea::PropViewFuncArea(QWidget *parent) :
     m_layout->addRow(tr("<b><font color=red>点评 ID</font></b>"), dianpingLayout);
     m_layout->insertRow(0,m_queryButton);
     m_layout->addRow(tr("同铺id"), m_mateIdEdit);
+
+    updateWidgets();
 
     connect(m_shopNoEdit, SIGNAL(textEdited(QString)), this, SLOT(updateShopNo(QString)));
     connect(m_areaEdit, SIGNAL(textEdited(QString)), this, SLOT(updateArea(QString)));
@@ -50,31 +55,29 @@ bool PropViewFuncArea::match(const MapEntity *mapEntity) const {
     return mapEntity->isClassOf("FuncArea");
 }
 
-void PropViewFuncArea::setMapEntity(MapEntity *mapEntity){
-    if(mapEntity != m_mapEntity) {
-        PropertyView::setMapEntity(mapEntity);
-        FuncArea* funcArea = static_cast<FuncArea*>(mapEntity);
-        m_shopNoEdit->setText(funcArea->shopNo());
-        m_areaEdit->setText(QString::number(funcArea->area()));
-        m_dianpingIdEdit->setText(QString::number(funcArea->dianpingId()));
-        m_mateIdEdit->setText(QString::number(funcArea->mateId()));
-    }
+void PropViewFuncArea::updateWidgets(){
+    PropertyView::updateWidgets();
+
+    m_shopNoEdit->setText(m_funcArea->shopNo());
+    m_areaEdit->setText(QString::number(m_funcArea->area()));
+    m_dianpingIdEdit->setText(QString::number(m_funcArea->dianpingId()));
+    m_mateIdEdit->setText(QString::number(m_funcArea->mateId()));
 }
 
 void PropViewFuncArea::updateShopNo(const QString &shopNo){
-    static_cast<FuncArea*>(m_mapEntity)->setShopNo(shopNo);
+    m_funcArea->setShopNo(shopNo);
 }
 
 void PropViewFuncArea::updateArea(const QString &area) {
-    static_cast<FuncArea*>(m_mapEntity)->setArea(area.toDouble());
+    m_funcArea->setArea(area.toDouble());
 }
 
 void PropViewFuncArea::updateDianpingId(const QString &dpId) {
-    static_cast<FuncArea*>(m_mapEntity)->setDianpingId(dpId.toInt());
+    m_funcArea->setDianpingId(dpId.toInt());
 }
 
 void PropViewFuncArea::updateMateId(const QString &mateId){
-    static_cast<FuncArea*>(m_mapEntity)->setMateId(mateId.toInt());
+    m_funcArea->setMateId(mateId.toInt());
 }
 
 void PropViewFuncArea::queryFinished(){

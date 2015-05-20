@@ -6,12 +6,14 @@
 
 #pragma execution_character_set("utf-8")
 
-PropViewFloor::PropViewFloor(QWidget *parent) :
-    PropertyView(parent)
+PropViewFloor::PropViewFloor(MapEntity *mapEntity, QWidget *parent) :
+    PropertyView(mapEntity, parent)
 {
     m_heightEdit = new QLineEdit;
     m_funcAreaNumLabel = new QLabel;
     m_pubPointNumLabel = new QLabel;
+
+    updateWidgets();
 
     m_layout->addRow(tr("高度"), m_heightEdit);
     m_layout->addRow(tr("店铺数 "), m_funcAreaNumLabel);
@@ -24,13 +26,10 @@ bool PropViewFloor::match(const MapEntity *mapEntity) const {
     return mapEntity->isClassOf("Floor");
 }
 
-void PropViewFloor::setMapEntity(MapEntity *mapEntity) {
-    if(m_mapEntity != mapEntity){
-        PropertyView::setMapEntity(mapEntity);
-        Floor *floor = static_cast<Floor*>(mapEntity);
-        m_heightEdit->setText(QString::number(floor->height()));
-        //m_funcAreaNum->setText(QString::number(floor->));
-    }
+void PropViewFloor::updateWidgets(){
+    PropertyView::updateWidgets();
+    Floor *floor = static_cast<Floor*>(m_mapEntity);
+    m_heightEdit->setText(QString::number(floor->height()));
 }
 
 void PropViewFloor::updateHeight(const QString &height) {

@@ -6,10 +6,23 @@
 #include <QApplication>
 #include "../gui/documentview.h"
 
+QHash<QString, int> PubPoint::m_typeHash;
+
 PubPoint::PubPoint(QGraphicsItem *parent) :
     MapEntity(parent)
 {
     setFlags(ItemIsSelectable);
+
+    PubPoint::m_typeHash["未设置"] = 0;
+    PubPoint::m_typeHash["出入口"] = 22006;
+    PubPoint::m_typeHash["电梯"] = 21003;
+    PubPoint::m_typeHash["扶梯"] = 21002;
+    PubPoint::m_typeHash["楼梯"] = 21001;
+    PubPoint::m_typeHash["柜台"] = 11003;
+    PubPoint::m_typeHash["ATM"] = 11002;
+    PubPoint::m_typeHash["问讯处"] = 11004;
+    PubPoint::m_typeHash["卫生间"] = 11001;
+    PubPoint::m_typeHash["休息处"] = 11008;
 }
 
 bool PubPoint::load(const QJsonObject &jsonObject)
@@ -120,4 +133,19 @@ void PubPoint::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, 
             pixmap = QPixmap(":src/icon/toilet.png");
         painter->drawPixmap(m_center.x()-15.0, m_center.y()-15.0, pixmap);
     }
+}
+
+const QStringList PubPoint::typeStringList() const{
+    QStringList typeList;
+    typeList<<"未设置"<<"出入口"<<"电梯"<<"扶梯"<<"楼梯"<<"柜台"<<"ATM"<<"问讯处"<<"卫生间"<<"休息处";
+    return typeList;
+}
+
+QString PubPoint::getTypeName(){
+    return PubPoint::m_typeHash.key(m_type.toInt());
+}
+
+void PubPoint::updateByTypeName(const QString &typeName){
+    int value = PubPoint::m_typeHash[typeName];
+    setType(QString::number(value));
 }

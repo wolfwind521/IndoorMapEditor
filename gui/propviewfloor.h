@@ -12,12 +12,13 @@ class PropViewFloor : public PropertyView
 {
     Q_OBJECT
 public:
-    PropViewFloor(QWidget *parent = 0);
+    PropViewFloor(MapEntity *mapEntity, QWidget *parent = 0);
     virtual bool match(const MapEntity *mapEntity) const;
-    virtual void setMapEntity(MapEntity * MapEntity);
+    virtual void updateWidgets();
 
 public slots:
     void updateHeight(const QString &height);
+
 private:
     QLineEdit * m_heightEdit;
     QLabel * m_funcAreaNumLabel;
