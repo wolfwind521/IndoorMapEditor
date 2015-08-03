@@ -84,7 +84,7 @@ bool PolygonEntity::load(const QJsonObject &jsonObject)
 bool PolygonEntity::save(QJsonObject &jsonObject, double scale) const
 {
     MapEntity::save(jsonObject, scale);
-    jsonObject["Area"] = m_area*scale*scale;
+    jsonObject["Area"] = int(m_area*scale*scale);
     QJsonArray jsonArray;
     for(int i = 0; i < m_outline.size(); i++){
         jsonArray.append(int(m_outline[i].x() * scale));

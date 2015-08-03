@@ -6,6 +6,7 @@
 #include <QApplication>
 #include "../gui/documentview.h"
 
+#pragma execution_character_set("utf-8")
 QHash<QString, int> PubPoint::m_typeHash;
 
 PubPoint::PubPoint(QGraphicsItem *parent) :
