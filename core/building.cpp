@@ -110,6 +110,7 @@ bool Building::load(const QJsonObject &jsonObject) {
     m_address = buildingObject["Address"].toString();
     m_time = buildingObject["Time"].toString();
     m_tel = buildingObject["Tel"].toString();
+    m_id = buildingObject["Mall"].toInt();
 
     //for GaoDe maps. the remark is the floor names
     QStringList floorNames;
@@ -179,6 +180,7 @@ bool Building::save(QJsonObject &jsonObject, double scale) const
     buildingObject["Address"] = m_address;
     buildingObject["Time"] = m_time;
     buildingObject["Tel"] = m_tel;
+    buildingObject["Mall"] = m_id;
 
     QString floorsId;
     QJsonArray floorArray;

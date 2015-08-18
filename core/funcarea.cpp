@@ -16,6 +16,9 @@ FuncArea::FuncArea(QGraphicsItem *parent)
 {
     m_color = QColor(248, 203, 173, 150);
     setObjectName(tr("未命名"));
+    m_type = 400;
+    m_category = 109;
+    m_status = Status::Working;
 
     FuncArea::m_typeHash["未设置"] = 0;
     FuncArea::m_typeHash["中空区域"] = 100;
@@ -68,13 +71,13 @@ void FuncArea::setShopNo(const QString &shopNo) {
     m_shopNo = shopNo;
 }
 
-void FuncArea::setCategory( int cate){
+void FuncArea::setCategory( FuncArea::Category cate){
     if(m_category == cate)
         return;
     m_category = cate;
 }
 
-int FuncArea::category() const{
+FuncArea::Category FuncArea::category() const{
     return m_category;
 }
 
@@ -99,15 +102,26 @@ int FuncArea::mateId() const {
     return m_mateId;
 }
 
+void FuncArea::setStatus(FuncArea::Status status){
+    if(m_status == status)
+        return;
+    m_status = status;
+}
+
+FuncArea::Status FuncArea::status() const{
+    return m_status;
+}
+
 bool FuncArea::load(const QJsonObject &jsonObject) {
     PolygonEntity::load(jsonObject);
 
     m_type = jsonObject["Type"].toString();
-    m_category = jsonObject["Category"].toInt();
-    m_id = jsonObject["_id"].toInt();
+    m_category = Category(jsonObject["Category"].toInt());
+    m_id = jsonObject["BrandShop"].toInt();
     m_shopNo = jsonObject["ShopNo"].toString();
     m_dianpingId = jsonObject["dianping_id"].toInt();
     m_mateId = jsonObject["MateId"].toInt();
+    m_status = FuncArea::Status(jsonObject["Status"].toInt(Status::Working));
     if(m_dianpingId < 0 && m_dianpingId != -1){
         m_dianpingId = -1;
     }
@@ -124,15 +138,16 @@ bool FuncArea::save(QJsonObject &jsonObject, double scale) const {
     PolygonEntity::save(jsonObject, scale);
 
     jsonObject["Type"] = m_type;
-    jsonObject["_id"] = m_id;
+    jsonObject["BrandShop"] = m_id;
     jsonObject["ShopNo"] = m_shopNo;
     jsonObject["dianping_id"] = m_dianpingId;
     jsonObject["MateId"] = m_mateId;
     jsonObject["Category"] = m_category;
+    jsonObject["Status"] = m_status;
 
     QJsonArray jsonArray;
-    jsonArray.append(m_center.x() *scale);
-    jsonArray.append(-m_center.y() *scale);
+    jsonArray.append(int(m_center.x() *scale));
+    jsonArray.append(int(-m_center.y() *scale));
     jsonObject["Center"] = jsonArray;
     return true;
 }
@@ -211,11 +226,9 @@ QString FuncArea::getTypeName(){
 void FuncArea::updateByTypeName(const QString &typeName){
     int value = FuncArea::m_typeHash[typeName];
     if(value == 100 || value == 300 || value == 400){
-        setCategory(0);
+        setCategory(Category::Other);
         setType(QString::number(value));
-//        setObjectName(typeName);
-//        setEnName(QString());
     }else{
-        setCategory(value);
+        setCategory(Category(value));
     }
 }

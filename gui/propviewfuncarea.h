@@ -44,6 +44,7 @@ private:
     QLineEdit *m_mateIdEdit;
     QWebView *m_webDlg;
     FuncArea *m_funcArea;
+    QComboBox * m_typeComboBox;
 };
 
 #endif // PROPVIEWFUNCAREA_H

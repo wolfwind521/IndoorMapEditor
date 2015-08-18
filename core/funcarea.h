@@ -6,12 +6,8 @@
 #include <QString>
 #include <QJsonObject>
 
-enum FUNC_TYPE
-{
-    UNKOWN = -1,
-    CHINESE_FOOD,
-    //TODO: more types
-};
+//function area status
+
 
 class QGraphicsTextItem;
 
@@ -19,6 +15,25 @@ class FuncArea : public PolygonEntity
 {
 
     Q_OBJECT
+
+    //status
+    enum Status{
+        Vacancy  = 0,
+        Working = 1
+    };
+
+    //category
+    enum Category{
+        Catering = 101,
+        Shopping = 102,
+        Beauty = 103,
+        ParentChild = 104,
+        LifeService = 105,
+        Education = 106,
+        LifeStyle = 107,
+        Entertainment = 108,
+        Other = 109
+    };
 
 public:
     FuncArea(QGraphicsItem *parent = 0);
@@ -31,12 +46,18 @@ public:
     //setters and getters
     QString shopNo() const;
     void setShopNo(const QString & shopNo);
-    int category() const;
-    void setCategory(int cate);
+
+    FuncArea::Category category() const;
+    void setCategory(FuncArea::Category cate);
+
     int dianpingId() const;
     void setDianpingId(int dpId);
+
     void setMateId(int id);
     int mateId() const;
+
+    void setStatus(FuncArea::Status status);
+    FuncArea::Status status() const;
 
     const QStringList typeStringList() const;
     virtual QString getTypeName();
@@ -52,11 +73,12 @@ private slots:
 private:
     QGraphicsTextItem *m_textItem;
     QString m_shopNo;
-    int m_category;
+    Category m_category;
     int     m_dianpingId; //temp
     bool m_connected; //slots have been connected
     int m_mateId;     //if this id is not 0, it is the same funcarea with another one
     static QHash<QString, int> m_typeHash;
+    Status m_status;
 };
 
 #endif // FUNCAREA_H
