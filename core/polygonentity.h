@@ -41,6 +41,9 @@ public:
 
     int PointNum() const;
 
+    //set color
+    void setColor(QColor color);
+
     //compute the center
     const QPointF & computeCenter();
 

@@ -53,6 +53,7 @@ signals:
     void briefChanged(const QString & brief);
     void typeChanged(const QString & type);
 protected:
+    int generateId();
     //QString m_name;
     QString m_enName;
     int m_id;

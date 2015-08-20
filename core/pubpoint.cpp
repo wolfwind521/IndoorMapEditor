@@ -13,6 +13,7 @@ PubPoint::PubPoint(QGraphicsItem *parent) :
     MapEntity(parent)
 {
     setFlags(ItemIsSelectable);
+    setAcceptHoverEvents(true);
 
     PubPoint::m_typeHash["未设置"] = 0;
     PubPoint::m_typeHash["出入口"] = 22006;
@@ -101,12 +102,11 @@ void PubPoint::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, 
         //if selected
         QColor color(125, 125, 125);
         QColor fillColor = (option->state & QStyle::State_Selected) ? color.darker(150) : color;
-    //    //if mouse over
-    //    if (option->state & QStyle::State_MouseOver)
-    //        fillColor = fillColor.lighter(125);
-
+        bool highlight = ((option->state & QStyle::State_Selected) || (option->state & QStyle::State_MouseOver) ) ;
+        QColor borderColor = highlight ? QColor(0, 160, 233) : color.darker();
+        QPen borderPen(borderColor, highlight ? 5 : 1);
         painter->setBrush(fillColor);
-        painter->setPen(QPen(fillColor.darker(),1));
+        painter->setPen(borderPen);
         painter->drawEllipse(m_center, 15, 15);
 
 //        painter->setPen(QPen());

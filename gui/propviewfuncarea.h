@@ -9,12 +9,12 @@
 #define PROPVIEWFUNCAREA_H
 
 #include "propertyview.h"
-
-class FuncArea;
+#include "../core/funcarea.h"
 
 QT_FORWARD_DECLARE_CLASS(QLineEdit)
 QT_FORWARD_DECLARE_CLASS(QPushButton)
 QT_FORWARD_DECLARE_CLASS(QWebView)
+QT_FORWARD_DECLARE_CLASS(QCheckBox)
 
 class PropViewFuncArea : public PropertyView
 {
@@ -33,8 +33,11 @@ public slots:
    void queryFinished();
    void addJsObject();
    void onCheckDianpingId();
+   void updateSortType(const QString &sortType);
+   void updateAreaStatus(const int state);
 
 private:
+   QString getSortTypeName(FuncArea::SORT_TYPE sortType);
 
     QPushButton *m_queryButton;
     QLineEdit *m_shopNoEdit;
@@ -44,7 +47,9 @@ private:
     QLineEdit *m_mateIdEdit;
     QWebView *m_webDlg;
     FuncArea *m_funcArea;
-    QComboBox * m_typeComboBox;
+    QComboBox * m_typeComboBox; //业态类别
+    QComboBox * m_sortComboBox; //铺位类别
+    QCheckBox * m_vacancyCheckBox;
 };
 
 #endif // PROPVIEWFUNCAREA_H

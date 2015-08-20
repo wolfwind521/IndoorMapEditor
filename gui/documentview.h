@@ -24,8 +24,9 @@ public:
         StyleShowCenter =    0x00000002,
         StyleShowPointText = 0x00000004,
         StyleShowDirection =      0x00000008,
+        StyleShowAreaSort = 0x00000016,
         //TODO more styles
-        StyleDefault = 0 | StyleShowShopName | StyleShowCenter | StyleShowPointText
+        StyleDefault = 0 | StyleShowShopName | StyleShowCenter | StyleShowPointText | StyleShowAreaSort
     };
     Q_DECLARE_FLAGS(ViewStyle, ViewFlag)
 
@@ -54,6 +55,7 @@ public slots:
     void showShopText(bool show);
     void showPointText(bool show);
     void showDirection(bool show);
+    void showAreaSort(bool show);
     //zooming
     void zoomIn(int step = 2);
     void zoomOut(int step = 2);

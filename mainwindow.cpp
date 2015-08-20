@@ -16,6 +16,7 @@
 #include "./tool/mergetool.h"
 #include "./tool/splittool.h"
 #include "./tool/scaletool.h"
+#include "./function/shopanalysis.h"
 #include <QTimer>
 #include <QCloseEvent>
 #include <QSettings>
@@ -45,6 +46,7 @@ MainWindow::MainWindow(QWidget *parent) :
     m_searchResultIter(m_searchResults)
 {
     ui->setupUi(this);
+    qsrand(time(0));
 
     m_sceneTreeView = new QTreeView(ui->dockTreeWidget);
     //ui->dockTreeWidget->setWidget(m_sceneTreeView);
@@ -80,6 +82,7 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->actionFont, SIGNAL(triggered()), this, SLOT(setGraphicsViewFont()));
     connect(ui->actionFindRepeat, SIGNAL(triggered()), this, SLOT(findAllRepeat()));
     connect(ui->actionFind, SIGNAL(triggered()), this, SLOT(onFind()));
+    connect(ui->actionSortAreas, SIGNAL(triggered()), this, SLOT(sortAreas()));
 
     //tools action
     connect(ui->actionPolygonTool, SIGNAL(triggered()), this, SLOT(setPolygonTool()));
@@ -101,6 +104,7 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->actionShowShopText, SIGNAL(toggled(bool)), m_docView, SLOT(showShopText(bool)));
     connect(ui->actionShowPointText, SIGNAL(toggled(bool)), m_docView, SLOT(showPointText(bool)));
     connect(ui->actionShowDir, SIGNAL(toggled(bool)), m_docView, SLOT(showDirection(bool)));
+    //connect(ui->actionShowAreaSort, SIGNAL(toggled(bool)), m_docView, SLOT(showAreaSort(bool)));
     connect(ui->actionZoomOut, SIGNAL(triggered()), m_docView, SLOT(zoomOut()));
     connect(ui->actionZoomIn, SIGNAL(triggered()), m_docView, SLOT(zoomIn()));
     connect(ui->actionResetZoom, SIGNAL(triggered()), m_docView, SLOT(fitView()));
@@ -546,4 +550,14 @@ void MainWindow::outputItemClicked(QListWidgetItem* item){
     if(mapEntity != NULL){
         currentDocument()->scene()->selectMapEntity(mapEntity);
     }
+}
+
+void MainWindow::sortAreas(){
+    //TODO: if file hasn't been loaded
+    Building* building = currentDocument()->scene()->building();
+    if(building == NULL)
+        return;
+    ShopAnalysis analysis;
+    analysis.buildingSortArea(building);
+    building->update();
 }

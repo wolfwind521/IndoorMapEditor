@@ -58,6 +58,7 @@ public slots:
 
     void findAllRepeat();
     void outputItemClicked(QListWidgetItem* item);
+    void sortAreas();
 protected:
     void closeEvent(QCloseEvent *event);
 private:

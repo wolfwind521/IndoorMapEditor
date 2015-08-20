@@ -15,10 +15,11 @@ FuncArea::FuncArea(QGraphicsItem *parent)
     : PolygonEntity(parent), m_dianpingId(-1), m_connected(false), m_mateId(0)
 {
     m_color = QColor(248, 203, 173, 150);
-    setObjectName(tr("未命名"));
-    m_type = 400;
-    m_category = 109;
-    m_status = Status::Working;
+    setObjectName(tr(""));
+    m_type = "400";
+    m_category = Category(109);
+    m_areaStatus = Working;
+    m_sortType = UNSORTED;
 
     FuncArea::m_typeHash["未设置"] = 0;
     FuncArea::m_typeHash["中空区域"] = 100;
@@ -38,7 +39,7 @@ FuncArea::FuncArea(QGraphicsItem *parent)
     m_textItem->setPos(center());
     m_textItem->setPlainText(objectName());
     m_textItem->setFlag(QGraphicsItem::ItemIsMovable);
-    //m_textItem->setFlag(QGraphicsItem::ItemIsSelectable);
+    m_textItem->setFlag(QGraphicsItem::ItemIsSelectable);
     connect(this, SIGNAL(objectNameChanged(QString)), this, SLOT(updateName(QString)));
     connect(this, SIGNAL(centerChanged(QPointF)), this, SLOT(updateCenter(QPointF)) );
 }
@@ -102,14 +103,14 @@ int FuncArea::mateId() const {
     return m_mateId;
 }
 
-void FuncArea::setStatus(FuncArea::Status status){
-    if(m_status == status)
+void FuncArea::setAreaStatus(FuncArea::AreaStatus status){
+    if(m_areaStatus == status)
         return;
-    m_status = status;
+    m_areaStatus = status;
 }
 
-FuncArea::Status FuncArea::status() const{
-    return m_status;
+FuncArea::AreaStatus FuncArea::areaStatus() const{
+    return m_areaStatus;
 }
 
 bool FuncArea::load(const QJsonObject &jsonObject) {
@@ -117,11 +118,16 @@ bool FuncArea::load(const QJsonObject &jsonObject) {
 
     m_type = jsonObject["Type"].toString();
     m_category = Category(jsonObject["Category"].toInt());
-    m_id = jsonObject["BrandShop"].toInt();
+    m_id = jsonObject["_id"].toInt();
+    if(m_id == 0){
+        generateId();
+    }
     m_shopNo = jsonObject["ShopNo"].toString();
     m_dianpingId = jsonObject["dianping_id"].toInt();
     m_mateId = jsonObject["MateId"].toInt();
-    m_status = FuncArea::Status(jsonObject["Status"].toInt(Status::Working));
+    m_areaStatus = AreaStatus(jsonObject["AreaStatus"].toInt(int(Working)));
+    m_brandShop = jsonObject["BrandShop"].toInt(-1);
+    m_sortType = SORT_TYPE(jsonObject["SortType"].toInt(int(UNSORTED)));
     if(m_dianpingId < 0 && m_dianpingId != -1){
         m_dianpingId = -1;
     }
@@ -130,6 +136,7 @@ bool FuncArea::load(const QJsonObject &jsonObject) {
     }
     m_textItem->setPos(center());
     m_textItem->setPlainText(objectName());
+    updateColor();
 
     return true;
 }
@@ -138,12 +145,14 @@ bool FuncArea::save(QJsonObject &jsonObject, double scale) const {
     PolygonEntity::save(jsonObject, scale);
 
     jsonObject["Type"] = m_type;
-    jsonObject["BrandShop"] = m_id;
+    jsonObject["_id"] = m_id;
+    jsonObject["BrandShop"] = m_brandShop;
     jsonObject["ShopNo"] = m_shopNo;
     jsonObject["dianping_id"] = m_dianpingId;
     jsonObject["MateId"] = m_mateId;
-    jsonObject["Category"] = m_category;
-    jsonObject["Status"] = m_status;
+    jsonObject["Category"] = int(m_category);
+    jsonObject["SortType"] = int(m_sortType);
+    jsonObject["AreaStatus"] = int(m_areaStatus);
 
     QJsonArray jsonArray;
     jsonArray.append(int(m_center.x() *scale));
@@ -178,6 +187,7 @@ void FuncArea::updateFont(const QFont &font){
 }
 
 void FuncArea::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget){
+
     PolygonEntity::paint(painter, option, widget);
 
     //paint the marker
@@ -187,24 +197,8 @@ void FuncArea::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, 
         painter->setPen(QPen(QColor(22, 22, 22)));
         painter->drawEllipse(m_center, 3, 3);
 
-        if(DocumentView::viewStyle() & DocumentView::StyleShowShopName){
-//            //paint the text
-//            painter->setPen(QPen());
-//            QFont font = scene()->font();
-//            font.setPixelSize(font.pointSize());
-//            //font.setPixelSize(12);
-//            painter->setFont(font);
-//            QRect fontRect = QFontMetrics(font).boundingRect(objectName());
-//            int width = fontRect.width();
-//            int height = fontRect.height();
-//            painter->drawText(QPoint(m_center.x()-width/2.0, m_center.y() - height/5.0), objectName());
+        (DocumentView::viewStyle() & DocumentView::StyleShowShopName) ? m_textItem->show() : m_textItem->hide();
 
-            //m_textItem->setFont(scene()->font());
-            //m_textItem->setZValue(1000.0);
-            m_textItem->show();
-        }else{
-            m_textItem->hide();
-        }
     }
 }
 
@@ -226,9 +220,29 @@ QString FuncArea::getTypeName(){
 void FuncArea::updateByTypeName(const QString &typeName){
     int value = FuncArea::m_typeHash[typeName];
     if(value == 100 || value == 300 || value == 400){
-        setCategory(Category::Other);
+        setCategory(Other);
         setType(QString::number(value));
     }else{
         setCategory(Category(value));
+    }
+}
+
+void FuncArea::setSortType(FuncArea::SORT_TYPE sortType){
+    if(m_sortType == sortType)
+        return;
+    m_sortType = sortType;
+    updateColor();
+
+}
+
+FuncArea::SORT_TYPE FuncArea::sortType(){
+    return m_sortType;
+}
+
+void FuncArea::updateColor(){
+    if(m_sortType == MIDDLE_AREA){
+        m_color = QColor(255, 0, 0, 100);
+    }else if(m_sortType == SIDE_AREA){
+        m_color = QColor(0, 0, 255, 100);
     }
 }

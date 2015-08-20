@@ -1,20 +1,29 @@
 ﻿#include "mapentity.h"
 #include <QJsonArray>
+#include <QDateTime>
 
 MapEntity::MapEntity(QGraphicsItem *parent) :
-    QGraphicsObject(parent), m_id(0), m_type("0")
+    QGraphicsObject(parent), m_type("0")
 {
+    generateId();
 }
 
 MapEntity::MapEntity(const QString &name, QGraphicsItem *parent) :
-    QGraphicsObject(parent), m_id(0), m_type("0")
+    QGraphicsObject(parent), m_type("0")
 {
+    generateId();
     setObjectName(name);
 }
 
 const QString &MapEntity::brief() const
 {
     return m_brief;
+}
+
+int MapEntity::generateId(){
+    //利用时间生成6位id, 小概率生成同样id...
+    m_id = QDateTime::currentDateTime().toTime_t() % 1000000 +  qrand()% 100000 + 1000000;
+    return m_id;
 }
 
 void MapEntity::setBrief(const QString & brief)

@@ -13,12 +13,12 @@ int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
 
-
     MainWindow w;
 
     QCoreApplication::setApplicationName("IndoorMap Editor. ");
-    QCoreApplication::setApplicationVersion("1.6");
+    QCoreApplication::setApplicationVersion("1.14");
 
+    //解析命令行参数
     QCommandLineParser parser;
     parser.setApplicationDescription("author: GaiMeng");
     parser.addHelpOption();
@@ -35,7 +35,7 @@ int main(int argc, char *argv[])
                QCoreApplication::translate("main", "savepath"));
        parser.addOption(savefileOption);
 
-
+    //开始解析
     parser.process(a);
     if(parser.isSet(openfileOption)){
         QString openPath = parser.value(openfileOption);

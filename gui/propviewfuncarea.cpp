@@ -1,5 +1,5 @@
 ﻿#include "propviewfuncarea.h"
-#include "../core/funcarea.h"
+
 
 #include <QLineEdit>
 #include <QtWebKitWidgets/QWebView>
@@ -8,6 +8,7 @@
 #include <QPushButton>
 #include <QFormLayout>
 #include <QComboBox>
+#include <QCheckBox>
 
 #pragma comment(lib,"Qt5Widgets.lib")
 #pragma comment(lib,"Qt5WebKitWidgets.lib")
@@ -24,6 +25,13 @@ PropViewFuncArea::PropViewFuncArea(MapEntity *mapEntity, QWidget *parent) :
     m_queryButton = new QPushButton(tr("品牌关联"));
     m_checkDianpingBtn = new QPushButton(tr("检查"));
     m_mateIdEdit = new QLineEdit;
+    m_sortComboBox = new QComboBox;
+    QStringList strlist ;
+    strlist<<"边铺"<<"中岛"<<"无分类";
+    m_sortComboBox->addItems(strlist);
+    m_vacancyCheckBox = new QCheckBox;
+    m_vacancyCheckBox->setText(tr("空铺"));
+
 
     m_layout->addRow(tr("<b><font color=red>铺位号</font></b>"), m_shopNoEdit);
     m_layout->addRow(tr("面积（平方米）"), m_areaEdit);
@@ -33,6 +41,8 @@ PropViewFuncArea::PropViewFuncArea(MapEntity *mapEntity, QWidget *parent) :
     m_layout->addRow(tr("<b><font color=red>点评 ID</font></b>"), dianpingLayout);
     m_layout->insertRow(0,m_queryButton);
     m_layout->addRow(tr("同铺id"), m_mateIdEdit);
+    m_layout->addRow(tr("铺位类别"), m_sortComboBox);
+    m_layout->addRow(tr("铺位状态"), m_vacancyCheckBox);
 
     updateWidgets();
 
@@ -42,6 +52,8 @@ PropViewFuncArea::PropViewFuncArea(MapEntity *mapEntity, QWidget *parent) :
     connect(m_queryButton, SIGNAL(clicked()), this, SLOT(onQuery()));
     connect(m_mateIdEdit, SIGNAL(textEdited(QString)), this, SLOT(updateMateId(QString)) );
     connect(m_checkDianpingBtn, SIGNAL(clicked()), this, SLOT(onCheckDianpingId()));
+    connect(m_sortComboBox, SIGNAL(currentIndexChanged(QString)), this, SLOT(updateSortType(QString)));
+    connect(m_vacancyCheckBox, SIGNAL(stateChanged(int)), this, SLOT(updateAreaStatus(int)));
 }
 
 PropViewFuncArea::~PropViewFuncArea(){
@@ -57,11 +69,14 @@ bool PropViewFuncArea::match(const MapEntity *mapEntity) const {
 
 void PropViewFuncArea::updateWidgets(){
     PropertyView::updateWidgets();
+    m_funcArea = static_cast<FuncArea*>(m_mapEntity);
 
     m_shopNoEdit->setText(m_funcArea->shopNo());
     m_areaEdit->setText(QString::number(m_funcArea->area()));
     m_dianpingIdEdit->setText(QString::number(m_funcArea->dianpingId()));
     m_mateIdEdit->setText(QString::number(m_funcArea->mateId()));
+    m_sortComboBox->setCurrentText(getSortTypeName(m_funcArea->sortType()));
+    m_vacancyCheckBox->setChecked(m_funcArea->areaStatus() == FuncArea::Vacancy);
 }
 
 void PropViewFuncArea::updateShopNo(const QString &shopNo){
@@ -78,6 +93,25 @@ void PropViewFuncArea::updateDianpingId(const QString &dpId) {
 
 void PropViewFuncArea::updateMateId(const QString &mateId){
     m_funcArea->setMateId(mateId.toInt());
+}
+
+void PropViewFuncArea::updateSortType(const QString &sortType){
+    FuncArea::SORT_TYPE type;
+    if(!sortType.compare("边铺")){
+        type = FuncArea::SIDE_AREA;
+    }else if(!sortType.compare("中岛")){
+        type = FuncArea::MIDDLE_AREA;
+    }else {
+        type = FuncArea::UNSORTED;
+    }
+    m_funcArea->setSortType(type);
+}
+
+void PropViewFuncArea::updateAreaStatus(const int state){
+    if(state == Qt::Checked)
+        m_funcArea->setAreaStatus(FuncArea::Vacancy);
+    else if(state == Qt::Unchecked)
+        m_funcArea->setAreaStatus(FuncArea::Working);
 }
 
 void PropViewFuncArea::queryFinished(){
@@ -111,8 +145,16 @@ void PropViewFuncArea::onCheckDianpingId(){
     }
     m_webDlg = new QWebView();
     QUrl url("http://www.dianping.com/shop/" + QString::number(static_cast<FuncArea*>(m_mapEntity)->dianpingId()));
-    //QUrl url("http://wolfwind521.github.io/2dmap");
     m_webDlg->setUrl(url);
     m_webDlg->setWindowFlags(Qt::WindowStaysOnTopHint);
     m_webDlg->show();
+}
+
+QString PropViewFuncArea::getSortTypeName(FuncArea::SORT_TYPE sortType){
+    if(sortType == FuncArea::UNSORTED)
+        return "无分类";
+    if(sortType == FuncArea::MIDDLE_AREA)
+        return "中岛";
+    if(sortType == FuncArea::SIDE_AREA)
+        return "边铺";
 }

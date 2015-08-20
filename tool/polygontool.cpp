@@ -39,6 +39,10 @@ void PolygonTool::mouseReleaseEvent(QGraphicsSceneMouseEvent *event){
                 m_polygon->computeCenter();
                 m_polygon->computeArea();
 
+                if(m_polygon->isClassOf("FuncArea")){
+                    m_polygon->setObjectName(tr("未命名"));
+                }
+
                 //selection
                 m_doc->scene()->clearSelection();
                 m_polygon->setSelected(true);

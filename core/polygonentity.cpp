@@ -238,3 +238,9 @@ void PolygonEntity::transformEntity(const QMatrix &matrix){
     MapEntity::transformEntity(matrix);
     m_outline = matrix.map(m_outline);
 }
+
+void PolygonEntity::setColor(QColor color){
+    if(m_color == color)
+        return;
+    m_color = color;
+}

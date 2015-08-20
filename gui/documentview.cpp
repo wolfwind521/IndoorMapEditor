@@ -96,6 +96,7 @@ void DocumentView::updateSelection(){
         QGraphicsTextItem* textItem = qgraphicsitem_cast<QGraphicsTextItem*>(item);
         if(textItem != NULL){
             item = textItem->parentItem();
+            item->setSelected(true);
         }
         MapEntity* selectedEntity = static_cast<MapEntity*>(item);
         emit selectionChanged(selectedEntity);
@@ -167,6 +168,11 @@ void DocumentView::showShopText(bool show){
 
 void DocumentView::showPointText(bool show){
     m_style ^= StyleShowPointText;
+    m_scene->update();
+}
+
+void DocumentView::showAreaSort(bool show){
+    m_style ^= StyleShowAreaSort;
     m_scene->update();
 }
 
