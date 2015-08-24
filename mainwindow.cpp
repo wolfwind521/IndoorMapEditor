@@ -17,6 +17,7 @@
 #include "./tool/splittool.h"
 #include "./tool/scaletool.h"
 #include "./function/shopanalysis.h"
+#include <time.h>
 #include <QTimer>
 #include <QCloseEvent>
 #include <QSettings>

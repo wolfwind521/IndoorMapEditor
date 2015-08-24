@@ -1,5 +1,17 @@
-
+﻿#include "../core/building.h"
+#include "../core/floor.h"
+#include "../core/funcarea.h"
+#include "../core/polygonentity.h"
 #include "shopanalysis.h"
+#include <QString>
+#include <QImage>
+#include <QPainter>
+#include <Qpen>
+#include <QBrush>
+
+
+
+
 //边铺中岛区分
 double floorthreshold=5;
 double areathreshold=5;
@@ -145,7 +157,7 @@ void ShopAnalysis::sideAreaSort(Floor* floor){
 
 }
 
-double ShopAnalysis::pointToline(QPoint p0,QPoint p1,QPoint p2){
+double ShopAnalysis::pointToline(const QPoint &p0, const QPoint &p1, const QPoint &p2){
     double A=p1.y()-p2.y();
     double B=p2.x()-p1.x();
     double C=p1.x()*p2.y()-p2.x()*p1.y();
@@ -169,7 +181,7 @@ double ShopAnalysis::pointToline(QPoint p0,QPoint p1,QPoint p2){
 }
 
 
-bool ShopAnalysis::polygonTopolygon(QPolygon polygon1,QPolygon polygon2){
+bool ShopAnalysis::polygonTopolygon(QPolygon &polygon1,QPolygon &polygon2){
     int polygon1num = polygon1.size(), polygon2num = polygon2.size();
     double mindistance0=pointToline(polygon2[0],polygon1[0],polygon1[1]);
     double distance0;

@@ -39,7 +39,6 @@ SOURCES += main.cpp\
     tool/splittool.cpp \
     tool/mergetool.cpp \
     tool/scaletool.cpp \
-    core/objecttreemodel.cpp \
     math/gdiam.cpp \
     tool/edittool.cpp \
     function/shopanalysis.cpp
@@ -73,7 +72,6 @@ HEADERS  += mainwindow.h \
     tool/splittool.h \
     tool/mergetool.h \
     tool/scaletool.h \
-    core/objecttreemodel.h \
     math/gdiam.hpp \
     tool/edittool.h \
     function/shopanalysis.h

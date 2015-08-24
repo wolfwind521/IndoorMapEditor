@@ -2,7 +2,6 @@
 #define FUNCAREA_H
 
 #include "polygonentity.h"
-#include "../function/shopanalysis.h"
 #include <QHash>
 #include <QString>
 #include <QJsonObject>

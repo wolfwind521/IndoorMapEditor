@@ -1,9 +1,11 @@
-#include "polygontool.h"
+﻿#include "polygontool.h"
 #include "../gui/documentview.h"
 #include "../core/funcarea.h"
 #include "../core/building.h"
 #include "../core/scene.h"
 #include <QGraphicsSceneEvent>
+
+#pragma execution_character_set("utf-8")
 
 PolygonTool::PolygonTool(DocumentView *doc) :
     AbstractTool(doc), m_start(true), m_isCreating(false), m_polygon(NULL)
