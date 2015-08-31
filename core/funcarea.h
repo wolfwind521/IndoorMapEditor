@@ -32,6 +32,7 @@ public:
 
     //业态
     enum Category{
+        None = 0,
         Catering = 101,     //餐饮
         Shopping = 102,     //购物
         Beauty = 103,       //美妆丽人

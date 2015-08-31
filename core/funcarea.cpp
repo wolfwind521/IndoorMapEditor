@@ -220,10 +220,14 @@ QString FuncArea::getTypeName(){
 void FuncArea::updateByTypeName(const QString &typeName){
     int value = FuncArea::m_typeHash[typeName];
     if(value == 100 || value == 300 || value == 400){
-        setCategory(Other);
-        setType(QString::number(value));
+        setCategory(None); //将业态置空
+        setType(QString::number(value)); //更新type
     }else{
-        setCategory(Category(value));
+        int tmp = m_type.toInt();
+        if(tmp == 100 || tmp == 300 || tmp == 400){
+            setType(QString::number(value)); //将type设为其他值
+        }
+        setCategory(Category(value));//更新业态
     }
 }
 
@@ -244,5 +248,7 @@ void FuncArea::updateColor(){
         m_color = QColor(255, 0, 0, 100);
     }else if(m_sortType == SIDE_AREA){
         m_color = QColor(0, 0, 255, 100);
+    }else{
+        m_color = QColor(248, 203, 173, 150);
     }
 }

@@ -138,10 +138,8 @@ void ShopAnalysis::sideAreaSort(Floor* floor){
      QList<FuncArea*>::iterator iallAreas;
      for(iallAreas = allAreas.begin(); iallAreas != allAreas.end();iallAreas++){
          QString strtype=(*iallAreas)->type();
-         if( (!strtype.compare("100", Qt::CaseInsensitive)) ||
-             (!strtype.compare("000100", Qt::CaseInsensitive)) ||
-             (!strtype.compare("300", Qt::CaseInsensitive)) ||
-             (!strtype.compare("000300", Qt::CaseInsensitive)) ){
+         int inttype = strtype.toInt();
+         if( inttype == 100 || inttype == 300 ){
              (*iallAreas)->setSortType(FuncArea::UNSORTED);
 
          }else{
