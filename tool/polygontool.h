@@ -1,4 +1,4 @@
-#ifndef POLYGONTOOL_H
+﻿#ifndef POLYGONTOOL_H
 #define POLYGONTOOL_H
 
 #include "abstracttool.h"

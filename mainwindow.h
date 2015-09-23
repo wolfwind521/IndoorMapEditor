@@ -39,6 +39,8 @@ public slots:
     void printCurrent();
 
     void deleteEntity();
+    void onAddLayerButtonClicked();
+    void onDeleteButtonClicked();
 
     void rebuildTreeView();
     void updatePropertyView(MapEntity* mapEntity);
@@ -51,16 +53,15 @@ public slots:
     void setScaleTool();
     void setGraphicsViewFont();
 
-    void onSearch();
     void onFind();
-    void selectPreviousResult();
-    void selectNextResult();
 
     void findAllRepeat();
     void outputItemClicked(QListWidgetItem* item);
     void sortAreas();
 protected:
     void closeEvent(QCloseEvent *event);
+    void dragEnterEvent(QDragEnterEvent *event);
+    void dropEvent(QDropEvent *event);
 private:
     bool okToContinue();
     void addDocument(DocumentView* doc);

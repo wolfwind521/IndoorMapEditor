@@ -60,15 +60,15 @@ bool PubPoint::load(const QJsonObject &jsonObject)
     return true;
 }
 
-bool PubPoint::save(QJsonObject &jsonObject, double scale) const
+bool PubPoint::save(QJsonObject &jsonObject) const
 {
-    MapEntity::save(jsonObject, scale);
+    MapEntity::save(jsonObject);
     jsonObject["Type"] = m_type;
     jsonObject["_id"] = m_id;
 
     QJsonArray point;
-    point.append(int(m_center.x() * scale));
-    point.append(int(-m_center.y() *scale));
+    point.append(int(m_center.x()));
+    point.append(int(-m_center.y()));
 
     QJsonArray array0, array1;
     array0.append(point);

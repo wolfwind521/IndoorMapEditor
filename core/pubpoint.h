@@ -20,7 +20,7 @@ public:
     explicit PubPoint(QGraphicsItem *parent = 0);
 
     bool load(const QJsonObject & jsonObject);
-    bool save(QJsonObject &jsonObject, double scale) const;
+    bool save(QJsonObject &jsonObject) const;
     virtual const QStringList typeStringList() const;
     virtual QString getTypeName();
     virtual void updateByTypeName(const QString &typeName);

@@ -37,7 +37,7 @@ void MapEntity::setBrief(const QString & brief)
 bool MapEntity::isClassOf(const QString &className) const {
     QString myClassName;
     myClassName = this->metaObject()->className();
-    return (myClassName == className);
+    return (!myClassName.compare(className));
 }
 int MapEntity::id() const
 {
@@ -106,7 +106,7 @@ bool MapEntity::load(const QJsonObject &jsonObject)
     return true;
 }
 
-bool MapEntity::save(QJsonObject &jsonObject, double scale) const
+bool MapEntity::save(QJsonObject &jsonObject) const
 {
     jsonObject["Name"] = objectName();
     jsonObject["Name_en"] = m_enName;

@@ -40,7 +40,7 @@ void ScaleTool::mouseReleaseEvent(QGraphicsSceneMouseEvent *event) {
                                                     -2147483647, 2147483647, 1, &ok);
             if (ok && inputLength != 0.0){
                 double scale =  inputLength / line.length() * 10; // change to decimeter
-                m_doc->addScale(scale);
+                m_doc->scene()->addScale(scale);
             }
             delete m_scaleLine;
             m_scaleLine = NULL;

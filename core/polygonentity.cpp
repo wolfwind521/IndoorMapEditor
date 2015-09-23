@@ -81,14 +81,14 @@ bool PolygonEntity::load(const QJsonObject &jsonObject)
     return true;
 }
 
-bool PolygonEntity::save(QJsonObject &jsonObject, double scale) const
+bool PolygonEntity::save(QJsonObject &jsonObject) const
 {
-    MapEntity::save(jsonObject, scale);
-    jsonObject["Area"] = int(m_area*scale*scale);
+    MapEntity::save(jsonObject);
+    jsonObject["Area"] = int(m_area);
     QJsonArray jsonArray;
     for(int i = 0; i < m_outline.size(); i++){
-        jsonArray.append(int(m_outline[i].x() * scale));
-        jsonArray.append(int(-m_outline[i].y() * scale));
+        jsonArray.append(int(m_outline[i].x()));
+        jsonArray.append(int(-m_outline[i].y()));
     }
     QJsonArray array0,array1;
     array0.append(jsonArray);
@@ -237,6 +237,7 @@ QPointF PolygonEntity::computeMainDir(){
 void PolygonEntity::transformEntity(const QMatrix &matrix){
     MapEntity::transformEntity(matrix);
     m_outline = matrix.map(m_outline);
+    computeArea();
 }
 
 void PolygonEntity::setColor(QColor color){

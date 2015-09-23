@@ -26,5 +26,13 @@
         <file>src/icon/lift.png</file>
         <file>src/icon/stair.png</file>
         <file>src/icon/toilet.png</file>
+        <file>src/icon/edit-find.png</file>
+        <file>src/icon/editpaste.png</file>
+        <file>src/icon/flip.png</file>
+        <file>src/icon/rotateright.png</file>
+        <file>src/icon/font.png</file>
+        <file>src/icon/addlayer.png</file>
+        <file>src/icon/trash.png</file>
+        <file>src/icon/icon.png</file>
     </qresource>
 </RCC>

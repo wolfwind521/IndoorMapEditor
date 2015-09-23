@@ -1,4 +1,4 @@
-#include "imagelayer.h"
+﻿#include "imagelayer.h"
 #include <QFileInfo>
 #include <QPainter>
 #include <QPixmap>
@@ -48,8 +48,8 @@ bool ImageLayer::load(const QJsonObject &jsonObject) {
     return true;
 }
 
-bool ImageLayer::save(QJsonObject &jsonObject, double scale) const {
-    MapEntity::save(jsonObject, scale);
+bool ImageLayer::save(QJsonObject &jsonObject) const {
+    MapEntity::save(jsonObject);
     jsonObject["file"] = m_fileName;
     return true;
 }

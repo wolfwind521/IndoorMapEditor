@@ -16,7 +16,7 @@ public:
     Floor(QGraphicsItem *parent = 0);
     Floor(PolygonEntity & polygon);
     bool load(const QJsonObject & jsonObject);
-    bool save(QJsonObject & jsonObject, double scale) const;
+    bool save(QJsonObject & jsonObject) const;
 
     QList<FuncArea*> getFuncAreas() const;
 
@@ -27,6 +27,7 @@ public:
 
     //transform
     virtual void transformEntity(const QMatrix &matrix);
+    virtual int generateId();
 signals:
     void heightChanged( double height );
 private:

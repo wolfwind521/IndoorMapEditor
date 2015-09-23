@@ -58,41 +58,56 @@ void MergeTool::contextMenuEvent(QGraphicsSceneContextMenuEvent *event) {
 void MergeTool::mergeSelectedItems() {
     Scene *scene = m_doc->scene();
     QList<QGraphicsItem*> itemList = scene->selectedItems();
-    QVector<PolygonEntity*> polyArray;
+    QVector<QPolygon> polyArray;
+    Floor *tmpFloor = NULL;
+
+    //get all the polygons
     foreach(QGraphicsItem* item, itemList) {
         PolygonEntity* poly = dynamic_cast<PolygonEntity*>(item);
-        if(poly != NULL && poly->isClassOf("FuncArea")){
-            polyArray.push_back(poly);
+        if(poly != NULL){
+            polyArray.push_back(poly->outline());
+            if(poly->isClassOf("Floor")){
+                tmpFloor = dynamic_cast<Floor*>(poly);
+            }
         }
     }
+
+    //merge the polygons
     if(polyArray.size() >= 2){
-        PolygonEntity *polygon = merge(polyArray);
-        FuncArea *newArea = new FuncArea(*polygon);
-        newArea->computeArea();
-        newArea->computeCenter();
-        newArea->setParentEntity(scene->currentFloor());
+        QPolygon polygon = merge(polyArray);
+        if(tmpFloor){
+            tmpFloor->setOutline(polygon);
+        }else{
+            FuncArea *newArea = new FuncArea("未命名", polygon);
+            newArea->computeArea();
+            newArea->computeCenter();
+            newArea->setParentEntity(scene->currentFloor());
+        }
+    }
+
+    //delte the old funcAreas
+    foreach(QGraphicsItem* item, itemList) {
+        FuncArea* funcArea = dynamic_cast<FuncArea*>(item);
+        if(funcArea != NULL){
+            delete funcArea;
+        }
     }
     scene->clearSelection();
 }
 
-PolygonEntity* MergeTool::merge(QVector<PolygonEntity *> &polygons) {
+QPolygon MergeTool::merge(QVector<QPolygon > &polygons) {
     while(polygons.size() > 2){
-        QVector<PolygonEntity *> twoPoly;
+        QVector<QPolygon > twoPoly;
         twoPoly.push_back(polygons.last());
         polygons.pop_back();
         twoPoly.push_back(polygons.last());
         polygons.pop_back();
-        PolygonEntity* tmpPoly = merge(twoPoly);
+        QPolygon tmpPoly = merge(twoPoly);
         polygons.push_back(tmpPoly);
     }
 
     if(polygons.size() == 2){
-        const QPolygon& p1 = polygons[0]->outline();
-        const QPolygon& p2 = polygons[1]->outline();
-        PolygonEntity* newPoly = new PolygonEntity(QString("未命名"), p1.united(p2));
-        delete polygons[0];
-        delete polygons[1];
-        return newPoly;
+        return polygons[0].united(polygons[1]);
     }
 
 }

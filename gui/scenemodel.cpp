@@ -1,4 +1,4 @@
-#include "scenemodel.h"
+﻿#include "scenemodel.h"
 #include "../core/mapentity.h"
 #include "../core/funcarea.h"
 #include <QIcon>

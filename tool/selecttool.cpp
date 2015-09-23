@@ -6,6 +6,8 @@
 #include <QGraphicsSceneMouseEvent>
 #include <QGraphicsSceneContextMenuEvent>
 
+#pragma execution_character_set("utf-8")
+
 SelectTool::SelectTool(DocumentView *doc) :
     AbstractTool(doc)
 {

@@ -48,7 +48,7 @@ void PolygonTool::mouseReleaseEvent(QGraphicsSceneMouseEvent *event){
                 //selection
                 m_doc->scene()->clearSelection();
                 m_polygon->setSelected(true);
-                m_doc->selectionChanged(m_polygon);
+                m_doc->scene()->setSelectedLayer(m_polygon);
             }
             m_start = true;
             m_isCreating = false;

@@ -12,6 +12,9 @@
 #include <QtPrintSupport/QPrinter>
 #include <QApplication>
 #include <QInputDialog>
+#include <QMimeData>
+#include <QClipboard>
+#include <QJsonDocument>
 #include <qmath.h>
 
 #pragma execution_character_set("utf-8")
@@ -19,12 +22,12 @@
 DocumentView::ViewStyle DocumentView::m_style = StyleDefault;
 
 DocumentView::DocumentView()
-    :m_isModified(false), m_selectable(true), m_ctrlKeyPressed(false), m_scale(0), m_scaleSum(0.0), m_scaleNum(0)
+    :m_isModified(false), m_selectable(true), m_ctrlKeyPressed(false), m_zoom(0)
 {
     m_scene = new Scene(this);
     m_scene->reset();
     m_undoStack = new QUndoStack(this);
-
+    setAcceptDrops(false);
     this->setScene(m_scene);
     this->setDragMode(QGraphicsView::RubberBandDrag);
     this->setRenderHints(QPainter::Antialiasing);
@@ -54,6 +57,71 @@ void DocumentView::clear()
 {
     m_scene->reset();
     m_undoStack->clear();
+}
+
+void DocumentView::cut(){
+
+}
+
+void DocumentView::copy(){
+    QJsonObject rootObject;
+    QJsonArray floorArray;
+    QJsonArray funcAreaArray;
+
+    QList<QGraphicsItem*> itemList = m_scene->selectedItems();
+    foreach(QGraphicsItem* item, itemList) {
+        MapEntity *mapEntity = dynamic_cast<MapEntity*>(item);
+        if(mapEntity == NULL)
+            continue;
+        QJsonObject jsonOject;
+        mapEntity->save(jsonOject);
+        if(mapEntity->isClassOf("Floor")){
+            jsonOject.remove("FuncAreas");
+            jsonOject.remove("PubPoint");
+            jsonOject.remove("ImageLayer");
+            floorArray.append(jsonOject);
+        }else if(mapEntity->isClassOf("FuncArea")){
+            funcAreaArray.append(jsonOject);
+        }
+    }
+    if(!funcAreaArray.isEmpty())
+        rootObject["FuncAreas"] = funcAreaArray;
+    if(!floorArray.isEmpty())
+        rootObject["Floors"] = floorArray;
+    QJsonDocument jsonDoc(rootObject);
+    QApplication::clipboard()->setText(QString(jsonDoc.toJson()));
+}
+
+void DocumentView::paste(){
+    QString text= QApplication::clipboard()->text();
+    QJsonDocument jsonDoc(QJsonDocument::fromJson(text.toUtf8()));
+    QJsonObject rootObject = jsonDoc.object();
+    Floor *newFloor = NULL;
+    if(rootObject.contains("Floors")){
+        QJsonArray floorsArray = rootObject["Floors"].toArray();
+        for(int i = 0; i < floorsArray.size(); i++){
+            QJsonObject floorObject = floorsArray[i].toObject();
+            newFloor = new Floor(m_scene->building());
+            newFloor->load(floorObject);
+            newFloor->generateId();
+            m_scene->addFloor(newFloor);
+        }
+
+    }
+    if(newFloor == NULL)
+        newFloor = m_scene->currentFloor();
+    if(newFloor == NULL)
+        newFloor = m_scene->building()->getFloors().back();
+    if(rootObject.contains("FuncAreas")){
+        QJsonArray funcArray = rootObject["FuncAreas"].toArray();
+        for(int i = 0; i < funcArray.size(); i++){
+            QJsonObject funcObject = funcArray[i].toObject();
+            FuncArea* newFuncArea = new FuncArea(newFloor);
+            newFuncArea->load(funcObject);
+            newFuncArea->generateId();
+            m_scene->addFuncArea(newFuncArea);
+        }
+    }
 }
 
 void DocumentView::printScene(QPrinter *printer){
@@ -91,14 +159,23 @@ void DocumentView::printCurrentView(QPrinter *printer){
 
 //selection from graphics view
 void DocumentView::updateSelection(){
-    if(m_scene->selectedItems().size() > 0){
-        QGraphicsItem* item = m_scene->selectedItems().at(0);
-        QGraphicsTextItem* textItem = qgraphicsitem_cast<QGraphicsTextItem*>(item);
-        if(textItem != NULL){
-            item = textItem->parentItem();
-            item->setSelected(true);
+    QList<QGraphicsItem*> selectedItems = m_scene->selectedItems();
+    QGraphicsItem *mapEntity;
+    if(selectedItems.size() > 0){
+        //textItems
+        QList<QGraphicsItem*>::iterator iter;
+        for(iter = selectedItems.begin(); iter != selectedItems.end(); iter++){
+            if(qgraphicsitem_cast<QGraphicsTextItem*>(*iter)){
+                QGraphicsItem *parent = (*iter)->parentItem();
+                parent->setSelected(true);
+                mapEntity = parent;
+            }else
+                mapEntity = *iter;
         }
-        MapEntity* selectedEntity = static_cast<MapEntity*>(item);
+
+        MapEntity* selectedEntity = static_cast<MapEntity*>(mapEntity);
+        m_scene->clearSelectedLayers();
+        m_scene->setSelectedLayer(m_scene->currentFloor());
         emit selectionChanged(selectedEntity);
     }else{
         emit selectionChanged(NULL);
@@ -109,19 +186,29 @@ void DocumentView::updateSelection(){
 void DocumentView::updateSelection(const QModelIndex & index){
     MapEntity *mapEntity = static_cast<MapEntity*>(index.internalPointer());
 
-    //a floor selected, change the visible floor
+
     QString className = mapEntity->metaObject()->className();
-    if( className == "Floor"){
-        QObject *floor;
-        foreach (floor, m_scene->building()->children()) {
-            static_cast<MapEntity*>(floor)->setVisible(false);
+    //a floor selected, change the visible floor
+    if(!className.compare("Building")){
+        QObject *floorObject;
+        foreach (floorObject, m_scene->building()->children()) {
+            static_cast<MapEntity*>(floorObject)->setVisible(false);
+        }
+        m_scene->setCurrentFloor(NULL);
+    }
+    //a floor selected, change the visible floor
+    else if( !className.compare("Floor")){
+        QObject *floorObject;
+        foreach (floorObject, m_scene->building()->children()) {
+            static_cast<MapEntity*>(floorObject)->setVisible(false);
         }
         mapEntity->setVisible(true);
-        m_scene->setCurrentFloor(static_cast<Floor*>(mapEntity));
-        this->update();
+        Floor *floor = static_cast<Floor*>(mapEntity);
+        m_scene->setCurrentFloor(floor);
     }
     //a funcArea or pubPoint selected, change the visible floor
-    else if( !className.compare("FuncArea") || !className.compare("PubPoint")){
+   // else if( !className.compare("FuncArea") || !className.compare("PubPoint") || !className.compare("ImageLayer")){
+    else{
         MapEntity* parent = static_cast<MapEntity*>(mapEntity->parent());
         if(!parent->isSelected()){
             QObject* floor;
@@ -132,12 +219,11 @@ void DocumentView::updateSelection(const QModelIndex & index){
             m_scene->setCurrentFloor(static_cast<Floor*>(parent));
         }
         m_scene->clearSelection();
+        mapEntity->setSelected(true);
     }
-    else if(!className.compare("Building")){
-        m_scene->setCurrentFloor(NULL);
-    }
+    m_scene->setSelectedLayer(mapEntity);
+    this->update();
 
-    mapEntity->setSelected(true);
     emit selectionChanged(mapEntity);
 }
 
@@ -217,8 +303,8 @@ void DocumentView::zoomOut(int step){
 }
 
 void DocumentView::zoom(int step){
-    m_scale += step;
-    float scale = qPow(2.0, m_scale / 50.0);
+    m_zoom += step;
+    float scale = qPow(2.0, m_zoom / 50.0);
     QMatrix matrix;
     matrix.scale(scale, scale);
     this->setMatrix(matrix);
@@ -233,17 +319,9 @@ void DocumentView::mousePressEvent(QMouseEvent *event){
 void DocumentView::fitView(){
     fitInView(m_scene->currentFloor()->boundingRect(),Qt::KeepAspectRatio);
     qreal dx = matrix().m11();
-    m_scale = qLn(dx)/qLn(2.0) * 50.0;
+    m_zoom = qLn(dx)/qLn(2.0) * 50.0;
 }
 
-void DocumentView::addScale(double s) {
-    m_scaleSum += s;
-    m_scaleNum ++;
-}
-
-double DocumentView::getScale() const {
-    return m_scaleNum == 0 ? 1.0 : m_scaleSum/m_scaleNum;
-}
 
 void DocumentView::onRotate(){
     bool ok;

@@ -1,4 +1,4 @@
-#ifndef MERGETOOL_H
+﻿#ifndef MERGETOOL_H
 #define MERGETOOL_H
 
 #include "abstracttool.h"
@@ -19,7 +19,7 @@ public:
 private slots:
     void mergeSelectedItems();
 private:
-    PolygonEntity* merge(QVector<PolygonEntity*>& polygons);
+    QPolygon merge(QVector<QPolygon>& polygons);
     QList<QGraphicsItem*> m_selectedList;
 };
 

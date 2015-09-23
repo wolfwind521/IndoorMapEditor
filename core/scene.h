@@ -44,12 +44,13 @@ public:
     PolygonEntity* createPolygonByContext();
     void deletePolygonByContext(PolygonEntity* entity);
 
-    void addFloor(Floor* floor);
-    void addFuncArea(FuncArea* funcArea);
+    Floor* addFloor(Floor* floor = 0);
+    FuncArea* addFuncArea(FuncArea* funcArea);
     void addPubPoint(PubPoint* pubPoint);
     void addImageLayer(ImageLayer* imageLayer);
 
-    void deleteSelected();
+    void deleteSelectedItems();
+    void deleteSelectedLayers();
     void deleteMapEntity(MapEntity *entity);
     void removeMapEntity(MapEntity *entity);
 
@@ -64,7 +65,10 @@ public:
     QList<QList<MapEntity*> > findAllRepeat();
 
     void transformMap(const QMatrix &matrix);
-
+    void addScale(double s);
+    void clearSelectedLayers();
+    void setSelectedLayer(MapEntity *entity);
+    MapEntity* currentLayer();
 signals:
     void buildingChanged();
     void fontChanged(const QFont &font);
@@ -85,6 +89,10 @@ private:
     MapEntity *m_root;
     Building *m_building;
     Floor *m_curFloor;
+    double m_scaleSum;
+    int m_scaleNum;
+    double m_curScale;
+    QList<MapEntity*> m_selectedLayers;
 };
 
 #endif // SCENE_H

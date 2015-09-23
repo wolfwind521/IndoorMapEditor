@@ -1,4 +1,4 @@
-#include "iomanager.h"
+﻿#include "iomanager.h"
 #include "../gui/documentview.h"
 #include "../core/building.h"
 #include "../core/floor.h"
@@ -46,7 +46,7 @@ bool IOManager::loadFile(const QString & fileName, DocumentView * doc) {
 bool IOManager::saveFile(const QString &fileName, const DocumentView *doc) {
     QString suffix = QFileInfo(fileName).suffix();
     if(!suffix.compare("json", Qt::CaseInsensitive)) {
-        return JsonLoader::saveFile(fileName, doc->scene()->building(), doc->getScale());
+        return JsonLoader::saveFile(fileName, doc->scene()->building());
     }else{
         return false;
     }

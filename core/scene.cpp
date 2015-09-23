@@ -15,7 +15,7 @@
 #pragma execution_character_set("utf-8")
 
 Scene::Scene(QObject *parent) :
-    QGraphicsScene(parent), m_selectable(true), m_root(NULL), m_building(NULL), m_curFloor(NULL)
+    QGraphicsScene(parent), m_selectable(true), m_root(NULL), m_building(NULL), m_curFloor(NULL), m_scaleSum(0.0), m_scaleNum(0), m_curScale(1.0)
 {
     createRoot();
 }
@@ -26,6 +26,7 @@ void Scene::reset(){
     m_building = NULL;
     createRoot();
     setBuilding(new Building(tr("未命名建筑")));
+    setSelectedLayer(m_building);
     update();
 }
 
@@ -66,18 +67,29 @@ void Scene::setBuilding(Building *building)
 //}
 
 PolygonEntity* Scene::createPolygonByContext() {
-    PolygonEntity *entity;
-    if(m_building->children().empty() || m_curFloor == NULL){
-        Floor * floor = new Floor(m_building);
-        m_building->addFloor(floor);
-        m_curFloor = floor;
-        entity = floor;
-    }else{
-        entity = new FuncArea(m_curFloor);
-        entity->setParent(m_curFloor);
+    MapEntity *curLayer = currentLayer();
+    if(curLayer){
+        if(curLayer->isClassOf("Building")){
+            Building *building = dynamic_cast<Building*>(curLayer);
+            if(building->outline().empty())
+                return building;
+            else
+            {
+                return addFloor(new Floor(m_building));
+            }
+        }
+        else if(curLayer->isClassOf("Floor")){
+            Floor *floor = dynamic_cast<Floor *>(curLayer);
+            if(floor->outline().empty())
+                return floor;
+            else{
+                return addFuncArea(new FuncArea(floor));
+            }
+        }
+        else{
+            return addFuncArea(new FuncArea(m_curFloor));
+        }
     }
-    emit buildingChanged();
-    return entity;
 }
 
 void Scene::deletePolygonByContext(PolygonEntity *entity) {
@@ -89,20 +101,29 @@ void Scene::deletePolygonByContext(PolygonEntity *entity) {
     }
 }
 
-void Scene::addFuncArea(FuncArea *funcArea){
+FuncArea* Scene::addFuncArea(FuncArea *funcArea){
     if(m_curFloor != NULL){
         funcArea->setParentEntity(m_curFloor);
-    }else{
-        funcArea->setParentEntity(m_building);
+        emit buildingChanged();
+        return funcArea;
     }
-    emit buildingChanged();
+
 }
 
-void Scene::addFloor(Floor *floor){
+Floor* Scene::addFloor(Floor *floor){
     if(m_building != NULL){
-        m_building->addFloor(floor);
+        if(floor)
+            m_building->addFloor(floor);
+        else{
+            floor = new Floor();
+            m_building->addFloor(floor);
+        }
+        m_curFloor = floor;
+        setSelectedLayer(floor);
+        emit buildingChanged();
+        return floor;
     }
-    emit buildingChanged();
+
 }
 
 void Scene::addPubPoint(PubPoint *pubPoint){
@@ -121,10 +142,8 @@ void Scene::addImageLayer(ImageLayer *imageLayer) {
 
 //    }
     Floor *floor = new Floor();
-    addFloor(floor);
     imageLayer->setParentEntity(floor);
-    m_curFloor = floor;
-    emit buildingChanged();
+    addFloor(floor);
 }
 
 void Scene::mousePressEvent( QGraphicsSceneMouseEvent *event ){
@@ -173,56 +192,77 @@ void Scene::convertSelectedToFloor(){
         addFloor(new Floor(*selectedEntity));
     }
      deleteMapEntity(selectedEntity);
-    emit buildingChanged();
 }
 
 void Scene::convertSelectedToFuncArea(){
     PolygonEntity* selectedEntity = static_cast<PolygonEntity*>(selectedItems().at(0));
     addFuncArea(new FuncArea(*selectedEntity));
-    deleteMapEntity(selectedEntity);
-    emit buildingChanged();
+    selectedEntity->outline().clear();
 }
 
-void Scene::deleteSelected(){
+void Scene::deleteSelectedItems(){
     QList<QGraphicsItem*> items = selectedItems();
-    foreach (QGraphicsItem* item, items) {
-        item->setSelected(false);
-        deleteMapEntity(static_cast<MapEntity*>(item));
+    QList<QGraphicsItem*> realItems;
+    QList<QGraphicsItem*>::iterator iter;
+    for(iter = items.begin(); iter != items.end(); iter++){
+        (*iter)->setSelected(false);
+        if(!qgraphicsitem_cast<QGraphicsTextItem*>(*iter)){
+            realItems.append(*iter);
+        }
     }
-//    emit selectionChanged();
+    foreach (QGraphicsItem* item, realItems) {
+        MapEntity *mapEntity = dynamic_cast<MapEntity *>(item);
+        if(mapEntity)
+            deleteMapEntity(mapEntity);
+    }
+    update();
+}
+
+void Scene::deleteSelectedLayers(){
+    bool isBuilding = false;
+    foreach(QGraphicsItem* item, m_selectedLayers){
+        if(item){
+            MapEntity *mapEntity = qgraphicsitem_cast<MapEntity*>(item);
+            if(mapEntity->isClassOf("Building"))
+                isBuilding = true;
+            removeMapEntity(mapEntity);
+            delete item;
+            item = NULL;
+        }
+    }
+    if(isBuilding){
+        reset();
+    }
+    clearSelectedLayers();
 }
 
 void Scene::deleteMapEntity(MapEntity *entity){
-    QString className = entity->metaObject()->className();
-    if(className == "Floor"){
-        int r = QMessageBox::warning(0, tr("Warning"),
-                                     tr("确定删除楼层？删除楼层会删掉楼层内所有店铺？"),
-                                     QMessageBox::Yes | QMessageBox::No );
-        if(r == QMessageBox::Yes){
-            m_building->deleteFloor(static_cast<Floor*>(entity));
-        }
-    }else{
+
+    //如果是floor或building，仅清空其轮廓
+    if(entity->isClassOf("Floor")||entity->isClassOf("Building")){
+        PolygonEntity* poly = dynamic_cast<PolygonEntity*>(entity);
+        poly->outline().clear();
+    }else{ //否则直接删除
         removeMapEntity(entity);
         delete entity;
         entity = NULL;
     }
+    emit buildingChanged();
 }
 
 void Scene::removeMapEntity(MapEntity *entity){
     entity->setParent(NULL);
     entity->setParentItem(NULL);
-    if(entity == m_curFloor){
-        m_curFloor = NULL;
-    }
-    emit buildingChanged();
 }
 
 bool Scene::showFloor(int floorId) {
     QObject *object;
     bool found = false;
-    foreach(object, building()->children()){
-        Floor *floor = static_cast<Floor*>(object);
-        if(floor->id() == floorId){
+    QVector<Floor*> floors = building()->getFloors();
+    if(floors.empty())
+        return false;
+    foreach(Floor* floor, floors){
+        if( floor->id() == floorId){
             floor->setVisible(true);
             setCurrentFloor(floor);
             found = true;
@@ -230,9 +270,14 @@ bool Scene::showFloor(int floorId) {
             floor->setVisible(false);
         }
     }
+    if(!found){ //如果没找到对应的defaultFloor
+        Floor *floor = floors.at(0);
+        floor->setVisible(true);
+        setCurrentFloor(floor);
+    }
     update();
 
-    return found;
+    return true;
 }
 
 bool Scene::showDefaultFloor(){
@@ -288,7 +333,7 @@ QList<QList<MapEntity*> > Scene::findAllRepeat(){
 }
 
 void Scene::selectMapEntity(MapEntity *entity){
-    if(entity != NULL && entity->isClassOf("FuncArea")){
+    if(entity != NULL && (entity->isClassOf("FuncArea") || entity->isClassOf("PubPoint"))){
         clearSelection();
         Floor *floor = static_cast<Floor*>(entity->parentObject());
         if(floor != NULL){
@@ -305,4 +350,31 @@ void Scene::transformMap(const QMatrix &mat)
     }else{ //rotate the whole building
         m_building->transformEntity(mat);
     }
+}
+
+void Scene::addScale(double s) {
+    m_scaleNum ++;
+    double scale = (s*m_curScale + m_curScale*(m_scaleNum-1))/m_scaleNum; //相对于初始的平均缩放
+    QMatrix mat;
+    scale /= m_curScale; //相对于上一次的缩放
+    mat.scale(scale, scale);
+    m_building->transformEntity(mat);
+    m_curScale = scale;
+
+}
+
+void Scene::setSelectedLayer(MapEntity *entity){
+    m_selectedLayers.clear();
+    m_selectedLayers.append(entity);
+}
+
+void Scene::clearSelectedLayers(){
+    m_selectedLayers.clear();
+}
+
+MapEntity *Scene::currentLayer(){
+    if(m_selectedLayers.empty())
+        return NULL;
+    else
+        return m_selectedLayers.back();
 }

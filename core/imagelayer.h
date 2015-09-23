@@ -1,4 +1,4 @@
-#ifndef IMAGELAYER_H
+﻿#ifndef IMAGELAYER_H
 #define IMAGELAYER_H
 
 #include "../core/mapentity.h"
@@ -18,7 +18,7 @@ public:
 
     //io
     virtual bool load(const QJsonObject &jsonObject);
-    virtual bool save(QJsonObject &jsonObject, double scale) const;
+    virtual bool save(QJsonObject &jsonObject) const;
 signals:
 
 public slots:

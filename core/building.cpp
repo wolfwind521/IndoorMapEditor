@@ -39,6 +39,8 @@ void Building::setHeight(double height) {
 }
 
 void Building::addFloor(Floor *floor) {
+    if(!floor)
+        return;
     if(floor->id() > 0) {
         m_groundFloors ++;
     } else{
@@ -160,11 +162,11 @@ bool Building::load(const QJsonObject &jsonObject) {
     return true;
 }
 
-bool Building::save(QJsonObject &jsonObject, double scale) const
+bool Building::save(QJsonObject &jsonObject) const
 {
     QJsonObject dataObject, buildingObject;
 
-    PolygonEntity::save(buildingObject, scale);
+    PolygonEntity::save(buildingObject);
     buildingObject["UnderFloors"] = m_underFloors;
     buildingObject["FrontAngle"] = m_frontAngle;
     buildingObject["DefaultFloor"] = m_defaultFloor;
@@ -190,7 +192,7 @@ bool Building::save(QJsonObject &jsonObject, double scale) const
         if( className == "Floor"){
             QJsonObject floorObject;
             Floor* floor = static_cast<Floor*>(object);
-            floor->save(floorObject, scale);
+            floor->save(floorObject);
             //floorsId += QString::number(floor->id()) + ",";
             if(tmpList.indexOf(floor->id()) == -1){
                 tmpList << floor->id();

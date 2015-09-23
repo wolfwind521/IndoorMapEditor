@@ -13,6 +13,10 @@
   <property name="windowTitle">
    <string>MainWindow</string>
   </property>
+  <property name="windowIcon">
+   <iconset resource="IndoorMapEditor.qrc">
+    <normaloff>:/src/icon/icon.png</normaloff>:/src/icon/icon.png</iconset>
+  </property>
   <widget class="QWidget" name="centralWidget"/>
   <widget class="QMenuBar" name="menuBar">
    <property name="geometry">
@@ -20,7 +24,7 @@
      <x>0</x>
      <y>0</y>
      <width>895</width>
-     <height>22</height>
+     <height>21</height>
     </rect>
    </property>
    <widget class="QMenu" name="menu_File">
@@ -46,15 +50,15 @@
     <addaction name="actionUndo"/>
     <addaction name="actionRedo"/>
     <addaction name="separator"/>
+    <addaction name="actionCut"/>
+    <addaction name="actionCopy"/>
+    <addaction name="actionPaste"/>
+    <addaction name="separator"/>
     <addaction name="actionRotate"/>
     <addaction name="actionFlip"/>
     <addaction name="separator"/>
     <addaction name="actionFind"/>
     <addaction name="actionFindRepeat"/>
-    <addaction name="separator"/>
-    <addaction name="actionAddFloor"/>
-    <addaction name="actionAddFuncArea"/>
-    <addaction name="actionAddPubpoint"/>
     <addaction name="separator"/>
     <addaction name="actionDelete"/>
    </widget>
@@ -93,6 +97,15 @@
    <addaction name="actionOpen"/>
    <addaction name="actionSave"/>
    <addaction name="actionPrint"/>
+   <addaction name="separator"/>
+   <addaction name="actionCut"/>
+   <addaction name="actionCopy"/>
+   <addaction name="actionPaste"/>
+   <addaction name="separator"/>
+   <addaction name="actionFind"/>
+   <addaction name="separator"/>
+   <addaction name="actionZoomIn"/>
+   <addaction name="actionZoomOut"/>
   </widget>
   <widget class="QStatusBar" name="statusBar"/>
   <widget class="QToolBar" name="toolToolBar">
@@ -106,6 +119,7 @@
     <bool>false</bool>
    </attribute>
    <addaction name="actionSelectTool"/>
+   <addaction name="separator"/>
    <addaction name="actionPolygonTool"/>
    <addaction name="actionPubPointTool"/>
    <addaction name="separator"/>
@@ -113,8 +127,7 @@
    <addaction name="actionSplitTool"/>
    <addaction name="separator"/>
    <addaction name="actionScaleTool"/>
-   <addaction name="actionZoomIn"/>
-   <addaction name="actionZoomOut"/>
+   <addaction name="separator"/>
   </widget>
   <widget class="QDockWidget" name="dockTreeWidget">
    <property name="windowTitle">
@@ -132,34 +145,57 @@
     </property>
     <layout class="QVBoxLayout" name="verticalLayout">
      <item>
-      <layout class="QHBoxLayout" name="searchLayout">
+      <layout class="QHBoxLayout" name="horizontalLayout_2">
        <item>
-        <widget class="QLineEdit" name="searchEdit"/>
+        <spacer name="horizontalSpacer">
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>40</width>
+           <height>20</height>
+          </size>
+         </property>
+        </spacer>
        </item>
        <item>
-        <widget class="QPushButton" name="searchButton">
+        <widget class="QPushButton" name="addLayerButton">
+         <property name="maximumSize">
+          <size>
+           <width>25</width>
+           <height>25</height>
+          </size>
+         </property>
+         <property name="toolTip">
+          <string>新建楼层</string>
+         </property>
          <property name="text">
-          <string>搜索</string>
+          <string/>
+         </property>
+         <property name="icon">
+          <iconset resource="IndoorMapEditor.qrc">
+           <normaloff>:/src/icon/addlayer.png</normaloff>:/src/icon/addlayer.png</iconset>
          </property>
         </widget>
        </item>
        <item>
-        <widget class="QPushButton" name="preResultButton">
-         <property name="enabled">
-          <bool>false</bool>
+        <widget class="QPushButton" name="deleteButton">
+         <property name="maximumSize">
+          <size>
+           <width>25</width>
+           <height>25</height>
+          </size>
+         </property>
+         <property name="toolTip">
+          <string>删除</string>
          </property>
          <property name="text">
-          <string>&lt;</string>
+          <string/>
          </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QPushButton" name="nextResultButton">
-         <property name="enabled">
-          <bool>true</bool>
-         </property>
-         <property name="text">
-          <string>&gt;</string>
+         <property name="icon">
+          <iconset resource="IndoorMapEditor.qrc">
+           <normaloff>:/src/icon/trash.png</normaloff>:/src/icon/trash.png</iconset>
          </property>
         </widget>
        </item>
@@ -331,7 +367,7 @@
     <string>pubPointTool</string>
    </property>
    <property name="toolTip">
-    <string>添加功能点</string>
+    <string>添加公共设施点</string>
    </property>
   </action>
   <action name="actionPanTool">
@@ -423,6 +459,10 @@
    </property>
   </action>
   <action name="actionFont">
+   <property name="icon">
+    <iconset resource="IndoorMapEditor.qrc">
+     <normaloff>:/src/icon/font.png</normaloff>:/src/icon/font.png</iconset>
+   </property>
    <property name="text">
     <string>字体...</string>
    </property>
@@ -481,7 +521,7 @@
 </string>
    </property>
    <property name="toolTip">
-    <string>合并店铺</string>
+    <string>合并形状工具</string>
    </property>
   </action>
   <action name="actionSplitTool">
@@ -496,7 +536,7 @@
     <string>分裂</string>
    </property>
    <property name="toolTip">
-    <string>分裂店铺工具</string>
+    <string>分裂形状工具</string>
    </property>
   </action>
   <action name="actionScaleTool">
@@ -520,7 +560,7 @@
      <normaloff>:/src/icon/fileprint.png</normaloff>:/src/icon/fileprint.png</iconset>
    </property>
    <property name="text">
-    <string>打印当前页...</string>
+    <string>打印视口...</string>
    </property>
    <property name="toolTip">
     <string>打印当前视图</string>
@@ -557,6 +597,10 @@
    </property>
   </action>
   <action name="actionRotate">
+   <property name="icon">
+    <iconset resource="IndoorMapEditor.qrc">
+     <normaloff>:/src/icon/rotateright.png</normaloff>:/src/icon/rotateright.png</iconset>
+   </property>
    <property name="text">
     <string>旋转...</string>
    </property>
@@ -565,6 +609,10 @@
    </property>
   </action>
   <action name="actionFlip">
+   <property name="icon">
+    <iconset resource="IndoorMapEditor.qrc">
+     <normaloff>:/src/icon/flip.png</normaloff>:/src/icon/flip.png</iconset>
+   </property>
    <property name="text">
     <string>对称...</string>
    </property>
@@ -573,6 +621,10 @@
    </property>
   </action>
   <action name="actionFind">
+   <property name="icon">
+    <iconset resource="IndoorMapEditor.qrc">
+     <normaloff>:/src/icon/edit-find.png</normaloff>:/src/icon/edit-find.png</iconset>
+   </property>
    <property name="text">
     <string>查找...</string>
    </property>
@@ -597,6 +649,42 @@
    </property>
    <property name="text">
     <string>显示铺位类别</string>
+   </property>
+  </action>
+  <action name="actionCut">
+   <property name="icon">
+    <iconset resource="IndoorMapEditor.qrc">
+     <normaloff>:/src/icon/cut.png</normaloff>:/src/icon/cut.png</iconset>
+   </property>
+   <property name="text">
+    <string>剪切</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+X</string>
+   </property>
+  </action>
+  <action name="actionCopy">
+   <property name="icon">
+    <iconset resource="IndoorMapEditor.qrc">
+     <normaloff>:/src/icon/copy.png</normaloff>:/src/icon/copy.png</iconset>
+   </property>
+   <property name="text">
+    <string>复制</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+C</string>
+   </property>
+  </action>
+  <action name="actionPaste">
+   <property name="icon">
+    <iconset resource="IndoorMapEditor.qrc">
+     <normaloff>:/src/icon/editpaste.png</normaloff>:/src/icon/editpaste.png</iconset>
+   </property>
+   <property name="text">
+    <string>粘贴</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+V</string>
    </property>
   </action>
  </widget>

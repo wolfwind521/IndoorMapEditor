@@ -42,9 +42,10 @@ public:
 
     //io
     virtual bool load(const QJsonObject & jsonObject);
-    virtual bool save(QJsonObject & jsonObject, double scale) const;
+    virtual bool save(QJsonObject & jsonObject) const;
 
     virtual void transformEntity(const QMatrix &matrix);
+    virtual int generateId();
 signals:
     void nameChanged(const QString & name);
     void enNameChanged(const QString & name);
@@ -53,7 +54,7 @@ signals:
     void briefChanged(const QString & brief);
     void typeChanged(const QString & type);
 protected:
-    int generateId();
+
     //QString m_name;
     QString m_enName;
     int m_id;

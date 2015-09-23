@@ -28,6 +28,7 @@
 #include <QListWidgetItem>
 #include <QListWidget>
 #include <QInputDialog>
+#include <QMimeData>
 #ifndef QT_NO_PRINTER
 #include <QtPrintSupport/QPrinter>
 #include <QtPrintSupport/QPrintDialog>
@@ -50,8 +51,13 @@ MainWindow::MainWindow(QWidget *parent) :
     qsrand(time(0));
 
     m_sceneTreeView = new QTreeView(ui->dockTreeWidget);
-    //ui->dockTreeWidget->setWidget(m_sceneTreeView);
-    ui->verticalLayout->addWidget(m_sceneTreeView);
+    ui->verticalLayout->insertWidget(0,m_sceneTreeView);
+    addDocument(new DocumentView());
+    setCurrentFile("");
+    rebuildTreeView();
+
+    ToolManager::instance()->setTool(new SelectTool(currentDocument()));
+
 
     QActionGroup * toolActionGroup = new QActionGroup(this);
     toolActionGroup->addAction(ui->actionSelectTool);
@@ -84,6 +90,17 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->actionFindRepeat, SIGNAL(triggered()), this, SLOT(findAllRepeat()));
     connect(ui->actionFind, SIGNAL(triggered()), this, SLOT(onFind()));
     connect(ui->actionSortAreas, SIGNAL(triggered()), this, SLOT(sortAreas()));
+    connect(ui->actionZoomOut, SIGNAL(triggered()), m_docView, SLOT(zoomOut()));
+    connect(ui->actionZoomIn, SIGNAL(triggered()), m_docView, SLOT(zoomIn()));
+    connect(ui->actionResetZoom, SIGNAL(triggered()), m_docView, SLOT(fitView()));
+    connect(ui->actionRotate, SIGNAL(triggered()), m_docView,  SLOT(onRotate()));
+    connect(ui->actionFlip, SIGNAL(triggered()), m_docView, SLOT(onFlip()));
+    connect(ui->actionShowShopText, SIGNAL(toggled(bool)), m_docView, SLOT(showShopText(bool)));
+    connect(ui->actionShowPointText, SIGNAL(toggled(bool)), m_docView, SLOT(showPointText(bool)));
+    connect(ui->actionShowDir, SIGNAL(toggled(bool)), m_docView, SLOT(showDirection(bool)));
+    connect(ui->actionCut, SIGNAL(triggered()), m_docView, SLOT(cut()));
+    connect(ui->actionCopy, SIGNAL(triggered()), m_docView, SLOT(copy()));
+    connect(ui->actionPaste, SIGNAL(triggered()), m_docView, SLOT(paste()));
 
     //tools action
     connect(ui->actionPolygonTool, SIGNAL(triggered()), this, SLOT(setPolygonTool()));
@@ -93,29 +110,15 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->actionSplitTool, SIGNAL(triggered()), this, SLOT(setSplitTool()));
     connect(ui->actionScaleTool, SIGNAL(triggered()), this, SLOT(setScaleTool()));
 
-    addDocument(new DocumentView());
-    setCurrentFile("");
-    rebuildTreeView();
 
-    ToolManager::instance()->setTool(new SelectTool(currentDocument()));
-
+    //other actions
     connect(m_sceneTreeView, SIGNAL(clicked(QModelIndex)), m_docView, SLOT(updateSelection(QModelIndex)));
     connect(m_docView, SIGNAL(selectionChanged(MapEntity*)), this, SLOT(updatePropertyView(MapEntity*)));
     connect(m_docView->scene(), SIGNAL(buildingChanged()), this, SLOT(rebuildTreeView()));
-    connect(ui->actionShowShopText, SIGNAL(toggled(bool)), m_docView, SLOT(showShopText(bool)));
-    connect(ui->actionShowPointText, SIGNAL(toggled(bool)), m_docView, SLOT(showPointText(bool)));
-    connect(ui->actionShowDir, SIGNAL(toggled(bool)), m_docView, SLOT(showDirection(bool)));
+    connect(ui->deleteButton, SIGNAL(clicked()), this, SLOT(onDeleteButtonClicked()));
+    connect(ui->addLayerButton, SIGNAL(clicked()), this, SLOT(onAddLayerButtonClicked()));
     //connect(ui->actionShowAreaSort, SIGNAL(toggled(bool)), m_docView, SLOT(showAreaSort(bool)));
-    connect(ui->actionZoomOut, SIGNAL(triggered()), m_docView, SLOT(zoomOut()));
-    connect(ui->actionZoomIn, SIGNAL(triggered()), m_docView, SLOT(zoomIn()));
-    connect(ui->actionResetZoom, SIGNAL(triggered()), m_docView, SLOT(fitView()));
-    connect(ui->actionRotate, SIGNAL(triggered()), m_docView,  SLOT(onRotate()));
-    connect(ui->actionFlip, SIGNAL(triggered()), m_docView, SLOT(onFlip()));
-    connect(ui->searchButton, SIGNAL(clicked()), this, SLOT(onSearch()) );
-    ui->preResultButton->setVisible(false);
-    ui->nextResultButton->setVisible(false);
-    connect(ui->preResultButton, SIGNAL(clicked()), this, SLOT(selectPreviousResult()) );
-    connect(ui->nextResultButton, SIGNAL(clicked()), this, SLOT(selectNextResult()) );
+
 
     m_docView->scene()->setFont(QFont(tr("微软雅黑"), 26));
 
@@ -125,7 +128,7 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(m_timer, SIGNAL(timeout()), this, SLOT(autoSave()) );
     m_timer->start(m_autoSaveTime);
 
-
+    setAcceptDrops(true);
     readSettings();
     QSettings settings("Wolfwind", "IndoorMapEditor");
     settings.setValue("normallyClosed", false);
@@ -143,6 +146,21 @@ void MainWindow::closeEvent(QCloseEvent *event){
     }else{
         event->ignore();
     }
+}
+
+void MainWindow::dragEnterEvent(QDragEnterEvent *event){
+    if(event->mimeData()->hasFormat("text/uri-list"))
+        event->acceptProposedAction();
+}
+
+void MainWindow::dropEvent(QDropEvent *event){
+    QList<QUrl> urls = event->mimeData()->urls();
+    if(urls.isEmpty())
+        return;
+    QString fileName = urls.first().toLocalFile();
+    if(fileName.isEmpty())
+        return;
+    openDocument(fileName);
 }
 
 DocumentView *MainWindow::currentDocument() const
@@ -189,9 +207,10 @@ void MainWindow::openDocument(const QString &fileName){
         if(QFileInfo(fileName).suffix() == "json"){
             setCurrentFile(fileName);
             autoSave();
+            currentDocument()->scene()->showDefaultFloor();
+            currentDocument()->fitView();
         }
-        currentDocument()->scene()->showDefaultFloor();
-        currentDocument()->fitView();
+
 
     }else{
         QMessageBox::warning(this,
@@ -303,8 +322,23 @@ void MainWindow::printCurrent(){
 }
 
 void MainWindow::deleteEntity(){
-    currentDocument()->scene()->deleteSelected();
+
+    currentDocument()->scene()->deleteSelectedItems();
     rebuildTreeView();
+}
+
+void MainWindow::onDeleteButtonClicked(){
+    int r = QMessageBox::warning(this, tr("Warning"),
+                                 tr("确定删除？"),
+                                 QMessageBox::Yes | QMessageBox::No );
+    if(r == QMessageBox::Yes ){
+        currentDocument()->scene()->deleteSelectedLayers();
+        rebuildTreeView();
+    }
+}
+
+void MainWindow::onAddLayerButtonClicked(){
+    currentDocument()->scene()->addFloor();
 }
 
 void MainWindow::setCurrentFile(const QString & fileName){
@@ -460,46 +494,6 @@ void MainWindow::setGraphicsViewFont(){
     if ( ok ) {
           scene->setFont(font);
     }
-}
-
-void MainWindow::onSearch(){
-    QString searchText = ui->searchEdit->text();
-    m_searchResults = currentDocument()->scene()->findMapEntity(searchText);
-    m_searchResultIter = QListIterator<MapEntity*>(m_searchResults);
-    if(m_searchResults.isEmpty()){
-        QMessageBox::warning(this, tr("搜索结果"),(QString("未找到 ")+searchText),QMessageBox::Ok);
-        return;
-    }else if(m_searchResults.size() > 1){
-        ui->preResultButton->setVisible(true);
-        ui->nextResultButton->setVisible(true);
-        ui->preResultButton->setEnabled(false);
-        ui->nextResultButton->setEnabled(true);
-    }else{
-        ui->preResultButton->setVisible(false);
-        ui->nextResultButton->setVisible(false);
-    }
-    currentDocument()->scene()->selectMapEntity((m_searchResultIter.next()));
-
-}
-
-void MainWindow::selectPreviousResult(){
-
-    currentDocument()->scene()->selectMapEntity((m_searchResultIter.previous()));
-    ui->nextResultButton->setEnabled(true);
-    if(!m_searchResultIter.hasPrevious()){
-        ui->preResultButton->setEnabled(false);
-        m_searchResultIter.next();
-    }
-}
-
-void MainWindow::selectNextResult(){
-    currentDocument()->scene()->selectMapEntity((m_searchResultIter.next()));
-    ui->preResultButton->setEnabled(true);
-    if(!m_searchResultIter.hasNext() ){
-        ui->nextResultButton->setEnabled(false);
-        m_searchResultIter.previous();
-    }
-
 }
 
 void MainWindow::onFind(){

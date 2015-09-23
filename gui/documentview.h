@@ -41,8 +41,7 @@ public:
     Building* building();
     static ViewStyle viewStyle();
     void zoom(int step);
-    void addScale(double s);
-    double getScale() const;
+
 
 signals:
     void selectionChanged(MapEntity * mapEntity);
@@ -62,6 +61,9 @@ public slots:
     void fitView();
     void onRotate();
     void onFlip();
+    void cut();
+    void copy();
+    void paste();
 
 protected:
     void wheelEvent(QWheelEvent *event);
@@ -75,9 +77,7 @@ private:
     bool m_selectable;
     static ViewStyle m_style;
     bool m_ctrlKeyPressed;
-    int m_scale;
-    double m_scaleSum;
-    int m_scaleNum;
+    int m_zoom;
 };
 
 #endif // DOCUMENTVIEW_H

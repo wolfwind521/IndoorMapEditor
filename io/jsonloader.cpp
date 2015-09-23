@@ -1,4 +1,4 @@
-#include "jsonloader.h"
+﻿#include "jsonloader.h"
 #include "../core/mapentity.h"
 #include "../core/building.h"
 
@@ -30,7 +30,7 @@ MapEntity* JsonLoader::loadFile(const QString & fileName) {
        return building;
 }
 
-bool JsonLoader::saveFile(const QString &fileName, const MapEntity *mapEntity, double scale) {
+bool JsonLoader::saveFile(const QString &fileName, const MapEntity *mapEntity) {
 
     QFile file(fileName);
 
@@ -40,7 +40,7 @@ bool JsonLoader::saveFile(const QString &fileName, const MapEntity *mapEntity, d
     }
 
     QJsonObject jsonObject;
-    if(mapEntity->save(jsonObject, scale)){
+    if(mapEntity->save(jsonObject)){
         QJsonDocument saveDoc(jsonObject);
         file.write(saveDoc.toJson());
         return true;

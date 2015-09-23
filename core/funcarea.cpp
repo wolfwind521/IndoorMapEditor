@@ -141,8 +141,8 @@ bool FuncArea::load(const QJsonObject &jsonObject) {
     return true;
 }
 
-bool FuncArea::save(QJsonObject &jsonObject, double scale) const {
-    PolygonEntity::save(jsonObject, scale);
+bool FuncArea::save(QJsonObject &jsonObject) const {
+    PolygonEntity::save(jsonObject);
 
     jsonObject["Type"] = m_type;
     jsonObject["_id"] = m_id;
@@ -155,8 +155,8 @@ bool FuncArea::save(QJsonObject &jsonObject, double scale) const {
     jsonObject["AreaStatus"] = int(m_areaStatus);
 
     QJsonArray jsonArray;
-    jsonArray.append(int(m_center.x() *scale));
-    jsonArray.append(int(-m_center.y() *scale));
+    jsonArray.append(int(m_center.x()));
+    jsonArray.append(int(-m_center.y()));
     jsonObject["Center"] = jsonArray;
     return true;
 }

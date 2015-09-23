@@ -1,4 +1,4 @@
-#ifndef JSONLOADER_H
+﻿#ifndef JSONLOADER_H
 #define JSONLOADER_H
 
 #include<QString>
@@ -10,7 +10,7 @@ class JsonLoader
 public:
     JsonLoader();
     static MapEntity* loadFile(const QString & fileName);
-    static bool saveFile(const QString & fileName, const MapEntity * mapEntity, double scale);
+    static bool saveFile(const QString & fileName, const MapEntity * mapEntity);
 };
 
 #endif // JSONLOADER_H

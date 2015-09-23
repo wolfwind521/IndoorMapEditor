@@ -50,7 +50,7 @@ public:
     FuncArea( const QString & name, const QPolygon& poly);
 
     bool load(const QJsonObject & jsonObject);
-    bool save(QJsonObject &jsonObject, double scale) const;
+    bool save(QJsonObject &jsonObject) const;
 
     //setters and getters
     QString shopNo() const;

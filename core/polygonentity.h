@@ -60,7 +60,7 @@ public:
 
     //io
     virtual bool load(const QJsonObject & jsonObject);
-    virtual bool save(QJsonObject & jsonObject, double scale) const;
+    virtual bool save(QJsonObject & jsonObject) const;
 
     virtual void transformEntity(const QMatrix &matrix);
 protected:
