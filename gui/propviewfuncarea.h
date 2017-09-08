@@ -13,7 +13,6 @@
 
 QT_FORWARD_DECLARE_CLASS(QLineEdit)
 QT_FORWARD_DECLARE_CLASS(QPushButton)
-QT_FORWARD_DECLARE_CLASS(QWebView)
 QT_FORWARD_DECLARE_CLASS(QCheckBox)
 
 class PropViewFuncArea : public PropertyView
@@ -32,7 +31,6 @@ public slots:
    void onQuery();
    void queryFinished();
    void addJsObject();
-   void onCheckDianpingId();
    void updateSortType(const QString &sortType);
    void updateAreaStatus(const int state);
 
@@ -45,7 +43,6 @@ private:
     QLineEdit *m_dianpingIdEdit;
     QPushButton *m_checkDianpingBtn;
     QLineEdit *m_mateIdEdit;
-    QWebView *m_webDlg;
     FuncArea *m_funcArea;
     QComboBox * m_typeComboBox; //业态类别
     QComboBox * m_sortComboBox; //铺位类别

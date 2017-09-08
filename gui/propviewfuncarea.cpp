@@ -2,8 +2,6 @@
 
 
 #include <QLineEdit>
-#include <QtWebKitWidgets/QWebView>
-#include <QtWebKitWidgets/QWebFrame>
 #include <QHBoxLayout>
 #include <QPushButton>
 #include <QFormLayout>
@@ -11,11 +9,10 @@
 #include <QCheckBox>
 
 #pragma comment(lib,"Qt5Widgets.lib")
-#pragma comment(lib,"Qt5WebKitWidgets.lib")
 #pragma execution_character_set("utf-8")
 
 PropViewFuncArea::PropViewFuncArea(MapEntity *mapEntity, QWidget *parent) :
-    PropertyView(mapEntity, parent), m_webDlg(NULL)
+    PropertyView(mapEntity, parent)
 {
     m_funcArea = static_cast<FuncArea*>(mapEntity);
 
@@ -51,16 +48,12 @@ PropViewFuncArea::PropViewFuncArea(MapEntity *mapEntity, QWidget *parent) :
     connect(m_dianpingIdEdit, SIGNAL(textEdited(QString)), this, SLOT(updateDianpingId(QString)));
     connect(m_queryButton, SIGNAL(clicked()), this, SLOT(onQuery()));
     connect(m_mateIdEdit, SIGNAL(textEdited(QString)), this, SLOT(updateMateId(QString)) );
-    connect(m_checkDianpingBtn, SIGNAL(clicked()), this, SLOT(onCheckDianpingId()));
     connect(m_sortComboBox, SIGNAL(currentIndexChanged(QString)), this, SLOT(updateSortType(QString)));
     connect(m_vacancyCheckBox, SIGNAL(stateChanged(int)), this, SLOT(updateAreaStatus(int)));
 }
 
 PropViewFuncArea::~PropViewFuncArea(){
-    if(m_webDlg != NULL){
-        delete m_webDlg;
-        m_webDlg = NULL;
-    }
+
 }
 
 bool PropViewFuncArea::match(const MapEntity *mapEntity) const {
@@ -121,34 +114,13 @@ void PropViewFuncArea::queryFinished(){
 }
 
 void PropViewFuncArea::onQuery(){
-    if(m_webDlg != NULL){
-        delete m_webDlg;
-    }
-    FuncArea* funcArea = static_cast<FuncArea*>(m_mapEntity);
-    m_webDlg = new QWebView();
-    QObject::connect(m_webDlg->page()->mainFrame(), SIGNAL(javaScriptWindowObjectCleared()),
-                     this, SLOT(addJsObject()));
-    QUrl url("http://admin.fangcheng.cn/#/search/"+funcArea->objectName()+"/mapId/"+QString::number(funcArea->type().toInt())+"/");
 
-    m_webDlg->setUrl(url);
-    m_webDlg->setWindowFlags(Qt::WindowStaysOnTopHint);
-    m_webDlg->show();
 }
 
 void PropViewFuncArea::addJsObject(){
-    m_webDlg->page()->mainFrame()->addToJavaScriptWindowObject(QString("indoorMap"), this);
+
 }
 
-void PropViewFuncArea::onCheckDianpingId(){
-    if(m_webDlg != NULL){
-        delete m_webDlg;
-    }
-    m_webDlg = new QWebView();
-    QUrl url("http://www.dianping.com/shop/" + QString::number(static_cast<FuncArea*>(m_mapEntity)->dianpingId()));
-    m_webDlg->setUrl(url);
-    m_webDlg->setWindowFlags(Qt::WindowStaysOnTopHint);
-    m_webDlg->show();
-}
 
 QString PropViewFuncArea::getSortTypeName(FuncArea::SORT_TYPE sortType){
     if(sortType == FuncArea::UNSORTED)
