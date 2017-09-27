@@ -186,7 +186,7 @@ void SplitTool::mouseReleaseEvent(QGraphicsSceneMouseEvent *event) {
 
     //if the selected item is not a Room
     QGraphicsItem *item = scene->selectedItems().at(0);
-    PolygonFeature* poly = dynamic_cast<PolygonFeature*>(item);
+    PolygonEntity* poly = dynamic_cast<PolygonEntity*>(item);
     if(poly == NULL || !poly->isClassOf("Room")){
         QMessageBox::warning(m_doc, tr(""),tr("请先选中一个店铺"),QMessageBox::Ok);
         return;
@@ -206,7 +206,7 @@ void SplitTool::mouseReleaseEvent(QGraphicsSceneMouseEvent *event) {
     }else if(event->button() == Qt::RightButton) {
         if(m_isCreating){
             Split split;
-            QVector<QPolygon> polygons = split.split(room->outline(), m_splitLine->line());
+            QVector<QPolygon> polygons = split.split(room->polygon(), m_splitLine->line());
             if(polygons.isEmpty()){
 
             }else{
@@ -215,7 +215,7 @@ void SplitTool::mouseReleaseEvent(QGraphicsSceneMouseEvent *event) {
                     room = new Room("未命名", poly);
                     room->computeArea();
                     room->computeCenter();
-                    room->setParentFeature(scene->currentFloor());
+                    room->setParentEntity(scene->currentFloor());
                 }
             }
         }

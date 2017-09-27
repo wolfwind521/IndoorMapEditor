@@ -3,8 +3,10 @@
 
 #include <QGraphicsObject>
 #include <QJsonObject>
+#include<QPointF>
 
-class MapEntity : public QGraphicsObject
+//base class for all the entities in the map.
+class Feature : public QGraphicsObject
 {
     Q_OBJECT
 
@@ -14,8 +16,8 @@ class MapEntity : public QGraphicsObject
     Q_PROPERTY(QString brief READ brief WRITE setBrief NOTIFY briefChanged)
 
 public:
-    explicit MapEntity(QGraphicsItem *parent = 0);
-    explicit MapEntity(const QString & name, QGraphicsItem *parent = 0);
+    explicit Feature(QGraphicsItem *parent = 0);
+    explicit Feature(const QString & name, QGraphicsItem *parent = 0);
 
     bool isClassOf(const QString &className) const;
 
@@ -35,7 +37,7 @@ public:
     virtual QString getTypeName(){return QString();}
     virtual void updateByTypeName(const QString &typeName){}
 
-    void setParentEntity(MapEntity* entity);
+    void setParentFeature(Feature* feature);
 
     QRectF boundingRect() const;
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget);
@@ -44,7 +46,7 @@ public:
     virtual bool load(const QJsonObject & jsonObject);
     virtual bool save(QJsonObject & jsonObject) const;
 
-    virtual void transformEntity(const QMatrix &matrix);
+    virtual void transformFeature(const QMatrix &matrix);
     virtual int generateId();
 signals:
     void nameChanged(const QString & name);
@@ -55,13 +57,11 @@ signals:
     void typeChanged(const QString & type);
 protected:
 
-    //QString m_name;
     QString m_enName;
-    int m_id;
+    int     m_id;
     QPointF m_center;
     QString m_brief;
     QString m_type;
-
 
 };
 

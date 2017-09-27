@@ -10,7 +10,7 @@
 QHash<QString, int> PubPoint::m_typeHash;
 
 PubPoint::PubPoint(QGraphicsItem *parent) :
-    MapEntity(parent)
+    Feature(parent)
 {
     setFlags(ItemIsSelectable);
     setAcceptHoverEvents(true);
@@ -29,7 +29,7 @@ PubPoint::PubPoint(QGraphicsItem *parent) :
 
 bool PubPoint::load(const QJsonObject &jsonObject)
 {
-    MapEntity::load(jsonObject);
+    Feature::load(jsonObject);
     m_type = jsonObject["Type"].toString();
     m_id = jsonObject["_id"].toInt();
 
@@ -62,7 +62,7 @@ bool PubPoint::load(const QJsonObject &jsonObject)
 
 bool PubPoint::save(QJsonObject &jsonObject) const
 {
-    MapEntity::save(jsonObject);
+    Feature::save(jsonObject);
     jsonObject["Type"] = m_type;
     jsonObject["_id"] = m_id;
 

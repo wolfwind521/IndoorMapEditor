@@ -1,4 +1,4 @@
-﻿#include "funcarea.h"
+﻿#include "room.h"
 
 #include "../gui/documentview.h"
 #include <QPainter>
@@ -9,10 +9,10 @@
 #pragma execution_character_set("utf-8")
 
 
-QHash<QString, int> FuncArea::m_typeHash;
+QHash<QString, int> Room::m_typeHash;
 
-FuncArea::FuncArea(QGraphicsItem *parent)
-    : PolygonEntity(parent), m_dianpingId(-1), m_connected(false), m_mateId(0)
+Room::Room(QGraphicsItem *parent)
+    : PolygonFeature(parent), m_dianpingId(-1), m_connected(false), m_mateId(0)
 {
     m_color = QColor(248, 203, 173, 150);
     setObjectName(tr(""));
@@ -21,19 +21,19 @@ FuncArea::FuncArea(QGraphicsItem *parent)
     m_areaStatus = Working;
     m_sortType = UNSORTED;
 
-    FuncArea::m_typeHash["未设置"] = 0;
-    FuncArea::m_typeHash["中空区域"] = 100;
-    FuncArea::m_typeHash["封闭区域"] = 300;
-    FuncArea::m_typeHash["空铺"] = 400;
-    FuncArea::m_typeHash["餐饮"] = 101;
-    FuncArea::m_typeHash["购物"] = 102;
-    FuncArea::m_typeHash["美妆丽人"] = 103;
-    FuncArea::m_typeHash["亲子儿童"] = 104;
-    FuncArea::m_typeHash["生活服务"] = 105;
-    FuncArea::m_typeHash["教育培训"] = 106;
-    FuncArea::m_typeHash["生活方式"] = 107;
-    FuncArea::m_typeHash["休闲娱乐"] = 108;
-    FuncArea::m_typeHash["其他"] = 109;
+    Room::m_typeHash["未设置"] = 0;
+    Room::m_typeHash["中空区域"] = 100;
+    Room::m_typeHash["封闭区域"] = 300;
+    Room::m_typeHash["空铺"] = 400;
+    Room::m_typeHash["餐饮"] = 101;
+    Room::m_typeHash["购物"] = 102;
+    Room::m_typeHash["美妆丽人"] = 103;
+    Room::m_typeHash["亲子儿童"] = 104;
+    Room::m_typeHash["生活服务"] = 105;
+    Room::m_typeHash["教育培训"] = 106;
+    Room::m_typeHash["生活方式"] = 107;
+    Room::m_typeHash["休闲娱乐"] = 108;
+    Room::m_typeHash["其他"] = 109;
 
     m_textItem = new QGraphicsTextItem(this);
     m_textItem->setPos(center());
@@ -44,9 +44,9 @@ FuncArea::FuncArea(QGraphicsItem *parent)
     connect(this, SIGNAL(centerChanged(QPointF)), this, SLOT(updateCenter(QPointF)) );
 }
 
-FuncArea::FuncArea(PolygonEntity &polygon)
+Room::Room(PolygonFeature &polygon)
 {
-    new (this) FuncArea();
+    new (this) Room();
     copy(polygon);
     m_dianpingId = -1;
 
@@ -54,67 +54,67 @@ FuncArea::FuncArea(PolygonEntity &polygon)
     m_textItem->setPos(center());
 }
 
-FuncArea::FuncArea( const QString & name, const QPolygon& poly)
+Room::Room( const QString & name, const QPolygon& poly)
 {
-    new (this) FuncArea();
+    new (this) Room();
     m_outline = poly;
     m_dianpingId = -1;
     m_textItem->setPos(center());
 }
 
-QString FuncArea::shopNo() const {
+QString Room::shopNo() const {
     return m_shopNo;
 }
 
-void FuncArea::setShopNo(const QString &shopNo) {
+void Room::setShopNo(const QString &shopNo) {
     if(m_shopNo == shopNo)
         return;
     m_shopNo = shopNo;
 }
 
-void FuncArea::setCategory( FuncArea::Category cate){
+void Room::setCategory( Room::Category cate){
     if(m_category == cate)
         return;
     m_category = cate;
 }
 
-FuncArea::Category FuncArea::category() const{
+Room::Category Room::category() const{
     return m_category;
 }
 
-int FuncArea::dianpingId() const {
+int Room::dianpingId() const {
     return m_dianpingId;
 }
 
-void FuncArea::setDianpingId(int dpId) {
+void Room::setDianpingId(int dpId) {
     if(m_dianpingId == dpId)
         return;
 
     m_dianpingId = dpId;
 }
 
-void FuncArea::setMateId(int id){
+void Room::setMateId(int id){
     if(m_mateId == id)
         return;
     m_mateId = id;
 }
 
-int FuncArea::mateId() const {
+int Room::mateId() const {
     return m_mateId;
 }
 
-void FuncArea::setAreaStatus(FuncArea::AreaStatus status){
+void Room::setAreaStatus(Room::AreaStatus status){
     if(m_areaStatus == status)
         return;
     m_areaStatus = status;
 }
 
-FuncArea::AreaStatus FuncArea::areaStatus() const{
+Room::AreaStatus Room::areaStatus() const{
     return m_areaStatus;
 }
 
-bool FuncArea::load(const QJsonObject &jsonObject) {
-    PolygonEntity::load(jsonObject);
+bool Room::load(const QJsonObject &jsonObject) {
+    PolygonFeature::load(jsonObject);
 
     m_type = jsonObject["Type"].toString();
     m_category = Category(jsonObject["Category"].toInt());
@@ -141,8 +141,8 @@ bool FuncArea::load(const QJsonObject &jsonObject) {
     return true;
 }
 
-bool FuncArea::save(QJsonObject &jsonObject) const {
-    PolygonEntity::save(jsonObject);
+bool Room::save(QJsonObject &jsonObject) const {
+    PolygonFeature::save(jsonObject);
 
     jsonObject["Type"] = m_type;
     jsonObject["_id"] = m_id;
@@ -161,15 +161,15 @@ bool FuncArea::save(QJsonObject &jsonObject) const {
     return true;
 }
 
-void FuncArea::updateName(const QString &name){
+void Room::updateName(const QString &name){
     m_textItem->setPlainText(name);
 }
 
-void FuncArea::updateCenter(const QPointF &center){
+void Room::updateCenter(const QPointF &center){
     m_textItem->setPos(center);
 }
 
-QVariant FuncArea::itemChange(GraphicsItemChange change, const QVariant &value){
+QVariant Room::itemChange(GraphicsItemChange change, const QVariant &value){
     if(change == ItemVisibleHasChanged){
         if(scene() && !m_connected){
             m_textItem->setFont(scene()->font());
@@ -182,13 +182,13 @@ QVariant FuncArea::itemChange(GraphicsItemChange change, const QVariant &value){
     }
 }
 
-void FuncArea::updateFont(const QFont &font){
+void Room::updateFont(const QFont &font){
     m_textItem->setFont(font);
 }
 
-void FuncArea::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget){
+void Room::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget){
 
-    PolygonEntity::paint(painter, option, widget);
+    PolygonFeature::paint(painter, option, widget);
 
     //paint the marker
     if(!m_center.isNull()){
@@ -202,23 +202,23 @@ void FuncArea::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, 
     }
 }
 
-const QStringList FuncArea::typeStringList() const{
+const QStringList Room::typeStringList() const{
     QStringList typeList;
     typeList<<"未设置"<<"中空区域"<<"封闭区域"<<"空铺"<<"餐饮"<<"购物"<<"美妆丽人"<<"亲子儿童"<<"生活服务"<<"教育培训"<<"生活方式"<<"休闲娱乐"<<"其他";
     return typeList;
 }
 
-QString FuncArea::getTypeName(){
+QString Room::getTypeName(){
 
     if(m_category == 0){//if category is undefined
         int type = m_type.toInt();
-        return FuncArea::m_typeHash.key(type);
+        return Room::m_typeHash.key(type);
     }else{
-        return FuncArea::m_typeHash.key(m_category);
+        return Room::m_typeHash.key(m_category);
     }
 }
-void FuncArea::updateByTypeName(const QString &typeName){
-    int value = FuncArea::m_typeHash[typeName];
+void Room::updateByTypeName(const QString &typeName){
+    int value = Room::m_typeHash[typeName];
     if(value == 100 || value == 300 || value == 400){
         setCategory(None); //将业态置空
         setType(QString::number(value)); //更新type
@@ -231,7 +231,7 @@ void FuncArea::updateByTypeName(const QString &typeName){
     }
 }
 
-void FuncArea::setSortType(FuncArea::SORT_TYPE sortType){
+void Room::setSortType(Room::SORT_TYPE sortType){
     if(m_sortType == sortType)
         return;
     m_sortType = sortType;
@@ -239,11 +239,11 @@ void FuncArea::setSortType(FuncArea::SORT_TYPE sortType){
 
 }
 
-FuncArea::SORT_TYPE FuncArea::sortType(){
+Room::SORT_TYPE Room::sortType(){
     return m_sortType;
 }
 
-void FuncArea::updateColor(){
+void Room::updateColor(){
     if(m_sortType == MIDDLE_AREA){
         m_color = QColor(255, 0, 0, 100);
     }else if(m_sortType == SIDE_AREA){

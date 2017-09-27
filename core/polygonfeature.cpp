@@ -1,4 +1,4 @@
-﻿#include "polygonentity.h"
+﻿#include "polygonfeature.h"
 #include "../math/gdiam.hpp"
 #include "../gui/documentview.h"
 #include <cmath>
@@ -6,22 +6,22 @@
 #include <QStyleOptionGraphicsItem>
 #include <QPainter>
 
-PolygonEntity::PolygonEntity(QGraphicsItem *parent)
-    :MapEntity(parent), m_area(0.0), m_frontAngle(0)
+PolygonFeature::PolygonFeature(QGraphicsItem *parent)
+    :Feature(parent), m_area(0.0), m_frontAngle(0)
 {
     setFlags(ItemIsSelectable);
     setAcceptHoverEvents(true);
 }
 
-PolygonEntity::PolygonEntity(const QString & name, QGraphicsItem *parent)
-    : MapEntity(parent), m_area(0.0), m_frontAngle(0)
+PolygonFeature::PolygonFeature(const QString & name, QGraphicsItem *parent)
+    : Feature(parent), m_area(0.0), m_frontAngle(0)
 {
     setObjectName(name);
     setFlags(ItemIsSelectable);
     setAcceptHoverEvents(true);
 }
 
-PolygonEntity::PolygonEntity(const QString & name, int id)
+PolygonFeature::PolygonFeature(const QString & name, int id)
     :  m_area(0.0), m_frontAngle(0)
 {
     m_id = id;
@@ -30,7 +30,7 @@ PolygonEntity::PolygonEntity(const QString & name, int id)
     setAcceptHoverEvents(true);
 }
 
-PolygonEntity::PolygonEntity(const QString & name, const QPolygon& poly)
+PolygonFeature::PolygonFeature(const QString & name, const QPolygon& poly)
     :m_outline(poly), m_frontAngle(0)
 {
     setObjectName(name);
@@ -40,7 +40,7 @@ PolygonEntity::PolygonEntity(const QString & name, const QPolygon& poly)
 }
 
 
-void PolygonEntity::copy(PolygonEntity &polygon)
+void PolygonFeature::copy(PolygonFeature &polygon)
 {
     setObjectName(polygon.objectName());
     m_enName = polygon.enName();
@@ -50,21 +50,21 @@ void PolygonEntity::copy(PolygonEntity &polygon)
     setOutline(polygon.outline());
 }
 
-void PolygonEntity::setOutline(const QVector<QPoint> & points)
+void PolygonFeature::setOutline(const QVector<QPoint> & points)
 {
    m_outline = QPolygon(points);
    update();
 }
 
-QPolygon & PolygonEntity::outline()
+QPolygon & PolygonFeature::outline()
 {
     return m_outline;
 }
 
-bool PolygonEntity::load(const QJsonObject &jsonObject)
+bool PolygonFeature::load(const QJsonObject &jsonObject)
 {
 
-    MapEntity::load(jsonObject);
+    Feature::load(jsonObject);
     m_area = jsonObject["Area"].toDouble();
 
     const QJsonArray & jsonArray = jsonObject["Outline"].toArray()[0].toArray()[0].toArray();
@@ -81,9 +81,9 @@ bool PolygonEntity::load(const QJsonObject &jsonObject)
     return true;
 }
 
-bool PolygonEntity::save(QJsonObject &jsonObject) const
+bool PolygonFeature::save(QJsonObject &jsonObject) const
 {
-    MapEntity::save(jsonObject);
+    Feature::save(jsonObject);
     jsonObject["Area"] = int(m_area);
     QJsonArray jsonArray;
     for(int i = 0; i < m_outline.size(); i++){
@@ -98,63 +98,63 @@ bool PolygonEntity::save(QJsonObject &jsonObject) const
     return true;
 }
 
-double PolygonEntity::area(){
+double PolygonFeature::area(){
     if(m_area < 0){
         computeArea();
     }
     return m_area;
 }
 
-void PolygonEntity::setArea(const double area)
+void PolygonFeature::setArea(const double area)
 {
     m_area = area;
 }
 
-void PolygonEntity::addPoint(const QPoint & p)
+void PolygonFeature::addPoint(const QPoint & p)
 {
     m_outline.append(p);
 }
 
-void PolygonEntity::movePoint(const int id, const QPoint & vector)
+void PolygonFeature::movePoint(const int id, const QPoint & vector)
 {
     Q_ASSERT(id >= 0 && id < m_outline.size());
     m_outline[id] += vector;
 }
 
-void PolygonEntity::movePointTo(const int id, const QPoint & point){
+void PolygonFeature::movePointTo(const int id, const QPoint & point){
     Q_ASSERT(id >= 0 && id < m_outline.size());
     m_outline[id] = point;
 }
 
-void PolygonEntity::insertPoint(const int id, const QPoint &p)
+void PolygonFeature::insertPoint(const int id, const QPoint &p)
 {
     m_outline.insert(id, p);
 }
 
-void PolygonEntity::removePoint(const int id)
+void PolygonFeature::removePoint(const int id)
 {
     m_outline.removeAt(id);
 }
 
-int PolygonEntity::PointNum() const
+int PolygonFeature::PointNum() const
 {
     return m_outline.size();
 }
 
-QRectF PolygonEntity::boundingRect() const
+QRectF PolygonFeature::boundingRect() const
 {
     const int margin = 5;
     return m_outline.boundingRect().adjusted(-margin, -margin, margin, margin);
 }
 
-QPainterPath PolygonEntity::shape() const
+QPainterPath PolygonFeature::shape() const
 {
     QPainterPath path;
     path.addPolygon(m_outline);
     return path;
 }
 
-void PolygonEntity::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
+void PolygonFeature::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
 {
     Q_UNUSED(widget);
 
@@ -175,7 +175,7 @@ void PolygonEntity::paint(QPainter *painter, const QStyleOptionGraphicsItem *opt
     }
 }
 
-double PolygonEntity::computeArea()
+double PolygonFeature::computeArea()
 {
     //Area = 1/2 \sum_{i}(x_{i}y_{i+1} - x_{i+1}y_{i})
     //refer to: http://www.efg2.com/Lab/Graphics/PolygonArea.htm
@@ -200,7 +200,7 @@ double PolygonEntity::computeArea()
     return m_area;
 }
 
-const QPointF & PolygonEntity::computeCenter(){
+const QPointF & PolygonFeature::computeCenter(){
     QPointF point(0,0);
     int count = m_outline.size();
     for(int i = 0; i < count; i++){
@@ -213,7 +213,7 @@ const QPointF & PolygonEntity::computeCenter(){
     return m_center;
 }
 
-QPointF PolygonEntity::computeMainDir(){
+QPointF PolygonFeature::computeMainDir(){
     gdiam_real *points;
     int num = m_outline.size();
     points = (gdiam_point)malloc( sizeof( gdiam_point_t ) * num );
@@ -234,13 +234,13 @@ QPointF PolygonEntity::computeMainDir(){
     return QPointF(double(obb.get_dir(0)[0]), double(obb.get_dir(0)[1]));
 }
 
-void PolygonEntity::transformEntity(const QMatrix &matrix){
-    MapEntity::transformEntity(matrix);
+void PolygonFeature::transformFeature(const QMatrix &matrix){
+    Feature::transformFeature(matrix);
     m_outline = matrix.map(m_outline);
     computeArea();
 }
 
-void PolygonEntity::setColor(QColor color){
+void PolygonFeature::setColor(QColor color){
     if(m_color == color)
         return;
     m_color = color;

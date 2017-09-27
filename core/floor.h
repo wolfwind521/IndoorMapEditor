@@ -1,12 +1,12 @@
 ﻿#ifndef FLOOR_H
 #define FLOOR_H
 
-#include "polygonentity.h"
+#include "polygonfeature.h"
 #include <QJsonObject>
 
-class FuncArea;
+class Room;
 
-class Floor : public PolygonEntity
+class Floor : public PolygonFeature
 {
     Q_OBJECT
 
@@ -14,11 +14,11 @@ class Floor : public PolygonEntity
 
 public:
     Floor(QGraphicsItem *parent = 0);
-    Floor(PolygonEntity & polygon);
+    Floor(PolygonFeature & polygon);
     bool load(const QJsonObject & jsonObject);
     bool save(QJsonObject & jsonObject) const;
 
-    QList<FuncArea*> getFuncAreas() const;
+    QList<Room*> getRooms() const;
 
     //setters and getters
     double height() const;
@@ -26,7 +26,7 @@ public:
     static void resetMaxFloorId();
 
     //transform
-    virtual void transformEntity(const QMatrix &matrix);
+    virtual void transformFeature(const QMatrix &matrix);
     virtual int generateId();
 signals:
     void heightChanged( double height );

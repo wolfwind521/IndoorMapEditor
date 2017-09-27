@@ -1,5 +1,5 @@
 ﻿#include "jsonloader.h"
-#include "../core/mapentity.h"
+#include "../core/feature.h"
 #include "../core/building.h"
 
 #include <QJsonDocument>
@@ -10,7 +10,7 @@
 JsonLoader::JsonLoader(){
 }
 
-MapEntity* JsonLoader::loadFile(const QString & fileName) {
+Feature* JsonLoader::loadFile(const QString & fileName) {
        QFile file(fileName);
        if (!file.open(QIODevice::ReadOnly)) {
            qWarning("Couldn't open the file.");
@@ -30,7 +30,7 @@ MapEntity* JsonLoader::loadFile(const QString & fileName) {
        return building;
 }
 
-bool JsonLoader::saveFile(const QString &fileName, const MapEntity *mapEntity) {
+bool JsonLoader::saveFile(const QString &fileName, const Feature *mapFeature) {
 
     QFile file(fileName);
 
@@ -40,7 +40,7 @@ bool JsonLoader::saveFile(const QString &fileName, const MapEntity *mapEntity) {
     }
 
     QJsonObject jsonObject;
-    if(mapEntity->save(jsonObject)){
+    if(mapFeature->save(jsonObject)){
         QJsonDocument saveDoc(jsonObject);
         file.write(saveDoc.toJson());
         return true;

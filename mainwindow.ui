@@ -24,7 +24,7 @@
      <x>0</x>
      <y>0</y>
      <width>895</width>
-     <height>21</height>
+     <height>23</height>
     </rect>
    </property>
    <widget class="QMenu" name="menu_File">
@@ -81,10 +81,26 @@
     </property>
     <addaction name="actionSortAreas"/>
    </widget>
+   <widget class="QMenu" name="menu_4">
+    <property name="title">
+     <string>帮助</string>
+    </property>
+    <widget class="QMenu" name="menu_5">
+     <property name="title">
+      <string>语言</string>
+     </property>
+     <addaction name="action_3"/>
+     <addaction name="actionEnglish"/>
+    </widget>
+    <addaction name="separator"/>
+    <addaction name="menu_5"/>
+    <addaction name="action_4"/>
+   </widget>
    <addaction name="menu_File"/>
    <addaction name="menu"/>
    <addaction name="menu_2"/>
    <addaction name="menu_3"/>
+   <addaction name="menu_4"/>
   </widget>
   <widget class="QToolBar" name="mainToolBar">
    <attribute name="toolBarArea">
@@ -685,6 +701,21 @@
    </property>
    <property name="shortcut">
     <string>Ctrl+V</string>
+   </property>
+  </action>
+  <action name="action_3">
+   <property name="text">
+    <string>简体中文</string>
+   </property>
+  </action>
+  <action name="actionEnglish">
+   <property name="text">
+    <string>English</string>
+   </property>
+  </action>
+  <action name="action_4">
+   <property name="text">
+    <string>关于...</string>
    </property>
   </action>
  </widget>

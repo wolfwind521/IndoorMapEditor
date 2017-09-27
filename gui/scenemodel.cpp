@@ -1,8 +1,8 @@
 ﻿#include "scenemodel.h"
-#include "../core/mapentity.h"
-#include "../core/funcarea.h"
+#include "../core/feature.h"
+#include "../core/room.h"
 #include <QIcon>
-SceneModel::SceneModel(MapEntity *root, QObject *parent) :
+SceneModel::SceneModel(Feature *root, QObject *parent) :
     QAbstractItemModel(parent), m_root(root)
 {
     m_buildingIcon = new QIcon(":/src/icon/building.png");
@@ -24,11 +24,11 @@ QModelIndex SceneModel::index(int row, int column, const QModelIndex &parent) co
     if(m_root == NULL)
         return QModelIndex();
 
-    MapEntity *parentObject;
+    Feature *parentObject;
     if(!parent.isValid()){
         parentObject = m_root;
     }else{
-        parentObject = static_cast<MapEntity *>(parent.internalPointer());
+        parentObject = static_cast<Feature *>(parent.internalPointer());
     }
 
     if(row >= 0 && row < parentObject->children().count()){
@@ -47,14 +47,14 @@ QModelIndex SceneModel::parent(const QModelIndex &child) const
         return QModelIndex();
     }
 
-    MapEntity *childObject = static_cast<MapEntity *>(child.internalPointer());
-    MapEntity *parentObject = static_cast<MapEntity *>(childObject->parent());
+    Feature *childObject = static_cast<Feature *>(child.internalPointer());
+    Feature *parentObject = static_cast<Feature *>(childObject->parent());
 
     if(parentObject == m_root){
         return QModelIndex();
     }
 
-    MapEntity *grandParentObject = static_cast<MapEntity *>(parentObject->parent());
+    Feature *grandParentObject = static_cast<Feature *>(parentObject->parent());
 
     return createIndex(grandParentObject->children().indexOf(parentObject), 0, parentObject);
 
@@ -64,11 +64,11 @@ int SceneModel::rowCount(const QModelIndex &parent) const
 {
     if(m_root == NULL)
         return 0;
-    MapEntity *parentObject;
+    Feature *parentObject;
     if( !parent.isValid() ){
         parentObject = m_root;
     }else{
-        parentObject = static_cast<MapEntity *>(parent.internalPointer());
+        parentObject = static_cast<Feature *>(parent.internalPointer());
     }
     int count = parentObject->children().count();
     return count;
@@ -94,12 +94,12 @@ QVariant SceneModel::data(const QModelIndex &index, int role) const
     }
     if(role == Qt::DecorationRole){
         if(index.column() == 0) {
-            QString className = static_cast<MapEntity *>( index.internalPointer() )->metaObject()->className();
+            QString className = static_cast<Feature *>( index.internalPointer() )->metaObject()->className();
             if(className == "Building"){
                 return *m_buildingIcon;
             }else if(className == "Floor") {
                 return *m_floorIcon;
-            } else if(className == "FuncArea") {
+            } else if(className == "Room") {
                 return *m_funcAreaIcon;
             } else if (className == "PubPoint") {
                 return *m_pubPointIcon;
@@ -108,15 +108,15 @@ QVariant SceneModel::data(const QModelIndex &index, int role) const
     }
     if(role == Qt::DisplayRole){
         if(index.column() == 0){
-            MapEntity * entity = static_cast<MapEntity *>( index.internalPointer() );
-            QString className = entity->metaObject()->className();
-            if(className == "FuncArea"){
-                FuncArea *funcArea = static_cast<FuncArea*>(entity);
-                if(funcArea->dianpingId() != 0 && funcArea->dianpingId() != -1){
-                    return funcArea->objectName() + '(' + QString::number(funcArea->dianpingId()) + ')';
+            Feature * feature = static_cast<Feature *>( index.internalPointer() );
+            QString className = feature->metaObject()->className();
+            if(className == "Room"){
+                Room *room = static_cast<Room*>(feature);
+                if(room->dianpingId() != 0 && room->dianpingId() != -1){
+                    return room->objectName() + '(' + QString::number(room->dianpingId()) + ')';
                 }
             }
-            return entity->objectName();
+            return feature->objectName();
         }
     }
     return QVariant();

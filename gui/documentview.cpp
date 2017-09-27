@@ -1,8 +1,8 @@
 ﻿#include "documentview.h"
 #include "../core/building.h"
-#include "../core/mapentity.h"
+#include "../core/feature.h"
 #include "../core/floor.h"
-#include "../core/funcarea.h"
+#include "../core/room.h"
 #include "../core/pubpoint.h"
 #include "../core/scene.h"
 #include <QGraphicsScene>
@@ -70,17 +70,17 @@ void DocumentView::copy(){
 
     QList<QGraphicsItem*> itemList = m_scene->selectedItems();
     foreach(QGraphicsItem* item, itemList) {
-        MapEntity *mapEntity = dynamic_cast<MapEntity*>(item);
-        if(mapEntity == NULL)
+        Feature *mapFeature = dynamic_cast<Feature*>(item);
+        if(mapFeature == NULL)
             continue;
         QJsonObject jsonOject;
-        mapEntity->save(jsonOject);
-        if(mapEntity->isClassOf("Floor")){
+        mapFeature->save(jsonOject);
+        if(mapFeature->isClassOf("Floor")){
             jsonOject.remove("FuncAreas");
             jsonOject.remove("PubPoint");
             jsonOject.remove("ImageLayer");
             floorArray.append(jsonOject);
-        }else if(mapEntity->isClassOf("FuncArea")){
+        }else if(mapFeature->isClassOf("Room")){
             funcAreaArray.append(jsonOject);
         }
     }
@@ -116,10 +116,10 @@ void DocumentView::paste(){
         QJsonArray funcArray = rootObject["FuncAreas"].toArray();
         for(int i = 0; i < funcArray.size(); i++){
             QJsonObject funcObject = funcArray[i].toObject();
-            FuncArea* newFuncArea = new FuncArea(newFloor);
+            Room* newFuncArea = new Room(newFloor);
             newFuncArea->load(funcObject);
             newFuncArea->generateId();
-            m_scene->addFuncArea(newFuncArea);
+            m_scene->addRoom(newFuncArea);
         }
     }
 }
@@ -160,7 +160,7 @@ void DocumentView::printCurrentView(QPrinter *printer){
 //selection from graphics view
 void DocumentView::updateSelection(){
     QList<QGraphicsItem*> selectedItems = m_scene->selectedItems();
-    QGraphicsItem *mapEntity;
+    QGraphicsItem *mapFeature;
     if(selectedItems.size() > 0){
         //textItems
         QList<QGraphicsItem*>::iterator iter;
@@ -168,15 +168,15 @@ void DocumentView::updateSelection(){
             if(qgraphicsitem_cast<QGraphicsTextItem*>(*iter)){
                 QGraphicsItem *parent = (*iter)->parentItem();
                 parent->setSelected(true);
-                mapEntity = parent;
+                mapFeature = parent;
             }else
-                mapEntity = *iter;
+                mapFeature = *iter;
         }
 
-        MapEntity* selectedEntity = static_cast<MapEntity*>(mapEntity);
+        Feature* selectedFeature = static_cast<Feature*>(mapFeature);
         m_scene->clearSelectedLayers();
         m_scene->setSelectedLayer(m_scene->currentFloor());
-        emit selectionChanged(selectedEntity);
+        emit selectionChanged(selectedFeature);
     }else{
         emit selectionChanged(NULL);
     }
@@ -184,15 +184,15 @@ void DocumentView::updateSelection(){
 
 //selection from tree view
 void DocumentView::updateSelection(const QModelIndex & index){
-    MapEntity *mapEntity = static_cast<MapEntity*>(index.internalPointer());
+    Feature *mapFeature = static_cast<Feature*>(index.internalPointer());
 
 
-    QString className = mapEntity->metaObject()->className();
+    QString className = mapFeature->metaObject()->className();
     //a floor selected, change the visible floor
     if(!className.compare("Building")){
         QObject *floorObject;
         foreach (floorObject, m_scene->building()->children()) {
-            static_cast<MapEntity*>(floorObject)->setVisible(false);
+            static_cast<Feature*>(floorObject)->setVisible(false);
         }
         m_scene->setCurrentFloor(NULL);
     }
@@ -200,31 +200,31 @@ void DocumentView::updateSelection(const QModelIndex & index){
     else if( !className.compare("Floor")){
         QObject *floorObject;
         foreach (floorObject, m_scene->building()->children()) {
-            static_cast<MapEntity*>(floorObject)->setVisible(false);
+            static_cast<Feature*>(floorObject)->setVisible(false);
         }
-        mapEntity->setVisible(true);
-        Floor *floor = static_cast<Floor*>(mapEntity);
+        mapFeature->setVisible(true);
+        Floor *floor = static_cast<Floor*>(mapFeature);
         m_scene->setCurrentFloor(floor);
     }
-    //a funcArea or pubPoint selected, change the visible floor
-   // else if( !className.compare("FuncArea") || !className.compare("PubPoint") || !className.compare("ImageLayer")){
+    //a room or pubPoint selected, change the visible floor
+   // else if( !className.compare("Room") || !className.compare("PubPoint") || !className.compare("ImageLayer")){
     else{
-        MapEntity* parent = static_cast<MapEntity*>(mapEntity->parent());
+        Feature* parent = static_cast<Feature*>(mapFeature->parent());
         if(!parent->isSelected()){
             QObject* floor;
             foreach (floor, m_scene->building()->children()) {
-                static_cast<MapEntity*>(floor)->setVisible(false);
+                static_cast<Feature*>(floor)->setVisible(false);
             }
             parent->setVisible(true);
             m_scene->setCurrentFloor(static_cast<Floor*>(parent));
         }
         m_scene->clearSelection();
-        mapEntity->setSelected(true);
+        mapFeature->setSelected(true);
     }
-    m_scene->setSelectedLayer(mapEntity);
+    m_scene->setSelectedLayer(mapFeature);
     this->update();
 
-    emit selectionChanged(mapEntity);
+    emit selectionChanged(mapFeature);
 }
 
 Scene * DocumentView::scene() const{

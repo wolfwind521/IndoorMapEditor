@@ -10,7 +10,7 @@ class MainWindow;
 
 class DocumentView;
 class PropertyView;
-class MapEntity;
+class Feature;
 
 QT_FORWARD_DECLARE_CLASS(QTreeView)
 QT_FORWARD_DECLARE_CLASS(QPrinter)
@@ -38,12 +38,12 @@ public slots:
     void printFile();
     void printCurrent();
 
-    void deleteEntity();
+    void deleteFeature();
     void onAddLayerButtonClicked();
     void onDeleteButtonClicked();
 
     void rebuildTreeView();
-    void updatePropertyView(MapEntity* mapEntity);
+    void updatePropertyView(Feature* mapFeature);
 
     void setPolygonTool();
     void setSelectTool();
@@ -86,8 +86,8 @@ private:
     QTimer *m_timer;
     int m_autoSaveTime;
 
-    QList<MapEntity *> m_searchResults;
-    QListIterator<MapEntity *> m_searchResultIter;
+    QList<Feature *> m_searchResults;
+    QListIterator<Feature *> m_searchResultIter;
 };
 
 #endif // MAINWINDOW_H

@@ -8,14 +8,14 @@
 #ifndef BUILDING_H
 #define BUILDING_H
 
-#include "polygonentity.h"
+#include "polygonfeature.h"
 
 #include <QString>
 #include <QGraphicsItem>
 
 class Floor;
 
-class Building : public PolygonEntity
+class Building : public PolygonFeature
 {
     Q_OBJECT
 public:
@@ -26,14 +26,12 @@ public:
         //TODO: maybe other types
     };
     Building(const QString & name, QGraphicsItem *parent = 0);
-    Building(PolygonEntity &polygon);
+    Building(PolygonFeature &polygon);
     bool load(const QJsonObject & jsonObject);
     bool save(QJsonObject & jsonObject) const;
     int floorNum() const;
     int underFloors() const;
     int groundFloors() const;
-    int defaultFloor() const;
-    void setDefaultFloor(int floorId);
     double height() const;
     void setHeight(double height);
     double latitude() const;
@@ -55,24 +53,20 @@ public:
     QVector<Floor*> getFloors();
     Floor *getFloorById(int id);
 
-    virtual void transformEntity(const QMatrix &matrix);
+    virtual void transformFeature(const QMatrix &matrix);
 
  private slots:
     void updateFloorIds(int oldId, int newId);
 private:
-    int m_underFloors;
-
-    int m_defaultFloor;
-    double m_height;
-    int m_groundFloors;
+    int m_underFloors;  //No. of under ground floors
+    double m_height;    //building height
+    int m_groundFloors; //No. of over ground floors
     QString m_postCode;
     QString m_remark;
     QString m_floorsId;
     double m_latitude;
     double m_longitude;
     int m_version;
-
-    QString m_key;
     QString m_address;
     QString m_time;
     QString m_tel;

@@ -1,13 +1,13 @@
 ﻿#include "propertyview.h"
-#include "../core/mapentity.h"
+#include "../core/feature.h"
 #include <QFormLayout>
 #include <QLineEdit>
 #include <QComboBox>
 
 #pragma execution_character_set("utf-8")
 
-PropertyView::PropertyView(MapEntity *mapEntity, QWidget *parent) :
-    QWidget(parent), m_mapEntity(mapEntity)
+PropertyView::PropertyView(Feature *mapFeature, QWidget *parent) :
+    QWidget(parent), m_mapFeature(mapFeature)
 {
     createWidgets();
     createLayout();
@@ -25,7 +25,7 @@ void PropertyView::createWidgets(){
     m_idEdit = new QLineEdit;
     m_briefEdit = new QLineEdit;
     m_typeComboBox = new QComboBox;
-    QStringList strlist = m_mapEntity->typeStringList();
+    QStringList strlist = m_mapFeature->typeStringList();
     if(strlist.empty()){
         m_typeComboBox->hide();
     }else{
@@ -52,27 +52,27 @@ void PropertyView::createConnections(){
     connect(m_typeComboBox, SIGNAL(currentIndexChanged(QString)), this, SLOT(updateType(QString)));
 }
 
-bool PropertyView::match(const MapEntity *mapEntity) const {
-    if(mapEntity->isClassOf("PubPoint"))
+bool PropertyView::match(const Feature *mapFeature) const {
+    if(mapFeature->isClassOf("PubPoint"))
         return true;
     else
         return false;
 }
 
-void PropertyView::setMapEntity(MapEntity * mapEntity){
-    if(m_mapEntity != mapEntity){
-        m_mapEntity = mapEntity;
+void PropertyView::setMapFeature(Feature * mapFeature){
+    if(m_mapFeature != mapFeature){
+        m_mapFeature = mapFeature;
         updateWidgets();
     }
 }
 
 void PropertyView::updateWidgets(){
-    if(m_mapEntity != NULL){
-        m_nameLineEdit->setText(m_mapEntity->objectName());
-        m_enNameLineEdit->setText(m_mapEntity->enName());
-        m_idEdit->setText(QString::number(m_mapEntity->id()));
-        m_briefEdit->setText(m_mapEntity->brief());
-        m_typeComboBox->setCurrentText(m_mapEntity->getTypeName());
+    if(m_mapFeature != NULL){
+        m_nameLineEdit->setText(m_mapFeature->objectName());
+        m_enNameLineEdit->setText(m_mapFeature->enName());
+        m_idEdit->setText(QString::number(m_mapFeature->id()));
+        m_briefEdit->setText(m_mapFeature->brief());
+        m_typeComboBox->setCurrentText(m_mapFeature->getTypeName());
     }else{
         m_nameLineEdit->setText(QString());
         m_enNameLineEdit->setText(QString());
@@ -83,23 +83,23 @@ void PropertyView::updateWidgets(){
 }
 
 void PropertyView::updateName(const QString &name){
-    m_mapEntity->setObjectName(name);
-    m_mapEntity->update(m_mapEntity->boundingRect()); //redraw
+    m_mapFeature->setObjectName(name);
+    m_mapFeature->update(m_mapFeature->boundingRect()); //redraw
 }
 
 void PropertyView::updateEnName(const QString &enName){
-    m_mapEntity->setEnName(enName);
+    m_mapFeature->setEnName(enName);
 }
 
 void PropertyView::updateId(const QString &id) {
-    m_mapEntity->setId(id.toInt());
+    m_mapFeature->setId(id.toInt());
 }
 
 void PropertyView::updateBrief(const QString &brief) {
-    m_mapEntity->setBrief(brief);
+    m_mapFeature->setBrief(brief);
     m_briefEdit->setText(brief);
 }
 
 void PropertyView::updateType(const QString &typeName){
-    m_mapEntity->updateByTypeName(typeName);
+    m_mapFeature->updateByTypeName(typeName);
 }

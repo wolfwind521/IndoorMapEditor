@@ -11,7 +11,7 @@ QT_FORWARD_DECLARE_CLASS(QPrinter)
 
 class Floor;
 class Building;
-class MapEntity;
+class Feature;
 class Scene;
 
 class DocumentView : public QGraphicsView
@@ -44,7 +44,7 @@ public:
 
 
 signals:
-    void selectionChanged(MapEntity * mapEntity);
+    void selectionChanged(Feature * mapFeature);
 
 public slots:
     void printScene(QPrinter *printer);

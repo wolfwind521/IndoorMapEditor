@@ -1,32 +1,32 @@
-﻿#include "mapentity.h"
+﻿#include "feature.h"
 #include <QJsonArray>
 #include <QDateTime>
 
-MapEntity::MapEntity(QGraphicsItem *parent) :
+Feature::Feature(QGraphicsItem *parent) :
     QGraphicsObject(parent), m_type("0")
 {
     generateId();
 }
 
-MapEntity::MapEntity(const QString &name, QGraphicsItem *parent) :
+Feature::Feature(const QString &name, QGraphicsItem *parent) :
     QGraphicsObject(parent), m_type("0")
 {
     generateId();
     setObjectName(name);
 }
 
-const QString &MapEntity::brief() const
+const QString &Feature::brief() const
 {
     return m_brief;
 }
 
-int MapEntity::generateId(){
+int Feature::generateId(){
     //利用时间生成6位id, 小概率生成同样id...
     m_id = QDateTime::currentDateTime().toTime_t() % 1000000 +  qrand()% 100000 + 1000000;
     return m_id;
 }
 
-void MapEntity::setBrief(const QString & brief)
+void Feature::setBrief(const QString & brief)
 {
     if(m_brief == brief)
         return;
@@ -34,17 +34,17 @@ void MapEntity::setBrief(const QString & brief)
     emit briefChanged(m_brief);
 }
 
-bool MapEntity::isClassOf(const QString &className) const {
+bool Feature::isClassOf(const QString &className) const {
     QString myClassName;
     myClassName = this->metaObject()->className();
     return (!myClassName.compare(className));
 }
-int MapEntity::id() const
+int Feature::id() const
 {
     return m_id;
 }
 
-void MapEntity::setId(const int id)
+void Feature::setId(const int id)
 {
     if(m_id == id)
         return;
@@ -53,24 +53,24 @@ void MapEntity::setId(const int id)
     emit idChanged(oldid, m_id);
 }
 
-const QString & MapEntity::enName() const
+const QString & Feature::enName() const
 {
     return m_enName;
 }
 
-void MapEntity::setEnName(const QString & name){
+void Feature::setEnName(const QString & name){
     if( m_enName == name)
         return;
     m_enName = name;
     emit enNameChanged(m_enName);
 }
 
-const QPointF & MapEntity::center() const
+const QPointF & Feature::center() const
 {
     return m_center;
 }
 
-void MapEntity::setCenter(const QPointF & center)
+void Feature::setCenter(const QPointF & center)
 {
     if(m_center == center)
         return;
@@ -78,23 +78,23 @@ void MapEntity::setCenter(const QPointF & center)
     emit centerChanged(m_center);
 }
 
-const QString & MapEntity::type() {
+const QString & Feature::type() {
     return m_type;
 }
 
-void MapEntity::setType(const QString & type){
+void Feature::setType(const QString & type){
     if(m_type == type)
         return;
     m_type = type;
     emit typeChanged(m_type);
 }
 
-void MapEntity::setParentEntity(MapEntity *entity) {
-    this->setParent(entity);
-    this->setParentItem(entity);
+void Feature::setParentFeature(Feature *feature) {
+    setParent(feature);
+    setParentItem(feature);
 }
 
-bool MapEntity::load(const QJsonObject &jsonObject)
+bool Feature::load(const QJsonObject &jsonObject)
 {
     setObjectName( jsonObject["Name"].toString() );
     m_enName = jsonObject["Name_en"].toString();
@@ -106,7 +106,7 @@ bool MapEntity::load(const QJsonObject &jsonObject)
     return true;
 }
 
-bool MapEntity::save(QJsonObject &jsonObject) const
+bool Feature::save(QJsonObject &jsonObject) const
 {
     jsonObject["Name"] = objectName();
     jsonObject["Name_en"] = m_enName;
@@ -114,17 +114,17 @@ bool MapEntity::save(QJsonObject &jsonObject) const
     return true;
 }
 
-QRectF MapEntity::boundingRect() const
+QRectF Feature::boundingRect() const
 {
     return QRectF(m_center, m_center);
 }
 
-void MapEntity::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
+void Feature::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
 {
 
 }
 
-void MapEntity::transformEntity(const QMatrix &matrix){
+void Feature::transformFeature(const QMatrix &matrix){
     m_center = matrix.map(m_center);
     emit centerChanged(m_center);
 }

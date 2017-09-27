@@ -3,8 +3,8 @@
 
 #include "abstracttool.h"
 
-class PolygonEntity;
-class FuncArea;
+class PolygonFeature;
+class Room;
 class DocumentView;
 class QGraphicsItem;
 

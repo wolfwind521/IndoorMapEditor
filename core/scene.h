@@ -10,13 +10,13 @@
 
 #include <QGraphicsScene>
 
-class MapEntity;
+class Feature;
 class Building;
 class Floor;
-class FuncArea;
+class Room;
 class PubPoint;
 class ImageLayer;
-class PolygonEntity;
+class PolygonFeature;
 QT_FORWARD_DECLARE_CLASS(QGraphicsSceneMouseEvent)
 
 enum DATA_TYPE{
@@ -35,47 +35,47 @@ public:
     explicit Scene(QObject *parent = 0);
     void reset();
     void setSelectable(bool b);
-    MapEntity* root() const;
+    Feature* root() const;
     void createRoot();
     Building* building() const;
     void setBuilding(Building* building);
 
-    //void addEntityByContext(PolygonEntity* polygon);
-    PolygonEntity* createPolygonByContext();
-    void deletePolygonByContext(PolygonEntity* entity);
+    //void addFeatureByContext(PolygonFeature* polygon);
+    PolygonFeature* createPolygonByContext();
+    void deletePolygonByContext(PolygonFeature* feature);
 
     Floor* addFloor(Floor* floor = 0);
-    FuncArea* addFuncArea(FuncArea* funcArea);
+    Room* addRoom(Room* room);
     void addPubPoint(PubPoint* pubPoint);
     void addImageLayer(ImageLayer* imageLayer);
 
     void deleteSelectedItems();
     void deleteSelectedLayers();
-    void deleteMapEntity(MapEntity *entity);
-    void removeMapEntity(MapEntity *entity);
+    void deleteMapFeature(Feature *feature);
+    void removeMapFeature(Feature *feature);
 
     bool showFloor(int floorId);
     bool showDefaultFloor();
     Floor* currentFloor() const;
     void setCurrentFloor(Floor* floor);
 
-    QList<MapEntity *> findMapEntity(const QString & name);
-    void selectMapEntity(MapEntity* entity); //select the funcArea and change the floor
+    QList<Feature *> findMapFeature(const QString & name);
+    void selectMapFeature(Feature* feature); //select the room and change the floor
 
-    QList<QList<MapEntity*> > findAllRepeat();
+    QList<QList<Feature*> > findAllRepeat();
 
     void transformMap(const QMatrix &matrix);
     void addScale(double s);
     void clearSelectedLayers();
-    void setSelectedLayer(MapEntity *entity);
-    MapEntity* currentLayer();
+    void setSelectedLayer(Feature *feature);
+    Feature* currentLayer();
 signals:
     void buildingChanged();
     void fontChanged(const QFont &font);
 public slots:
     void convertSelectedToBuilding();
     void convertSelectedToFloor();
-    void convertSelectedToFuncArea();
+    void convertSelectedToRoom();
 protected:
     //virtual void event(QEvent *event);
     virtual void mousePressEvent( QGraphicsSceneMouseEvent *event );
@@ -86,13 +86,13 @@ protected:
     void contextMenuEvent(QGraphicsSceneContextMenuEvent * event);
 private:
     bool m_selectable;
-    MapEntity *m_root;
+    Feature *m_root;
     Building *m_building;
     Floor *m_curFloor;
     double m_scaleSum;
     int m_scaleNum;
     double m_curScale;
-    QList<MapEntity*> m_selectedLayers;
+    QList<Feature*> m_selectedLayers;
 };
 
 #endif // SCENE_H

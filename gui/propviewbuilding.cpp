@@ -7,13 +7,12 @@
 
 #pragma execution_character_set("utf-8")
 
-PropViewBuilding::PropViewBuilding(MapEntity *mapEntity, QWidget *parent):
-    PropertyView(mapEntity, parent)
+PropViewBuilding::PropViewBuilding(Feature *mapFeature, QWidget *parent):
+    PropertyView(mapFeature, parent)
 {
     m_underFloorsLabel = new QLabel;
     m_groundFloorsLabel = new QLabel;
     m_heightEdit = new QLineEdit;
-    m_defaultFloorEdit = new QLineEdit;
     m_addressEdit = new QLineEdit;
     m_postCodeEdit = new QLineEdit;
     m_latitudeEdit = new QLineEdit;
@@ -22,7 +21,6 @@ PropViewBuilding::PropViewBuilding(MapEntity *mapEntity, QWidget *parent):
     m_telEdit = new QLineEdit;
 \
     m_layout->addRow(tr("高度"), m_heightEdit);
-    m_layout->addRow(tr("默认楼层"), m_defaultFloorEdit);
     m_layout->addRow(tr("地下层数"), m_underFloorsLabel);
     m_layout->addRow(tr("地上层数"), m_groundFloorsLabel);
     m_layout->addRow(tr("地址"), m_addressEdit);
@@ -35,7 +33,6 @@ PropViewBuilding::PropViewBuilding(MapEntity *mapEntity, QWidget *parent):
     updateWidgets();
 
     connect(m_heightEdit, SIGNAL(textEdited(QString)), this, SLOT(updateHeight(QString)));
-    connect(m_defaultFloorEdit, SIGNAL(textEdited(QString)), this, SLOT(updateDefaultFloor(QString)));
     connect(m_addressEdit, SIGNAL(textEdited(QString)), this, SLOT(updateAddress(QString)));
     connect(m_postCodeEdit, SIGNAL(textEdited(QString)), this, SLOT(updatePostCode(QString)));
     connect(m_longitudeEdit, SIGNAL(textEdited(QString)), this, SLOT(updateLongitudeEdit(QString)));
@@ -48,16 +45,15 @@ PropViewBuilding::~PropViewBuilding() {
 
 }
 
-bool PropViewBuilding::match(const MapEntity *mapEntity) const {
-    return mapEntity->isClassOf("Building");
+bool PropViewBuilding::match(const Feature *mapFeature) const {
+    return mapFeature->isClassOf("Building");
 }
 
 
 void PropViewBuilding::updateWidgets(){
     PropertyView::updateWidgets();
-    Building *building = static_cast<Building*>(m_mapEntity);
+    Building *building = static_cast<Building*>(m_mapFeature);
     m_heightEdit->setText(QString::number(building->height()));
-    m_defaultFloorEdit->setText(QString::number(building->defaultFloor()));
     m_underFloorsLabel->setText(QString::number(building->underFloors()));
     m_groundFloorsLabel->setText(QString::number(building->groundFloors()));
     m_addressEdit->setText(building->address());
@@ -68,34 +64,30 @@ void PropViewBuilding::updateWidgets(){
     m_telEdit->setText(building->tel());
 }
 
-void PropViewBuilding::updateDefaultFloor(const QString &floorid) {
-    static_cast<Building*>(m_mapEntity)->setDefaultFloor(floorid.toInt());
-}
-
 void PropViewBuilding::updateHeight(const QString &height) {
-    static_cast<Building*>(m_mapEntity)->setHeight(height.toDouble());
+    static_cast<Building*>(m_mapFeature)->setHeight(height.toDouble());
 }
 
 void PropViewBuilding::updateAddress(const QString &address){
-    static_cast<Building*>(m_mapEntity)->setAddress(address);
+    static_cast<Building*>(m_mapFeature)->setAddress(address);
 }
 
 void PropViewBuilding::updatePostCode(const QString &postCode){
-    static_cast<Building*>(m_mapEntity)->setPostCode(postCode);
+    static_cast<Building*>(m_mapFeature)->setPostCode(postCode);
 }
 
 void PropViewBuilding::updateLatitudeEdit(const QString & lat){
-    static_cast<Building*>(m_mapEntity)->setLatitude(lat.toDouble());
+    static_cast<Building*>(m_mapFeature)->setLatitude(lat.toDouble());
 }
 
 void PropViewBuilding::updateLongitudeEdit(const QString &lng){
-    static_cast<Building*>(m_mapEntity)->setLongitude(lng.toDouble());
+    static_cast<Building*>(m_mapFeature)->setLongitude(lng.toDouble());
 }
 
 void PropViewBuilding::updateTimeEdit(const QString &time){
-    static_cast<Building*>(m_mapEntity)->setTime(time);
+    static_cast<Building*>(m_mapFeature)->setTime(time);
 }
 
 void PropViewBuilding::updateTelEdit(const QString &tel){
-    static_cast<Building*>(m_mapEntity)->setTel(tel);
+    static_cast<Building*>(m_mapFeature)->setTel(tel);
 }

@@ -1,7 +1,7 @@
 ﻿#ifndef PUBPOINT_H
 #define PUBPOINT_H
 
-#include "mapentity.h"
+#include "feature.h"
 #include <QString>
 #include <QJsonArray>
 #include <QHash>
@@ -12,7 +12,7 @@ enum PUB_TYPE{
 
 };
 
-class PubPoint : public MapEntity
+class PubPoint : public Feature
 {
     Q_OBJECT
 

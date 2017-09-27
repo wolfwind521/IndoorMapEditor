@@ -1,8 +1,8 @@
 ﻿#include "mergetool.h"
 #include "../gui/documentview.h"
 #include "../core/scene.h"
-#include "../core/polygonentity.h"
-#include "../core/funcarea.h"
+#include "../core/polygonfeature.h"
+#include "../core/room.h"
 #include "../core/floor.h"
 #include <QMenu>
 #include <QList>
@@ -63,7 +63,7 @@ void MergeTool::mergeSelectedItems() {
 
     //get all the polygons
     foreach(QGraphicsItem* item, itemList) {
-        PolygonEntity* poly = dynamic_cast<PolygonEntity*>(item);
+        PolygonFeature* poly = dynamic_cast<PolygonFeature*>(item);
         if(poly != NULL){
             polyArray.push_back(poly->outline());
             if(poly->isClassOf("Floor")){
@@ -78,18 +78,18 @@ void MergeTool::mergeSelectedItems() {
         if(tmpFloor){
             tmpFloor->setOutline(polygon);
         }else{
-            FuncArea *newArea = new FuncArea("未命名", polygon);
+            Room *newArea = new Room("未命名", polygon);
             newArea->computeArea();
             newArea->computeCenter();
-            newArea->setParentEntity(scene->currentFloor());
+            newArea->setParentFeature(scene->currentFloor());
         }
     }
 
     //delte the old funcAreas
     foreach(QGraphicsItem* item, itemList) {
-        FuncArea* funcArea = dynamic_cast<FuncArea*>(item);
-        if(funcArea != NULL){
-            delete funcArea;
+        Room* room = dynamic_cast<Room*>(item);
+        if(room != NULL){
+            delete room;
         }
     }
     scene->clearSelection();

@@ -6,8 +6,8 @@
 
 #pragma execution_character_set("utf-8")
 
-PropViewFloor::PropViewFloor(MapEntity *mapEntity, QWidget *parent) :
-    PropertyView(mapEntity, parent)
+PropViewFloor::PropViewFloor(Feature *mapFeature, QWidget *parent) :
+    PropertyView(mapFeature, parent)
 {
     m_heightEdit = new QLineEdit;
     m_funcAreaNumLabel = new QLabel;
@@ -22,16 +22,16 @@ PropViewFloor::PropViewFloor(MapEntity *mapEntity, QWidget *parent) :
     connect(m_heightEdit, SIGNAL(textEdited(QString)), this, SLOT(updateHeight(QString)));
 }
 
-bool PropViewFloor::match(const MapEntity *mapEntity) const {
-    return mapEntity->isClassOf("Floor");
+bool PropViewFloor::match(const Feature *mapFeature) const {
+    return mapFeature->isClassOf("Floor");
 }
 
 void PropViewFloor::updateWidgets(){
     PropertyView::updateWidgets();
-    Floor *floor = static_cast<Floor*>(m_mapEntity);
+    Floor *floor = static_cast<Floor*>(m_mapFeature);
     m_heightEdit->setText(QString::number(floor->height()));
 }
 
 void PropViewFloor::updateHeight(const QString &height) {
-    static_cast<Floor*>(m_mapEntity)->setHeight(height.toDouble());
+    static_cast<Floor*>(m_mapFeature)->setHeight(height.toDouble());
 }

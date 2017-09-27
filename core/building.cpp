@@ -8,12 +8,12 @@
 #include <QMessageBox>
 
 Building::Building(const QString & name, QGraphicsItem *parent)
-    : PolygonEntity(name, parent), m_underFloors(0), m_groundFloors(0), m_defaultFloor(1), m_height(0)
+    : PolygonFeature(name, parent), m_underFloors(0), m_groundFloors(0), m_height(0)
 {
     m_color = QColor(247, 247, 247);
 }
 
-Building::Building(PolygonEntity &polygon) {
+Building::Building(PolygonFeature &polygon) {
     new (this) Building("");
     copy(polygon);
 }
@@ -46,7 +46,7 @@ void Building::addFloor(Floor *floor) {
     } else{
         m_underFloors ++;
     }
-    floor->setParentEntity(this);
+    floor->setParentFeature(this);
     connect(floor, SIGNAL(idChanged(int,int)), this, SLOT(updateFloorIds(int,int)));
 }
 
@@ -72,14 +72,6 @@ void Building::updateFloorIds(int oldId, int newId) {
     }
 }
 
-int Building::defaultFloor() const {
-    return m_defaultFloor;
-}
-
-void Building::setDefaultFloor(int floorId) {
-    m_defaultFloor = floorId;
-}
-
 bool Building::load(const QJsonObject &jsonObject) {
     const QJsonValue & dataValue = jsonObject["data"];
     if(dataValue.isUndefined()){
@@ -94,11 +86,10 @@ bool Building::load(const QJsonObject &jsonObject) {
     }
 
     const QJsonObject & buildingObject = buildingValue.toObject();
-    PolygonEntity::load(buildingObject);
+    PolygonFeature::load(buildingObject);
 
     m_underFloors = buildingObject["UnderFloors"].toInt();
     m_frontAngle = buildingObject["FrontAngle"].toDouble();
-    m_defaultFloor = buildingObject["DefaultFloor"].toInt(1);
     m_groundFloors = buildingObject["GroundFloors"].toInt();
     m_postCode = buildingObject["Adcode"].toString();
     m_remark = buildingObject["Remark"].toString();
@@ -108,7 +99,6 @@ bool Building::load(const QJsonObject &jsonObject) {
     m_longitude = buildingObject["_xLon"].toDouble();
     m_version = buildingObject["Version"].toInt();
     m_type =  buildingObject["Type"].toString();
-    m_key = buildingObject["_id"].toString();
     m_address = buildingObject["Address"].toString();
     m_time = buildingObject["Time"].toString();
     m_tel = buildingObject["Tel"].toString();
@@ -166,10 +156,9 @@ bool Building::save(QJsonObject &jsonObject) const
 {
     QJsonObject dataObject, buildingObject;
 
-    PolygonEntity::save(buildingObject);
+    PolygonFeature::save(buildingObject);
     buildingObject["UnderFloors"] = m_underFloors;
     buildingObject["FrontAngle"] = m_frontAngle;
-    buildingObject["DefaultFloor"] = m_defaultFloor;
     buildingObject["GroundFloors"] = m_groundFloors;
     buildingObject["Adcode"] = m_postCode;
     //buildingObject["Remark"] = m_remark;
@@ -178,7 +167,6 @@ bool Building::save(QJsonObject &jsonObject) const
     buildingObject["_xLon"] = m_longitude;
     buildingObject["Version"] = m_version;
     buildingObject["Type"] =m_type;
-    buildingObject["_id"] = m_key;
     buildingObject["Address"] = m_address;
     buildingObject["Time"] = m_time;
     buildingObject["Tel"] = m_tel;
@@ -308,15 +296,15 @@ void Building::setTel(const QString &tel){
     }
 }
 
-void Building::transformEntity(const QMatrix &matrix){
-    PolygonEntity::transformEntity(matrix);
+void Building::transformFeature(const QMatrix &matrix){
+    PolygonFeature::transformFeature(matrix);
 
     QList<QGraphicsItem*> children = this->childItems();
     QGraphicsItem* item;
     foreach(item, children) {
         Floor *floor = static_cast<Floor*>(item);
         if(floor != NULL){
-            floor->transformEntity(matrix);
+            floor->transformFeature(matrix);
         }
     }
 }

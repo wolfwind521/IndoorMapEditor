@@ -1,7 +1,7 @@
 ﻿#include "selecttool.h"
 #include "../gui/documentview.h"
 #include "../core/scene.h"
-#include "../core/mapentity.h"
+#include "../core/feature.h"
 #include <QMenu>
 #include <QGraphicsSceneMouseEvent>
 #include <QGraphicsSceneContextMenuEvent>
@@ -16,8 +16,8 @@ SelectTool::SelectTool(DocumentView *doc) :
 void SelectTool::contextMenuEvent(QGraphicsSceneContextMenuEvent *event) {
     Scene *scene = m_doc->scene();
     if(scene->selectedItems().size() > 0){ //if sth selected
-        MapEntity* entity = static_cast<MapEntity*>(scene->selectedItems().at(0));
-        if(entity != NULL && entity->inherits("PolygonEntity")){ //if polygon entity selected
+        Feature* feature = static_cast<Feature*>(scene->selectedItems().at(0));
+        if(feature != NULL && feature->inherits("PolygonFeature")){ //if polygon feature selected
             if(m_contextMenu == NULL){ //create the menu
                 m_contextMenu = new QMenu();
                 QAction *toBuildingAction = m_contextMenu->addAction("设为建筑");

@@ -3,7 +3,7 @@
 
 #include "propertyview.h"
 
-class MapEntity;
+class Feature;
 QT_FORWARD_DECLARE_CLASS(QLabel)
 QT_FORWARD_DECLARE_CLASS(QLineEdit)
 QT_FORWARD_DECLARE_CLASS(QTextEdit)
@@ -13,14 +13,13 @@ class PropViewBuilding : public PropertyView
 {
     Q_OBJECT
 public:
-    explicit PropViewBuilding(MapEntity *mapEntity, QWidget *parent = 0);
+    explicit PropViewBuilding(Feature *mapFeature, QWidget *parent = 0);
     ~PropViewBuilding();
 
-    virtual bool match(const MapEntity * mapEntity) const;
+    virtual bool match(const Feature * mapFeature) const;
     virtual void updateWidgets();
 public slots:
     void updateHeight(const QString &height);
-    void updateDefaultFloor(const QString &floorid);
     void updateAddress(const QString &address);
     void updatePostCode(const QString &postCode);
     void updateLatitudeEdit(const QString &lat);
@@ -33,8 +32,6 @@ private:
     QLabel *m_groundFloorsLabel;
 
     QLineEdit *m_heightEdit;
-    QLineEdit *m_defaultFloorEdit;
-
     QLineEdit *m_addressEdit;
     QLineEdit *m_postCodeEdit;
     QLineEdit *m_latitudeEdit;

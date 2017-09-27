@@ -3,7 +3,7 @@
 
 #include "abstracttool.h"
 
-class PolygonEntity;
+class PolygonFeature;
 
 class PolygonTool : public AbstractTool
 {
@@ -17,7 +17,7 @@ public:
 private:
     bool m_start;
     bool m_isCreating;
-    PolygonEntity* m_polygon;
+    PolygonFeature* m_polygon;
 };
 
 #endif // POLYGONTOOL_H

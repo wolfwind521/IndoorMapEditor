@@ -14,12 +14,10 @@ SOURCES += main.cpp\
         mainwindow.cpp \
     core/building.cpp \
     core/floor.cpp \
-    core/funcarea.cpp \
     gui/documentview.cpp \
-    core/polygonentity.cpp \
+    core/polygonfeature.cpp \
     io/jsonloader.cpp \
     io/iomanager.cpp \
-    core/mapentity.cpp \
     core/pubpoint.cpp \
     gui/scenemodel.cpp \
     gui/propertyview.cpp \
@@ -31,7 +29,6 @@ SOURCES += main.cpp\
     tool/pubpointtool.cpp \
     gui/handle.cpp \
     cmd/addenittycommand.cpp \
-    gui/propviewfuncarea.cpp \
     core/imagelayer.cpp \
     gui/propviewfloor.cpp \
     gui/propviewbuilding.cpp \
@@ -40,18 +37,19 @@ SOURCES += main.cpp\
     tool/scaletool.cpp \
     math/gdiam.cpp \
     tool/edittool.cpp \
-    function/shopanalysis.cpp
+    core/room.cpp \
+    gui/propviewroom.cpp \
+    core/feature.cpp \
+    core/polygonfeature.cpp
 
 HEADERS  += mainwindow.h \
     core/building.h \
     core/floor.h \
-    funcarea.h \
-    core/funcarea.h \
+    room.h \
     gui/documentview.h \
-    core/polygonentity.h \
+    core/polygonfeature.h \
     io/jsonloader.h \
     io/iomanager.h \
-    core/mapentity.h \
     core/pubpoint.h \
     gui/scenemodel.h \
     gui/propertyview.h \
@@ -63,7 +61,6 @@ HEADERS  += mainwindow.h \
     tool/pubpointtool.h \
     gui/handle.h \
     cmd/addenittycommand.h \
-    gui/propviewfuncarea.h \
     core/imagelayer.h \
     gui/propviewfloor.h \
     gui/propviewbuilding.h \
@@ -72,9 +69,15 @@ HEADERS  += mainwindow.h \
     tool/scaletool.h \
     math/gdiam.hpp \
     tool/edittool.h \
-    function/shopanalysis.h
+    core/room.h \
+    gui/propviewroom.h \
+    core/feature.h \
+    core/polygonfeature.h
 
 FORMS    += mainwindow.ui
+
+TRANSLATIONS = indoormap_zh_cn.ts\
+                indoormap_en.ts
 
 RESOURCES += \
     IndoorMapEditor.qrc

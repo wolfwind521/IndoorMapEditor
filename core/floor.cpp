@@ -1,18 +1,18 @@
 ﻿#include "floor.h"
-#include "funcarea.h"
+#include "room.h"
 #include "pubpoint.h"
 #include "imagelayer.h"
 
 int Floor::m_maxFloorId = 0;
 
 Floor::Floor(QGraphicsItem *parent)
-    : PolygonEntity(parent), m_height(0)
+    : PolygonFeature(parent), m_height(0)
 {
     m_color = QColor(193, 193, 193, 125);
     m_id = ++m_maxFloorId;
 }
 
-Floor::Floor(PolygonEntity &polygon)
+Floor::Floor(PolygonFeature &polygon)
 {
     new (this) Floor();
     copy(polygon);
@@ -26,22 +26,22 @@ int Floor::generateId(){
 
 bool Floor::load(const QJsonObject &jsonObject) {
 
-    PolygonEntity::load(jsonObject);
+    PolygonFeature::load(jsonObject);
     m_height = jsonObject["High"].toDouble();
     m_id = jsonObject["_id"].toInt();
     if(m_id > m_maxFloorId){
         m_maxFloorId = m_id;
     }
 
-    QJsonArray funcArray = jsonObject["FuncAreas"].toArray();
-    for (int i = 0; i < funcArray.size(); ++i) {
-        QJsonObject funcObject = funcArray[i].toObject();
+    QJsonArray roomArray = jsonObject["Rooms"].toArray();
+    for (int i = 0; i < roomArray.size(); ++i) {
+        QJsonObject roomObject = roomArray[i].toObject();
 
-        FuncArea * funcArea = new FuncArea(this);
-        if(!funcArea->load(funcObject)) {
+        Room * room = new Room(this);
+        if(!room->load(roomObject)) {
             //TODO: show some warning
         }
-        funcArea->setParent(this);
+        room->setParent(this);
     }
 
     QJsonArray pubArray = jsonObject["PubPoint"].toArray();
@@ -76,18 +76,18 @@ bool Floor::load(const QJsonObject &jsonObject) {
 
 bool Floor::save(QJsonObject &jsonObject) const
 {
-    PolygonEntity::save(jsonObject);
+    PolygonFeature::save(jsonObject);
     jsonObject["High"] = m_height;
     jsonObject["_id"] = m_id;
 
-    //save the funcAreas and pubPoints
-    QJsonArray funcArray, pubArray, imageArray;
+    //save the Rooms and pubPoints
+    QJsonArray roomArray, pubArray, imageArray;
     foreach (QObject* object, this->children()) {
         QString className = object->metaObject()->className();
-        if(className == "FuncArea"){
-            QJsonObject funcObject;
-            static_cast<FuncArea*>(object)->save(funcObject);
-            funcArray.append(funcObject);
+        if(className == "Room"){
+            QJsonObject roomObject;
+            static_cast<Room*>(object)->save(roomObject);
+            roomArray.append(roomObject);
         }else if(className == "PubPoint"){
             QJsonObject pubObject;
             static_cast<PubPoint*>(object)->save(pubObject);
@@ -98,7 +98,7 @@ bool Floor::save(QJsonObject &jsonObject) const
             imageArray.append(imageObject);
         }
     }
-    jsonObject["FuncAreas"] = funcArray;
+    jsonObject["Rooms"] = roomArray;
     jsonObject["PubPoint"] = pubArray;
     jsonObject["ImageLayer"] = imageArray;
     return true;
@@ -121,29 +121,29 @@ void Floor::resetMaxFloorId(){
     m_maxFloorId = 0;
 }
 
-QList<FuncArea*> Floor::getFuncAreas() const{
-    QList<FuncArea*> funcAreas;
+QList<Room*> Floor::getRooms() const{
+    QList<Room*> Rooms;
     const QList<QGraphicsItem*> & children = this->childItems();
     QGraphicsItem* item;
     foreach(item, children){
-        FuncArea* funcArea = dynamic_cast<FuncArea*>(item);
-        if(funcArea != NULL){
-            funcAreas.append(funcArea);
+        Room* room = dynamic_cast<Room*>(item);
+        if(room != NULL){
+            Rooms.append(room);
         }
     }
-    return funcAreas;
+    return Rooms;
 }
 
 
-void Floor::transformEntity(const QMatrix &mat)
+void Floor::transformFeature(const QMatrix &mat)
 {
-    PolygonEntity::transformEntity(mat);
+    PolygonFeature::transformFeature(mat);
 
     const QList<QGraphicsItem*> & children = this->childItems();
     foreach (QGraphicsItem* item, children) {
-        MapEntity *mapEntity = static_cast<MapEntity*>(item);
-        if(mapEntity != NULL){
-            mapEntity->transformEntity(mat);
+        Feature *mapFeature = static_cast<Feature*>(item);
+        if(mapFeature != NULL){
+            mapFeature->transformFeature(mat);
         }
     }
 

@@ -1,23 +1,23 @@
 ﻿#ifndef POLYGONENTITY_H
 #define POLYGONENTITY_H
 
-#include "mapentity.h"
+#include "feature.h"
 #include <QString>
 #include <QJsonArray>
 #include <QGraphicsObject>
 #include <QPolygon>
 
-class PolygonEntity : public MapEntity
+class PolygonFeature : public Feature
 {
     Q_OBJECT
 public:
-    PolygonEntity(QGraphicsItem *parent = 0);
-    PolygonEntity(const QString & name, QGraphicsItem *parent = 0);
-    PolygonEntity( const QString & name, int id);
-    PolygonEntity( const QString & name, const QPolygon& poly);
+    PolygonFeature(QGraphicsItem *parent = 0);
+    PolygonFeature(const QString & name, QGraphicsItem *parent = 0);
+    PolygonFeature( const QString & name, int id);
+    PolygonFeature( const QString & name, const QPolygon& poly);
 
     //copy the data from @polygon, used in subclasses
-    void copy(PolygonEntity &polygon);
+    void copy(PolygonFeature &polygon);
     //setters and getters
     QPolygon & outline();
     void setOutline(const QVector<QPoint> & points);
@@ -62,7 +62,7 @@ public:
     virtual bool load(const QJsonObject & jsonObject);
     virtual bool save(QJsonObject & jsonObject) const;
 
-    virtual void transformEntity(const QMatrix &matrix);
+    virtual void transformFeature(const QMatrix &matrix);
 protected:
 
     double m_frontAngle;

@@ -1,4 +1,4 @@
-﻿#include "propviewfuncarea.h"
+﻿#include "propviewroom.h"
 
 
 #include <QLineEdit>
@@ -11,10 +11,10 @@
 #pragma comment(lib,"Qt5Widgets.lib")
 #pragma execution_character_set("utf-8")
 
-PropViewFuncArea::PropViewFuncArea(MapEntity *mapEntity, QWidget *parent) :
-    PropertyView(mapEntity, parent)
+PropViewRoom::PropViewRoom(Feature *mapFeature, QWidget *parent) :
+    PropertyView(mapFeature, parent)
 {
-    m_funcArea = static_cast<FuncArea*>(mapEntity);
+    m_room = static_cast<Room*>(mapFeature);
 
     m_shopNoEdit = new QLineEdit;
     m_areaEdit = new QLineEdit;
@@ -52,81 +52,81 @@ PropViewFuncArea::PropViewFuncArea(MapEntity *mapEntity, QWidget *parent) :
     connect(m_vacancyCheckBox, SIGNAL(stateChanged(int)), this, SLOT(updateAreaStatus(int)));
 }
 
-PropViewFuncArea::~PropViewFuncArea(){
+PropViewRoom::~PropViewRoom(){
 
 }
 
-bool PropViewFuncArea::match(const MapEntity *mapEntity) const {
-    return mapEntity->isClassOf("FuncArea");
+bool PropViewRoom::match(const Feature *mapFeature) const {
+    return mapFeature->isClassOf("Room");
 }
 
-void PropViewFuncArea::updateWidgets(){
+void PropViewRoom::updateWidgets(){
     PropertyView::updateWidgets();
-    m_funcArea = static_cast<FuncArea*>(m_mapEntity);
+    m_room = static_cast<Room*>(m_mapFeature);
 
-    m_shopNoEdit->setText(m_funcArea->shopNo());
-    m_areaEdit->setText(QString::number(m_funcArea->area()));
-    m_dianpingIdEdit->setText(QString::number(m_funcArea->dianpingId()));
-    m_mateIdEdit->setText(QString::number(m_funcArea->mateId()));
-    m_sortComboBox->setCurrentText(getSortTypeName(m_funcArea->sortType()));
-    m_vacancyCheckBox->setChecked(m_funcArea->areaStatus() == FuncArea::Vacancy);
+    m_shopNoEdit->setText(m_room->shopNo());
+    m_areaEdit->setText(QString::number(m_room->area()));
+    m_dianpingIdEdit->setText(QString::number(m_room->dianpingId()));
+    m_mateIdEdit->setText(QString::number(m_room->mateId()));
+    m_sortComboBox->setCurrentText(getSortTypeName(m_room->sortType()));
+    m_vacancyCheckBox->setChecked(m_room->areaStatus() == Room::Vacancy);
 }
 
-void PropViewFuncArea::updateShopNo(const QString &shopNo){
-    m_funcArea->setShopNo(shopNo);
+void PropViewRoom::updateShopNo(const QString &shopNo){
+    m_room->setShopNo(shopNo);
 }
 
-void PropViewFuncArea::updateArea(const QString &area) {
-    m_funcArea->setArea(area.toDouble());
+void PropViewRoom::updateArea(const QString &area) {
+    m_room->setArea(area.toDouble());
 }
 
-void PropViewFuncArea::updateDianpingId(const QString &dpId) {
-    m_funcArea->setDianpingId(dpId.toInt());
+void PropViewRoom::updateDianpingId(const QString &dpId) {
+    m_room->setDianpingId(dpId.toInt());
 }
 
-void PropViewFuncArea::updateMateId(const QString &mateId){
-    m_funcArea->setMateId(mateId.toInt());
+void PropViewRoom::updateMateId(const QString &mateId){
+    m_room->setMateId(mateId.toInt());
 }
 
-void PropViewFuncArea::updateSortType(const QString &sortType){
-    FuncArea::SORT_TYPE type;
+void PropViewRoom::updateSortType(const QString &sortType){
+    Room::SORT_TYPE type;
     if(!sortType.compare("边铺")){
-        type = FuncArea::SIDE_AREA;
+        type = Room::SIDE_AREA;
     }else if(!sortType.compare("中岛")){
-        type = FuncArea::MIDDLE_AREA;
+        type = Room::MIDDLE_AREA;
     }else {
-        type = FuncArea::UNSORTED;
+        type = Room::UNSORTED;
     }
-    m_funcArea->setSortType(type);
+    m_room->setSortType(type);
 }
 
-void PropViewFuncArea::updateAreaStatus(const int state){
+void PropViewRoom::updateAreaStatus(const int state){
     if(state == Qt::Checked)
-        m_funcArea->setAreaStatus(FuncArea::Vacancy);
+        m_room->setAreaStatus(Room::Vacancy);
     else if(state == Qt::Unchecked)
-        m_funcArea->setAreaStatus(FuncArea::Working);
+        m_room->setAreaStatus(Room::Working);
 }
 
-void PropViewFuncArea::queryFinished(){
+void PropViewRoom::queryFinished(){
 //    m_webDlg->close();
 //    delete m_webDlg;
 //    m_webDlg = NULL;
 }
 
-void PropViewFuncArea::onQuery(){
+void PropViewRoom::onQuery(){
 
 }
 
-void PropViewFuncArea::addJsObject(){
+void PropViewRoom::addJsObject(){
 
 }
 
 
-QString PropViewFuncArea::getSortTypeName(FuncArea::SORT_TYPE sortType){
-    if(sortType == FuncArea::UNSORTED)
+QString PropViewRoom::getSortTypeName(Room::SORT_TYPE sortType){
+    if(sortType == Room::UNSORTED)
         return "无分类";
-    if(sortType == FuncArea::MIDDLE_AREA)
+    if(sortType == Room::MIDDLE_AREA)
         return "中岛";
-    if(sortType == FuncArea::SIDE_AREA)
+    if(sortType == Room::SIDE_AREA)
         return "边铺";
 }

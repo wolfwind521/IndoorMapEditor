@@ -5,23 +5,23 @@
  ** @date: Jan, 2015
  **
  ****************************************************/
-#ifndef PROPVIEWFUNCAREA_H
-#define PROPVIEWFUNCAREA_H
+#ifndef PROPVIEWROOM_H
+#define PROPVIEWROOM_H
 
 #include "propertyview.h"
-#include "../core/funcarea.h"
+#include "../core/room.h"
 
 QT_FORWARD_DECLARE_CLASS(QLineEdit)
 QT_FORWARD_DECLARE_CLASS(QPushButton)
 QT_FORWARD_DECLARE_CLASS(QCheckBox)
 
-class PropViewFuncArea : public PropertyView
+class PropViewRoom : public PropertyView
 {
     Q_OBJECT
 public:
-    explicit PropViewFuncArea(MapEntity *mapEntity, QWidget *parent = 0);
-    ~PropViewFuncArea();
-    virtual bool match(const MapEntity *mapEntity) const;
+    explicit PropViewRoom(Feature *mapFeature, QWidget *parent = 0);
+    ~PropViewRoom();
+    virtual bool match(const Feature *mapFeature) const;
     virtual void updateWidgets();
 public slots:
    void updateShopNo(const QString &shopNo);
@@ -35,7 +35,7 @@ public slots:
    void updateAreaStatus(const int state);
 
 private:
-   QString getSortTypeName(FuncArea::SORT_TYPE sortType);
+   QString getSortTypeName(Room::SORT_TYPE sortType);
 
     QPushButton *m_queryButton;
     QLineEdit *m_shopNoEdit;
@@ -43,10 +43,10 @@ private:
     QLineEdit *m_dianpingIdEdit;
     QPushButton *m_checkDianpingBtn;
     QLineEdit *m_mateIdEdit;
-    FuncArea *m_funcArea;
+    Room *m_room;
     QComboBox * m_typeComboBox; //业态类别
     QComboBox * m_sortComboBox; //铺位类别
     QCheckBox * m_vacancyCheckBox;
 };
 
-#endif // PROPVIEWFUNCAREA_H
+#endif // PROPVIEWROOM_H

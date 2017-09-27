@@ -3,13 +3,13 @@
 
 #include <QAbstractItemModel>
 
-class MapEntity;
+class Feature;
 
 class SceneModel : public QAbstractItemModel
 {
     Q_OBJECT
 public:
-    SceneModel(MapEntity *root, QObject *parent = 0);
+    SceneModel(Feature *root, QObject *parent = 0);
 
     Qt::ItemFlags flags(const QModelIndex &index) const;
     QVariant data(const QModelIndex &index, int role) const;
@@ -20,7 +20,7 @@ public:
     QModelIndex parent(const QModelIndex &child) const;
 
 private:
-    MapEntity *m_root;
+    Feature *m_root;
 
     QIcon *m_buildingIcon;
     QIcon *m_floorIcon;

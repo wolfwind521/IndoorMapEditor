@@ -3,7 +3,7 @@
 
 #include <QWidget>
 
-class MapEntity;
+class Feature;
 QT_FORWARD_DECLARE_CLASS(QLineEdit)
 QT_FORWARD_DECLARE_CLASS(QFormLayout)
 QT_FORWARD_DECLARE_CLASS(QComboBox)
@@ -13,11 +13,11 @@ class PropertyView : public QWidget
     Q_OBJECT
 
 public:
-    explicit PropertyView(MapEntity *mapEntity, QWidget *parent = 0);
+    explicit PropertyView(Feature *mapFeature, QWidget *parent = 0);
     ~PropertyView();
 
-    virtual bool match(const MapEntity * mapEntity) const;
-    virtual void setMapEntity( MapEntity * mapEntity);
+    virtual bool match(const Feature * mapFeature) const;
+    virtual void setMapFeature( Feature * mapFeature);
     virtual void updateWidgets();
 public slots:  
     void updateName(const QString &name);
@@ -31,7 +31,7 @@ protected:
     void createLayout();
     void createConnections();
 
-    MapEntity * m_mapEntity;
+    Feature * m_mapFeature;
     QFormLayout * m_layout;
 
     QLineEdit * m_nameLineEdit;

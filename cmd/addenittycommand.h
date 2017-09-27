@@ -4,18 +4,18 @@
 #include <QUndoCommand>
 
 class DocumentView;
-class MapEntity;
+class Feature;
 
 class AddEnittyCommand : public QUndoCommand
 {
 public:
-    explicit AddEnittyCommand(DocumentView *doc, MapEntity *entity, QUndoCommand *parent);
+    explicit AddEnittyCommand(DocumentView *doc, Feature *feature, QUndoCommand *parent);
     void undo();
     void redo();
 
 private:
     DocumentView *m_doc;
-    MapEntity *m_entity;
+    Feature *m_feature;
 };
 
 #endif // ADDENITTYCOMMAND_H

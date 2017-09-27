@@ -5,7 +5,7 @@
 #include <QStyleOptionGraphicsItem>
 
 ImageLayer::ImageLayer(QGraphicsItem *parent) :
-    MapEntity(parent), m_image(NULL)
+    Feature(parent), m_image(NULL)
 {
     setFlags(ItemIsSelectable | ItemIsMovable | ItemStacksBehindParent);
 }
@@ -43,13 +43,13 @@ void ImageLayer::paint(QPainter *painter, const QStyleOptionGraphicsItem *option
 }
 
 bool ImageLayer::load(const QJsonObject &jsonObject) {
-    MapEntity::load(jsonObject);
+    Feature::load(jsonObject);
     setImage(jsonObject["file"].toString());
     return true;
 }
 
 bool ImageLayer::save(QJsonObject &jsonObject) const {
-    MapEntity::save(jsonObject);
+    Feature::save(jsonObject);
     jsonObject["file"] = m_fileName;
     return true;
 }

@@ -12,8 +12,8 @@ class PropViewFloor : public PropertyView
 {
     Q_OBJECT
 public:
-    PropViewFloor(MapEntity *mapEntity, QWidget *parent = 0);
-    virtual bool match(const MapEntity *mapEntity) const;
+    PropViewFloor(Feature *mapFeature, QWidget *parent = 0);
+    virtual bool match(const Feature *mapFeature) const;
     virtual void updateWidgets();
 
 public slots:

@@ -1,11 +1,11 @@
 ﻿#ifndef IMAGELAYER_H
 #define IMAGELAYER_H
 
-#include "../core/mapentity.h"
+#include "../core/feature.h"
 
 class QPixmap;
 
-class ImageLayer : public MapEntity
+class ImageLayer : public Feature
 {
     Q_OBJECT
 public:

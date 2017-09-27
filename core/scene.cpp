@@ -1,11 +1,11 @@
 ﻿#include "scene.h"
 #include "../tool/toolmanager.h"
 #include "../tool/abstracttool.h"
-#include "mapentity.h"
+#include "feature.h"
 #include "building.h"
 #include "floor.h"
 #include "imagelayer.h"
-#include "funcarea.h"
+#include "room.h"
 #include "pubpoint.h"
 #include <math.h>
 #include <QList>
@@ -30,12 +30,12 @@ void Scene::reset(){
     update();
 }
 
-MapEntity *Scene::root() const{
+Feature *Scene::root() const{
     return m_root;
 }
 
 void Scene::createRoot(){
-    m_root = new MapEntity(tr("root")); //add a root node
+    m_root = new Feature(tr("root")); //add a root node
     addItem(m_root);
 }
 
@@ -56,18 +56,8 @@ void Scene::setBuilding(Building *building)
 
 }
 
-//void Scene::addEntityByContext(PolygonEntity *polygon){
-//    if(m_building->floorNum() == 0 || m_curFloor == NULL)
-//    {
-//        addFloor(new Floor(*polygon));
-//    }else{
-//        addFuncArea(new FuncArea(*polygon));
-//    }
-//    deleteMapEntity(polygon);
-//}
-
-PolygonEntity* Scene::createPolygonByContext() {
-    MapEntity *curLayer = currentLayer();
+PolygonFeature* Scene::createPolygonByContext() {
+    Feature *curLayer = currentLayer();
     if(curLayer){
         if(curLayer->isClassOf("Building")){
             Building *building = dynamic_cast<Building*>(curLayer);
@@ -83,29 +73,29 @@ PolygonEntity* Scene::createPolygonByContext() {
             if(floor->outline().empty())
                 return floor;
             else{
-                return addFuncArea(new FuncArea(floor));
+                return addRoom(new Room(floor));
             }
         }
         else{
-            return addFuncArea(new FuncArea(m_curFloor));
+            return addRoom(new Room(m_curFloor));
         }
     }
 }
 
-void Scene::deletePolygonByContext(PolygonEntity *entity) {
-    if(entity->isClassOf("Floor")){
-        m_building->deleteFloor(static_cast<Floor*>(entity));
+void Scene::deletePolygonByContext(PolygonFeature *feature) {
+    if(feature->isClassOf("Floor")){
+        m_building->deleteFloor(static_cast<Floor*>(feature));
     }else{
-        delete entity;
-        entity = NULL;
+        delete feature;
+        feature = NULL;
     }
 }
 
-FuncArea* Scene::addFuncArea(FuncArea *funcArea){
+Room* Scene::addRoom(Room *room){
     if(m_curFloor != NULL){
-        funcArea->setParentEntity(m_curFloor);
+        room->setParentFeature(m_curFloor);
         emit buildingChanged();
-        return funcArea;
+        return room;
     }
 
 }
@@ -128,21 +118,21 @@ Floor* Scene::addFloor(Floor *floor){
 
 void Scene::addPubPoint(PubPoint *pubPoint){
     if(m_curFloor != NULL){
-        pubPoint->setParentEntity(m_curFloor);
+        pubPoint->setParentFeature(m_curFloor);
     }else{
-        pubPoint->setParentEntity(m_building);
+        pubPoint->setParentFeature(m_building);
     }
     emit buildingChanged();
 }
 
 void Scene::addImageLayer(ImageLayer *imageLayer) {
 //    if(m_curFloor != NULL) {
-//        imageLayer->setParentEntity(m_curFloor);
+//        imageLayer->setParentFeature(m_curFloor);
 //    }else{
 
 //    }
     Floor *floor = new Floor();
-    imageLayer->setParentEntity(floor);
+    imageLayer->setParentFeature(floor);
     addFloor(floor);
 }
 
@@ -178,26 +168,26 @@ void Scene::setSelectable(bool b){
 }
 
 void Scene::convertSelectedToBuilding(){
-    PolygonEntity* selectedEntity = static_cast<PolygonEntity*>(selectedItems().at(0));
-    m_building->copy(*selectedEntity);
-    deleteMapEntity(selectedEntity);
+    PolygonFeature* selectedFeature = static_cast<PolygonFeature*>(selectedItems().at(0));
+    m_building->copy(*selectedFeature);
+    deleteMapFeature(selectedFeature);
     emit buildingChanged();
 }
 
 void Scene::convertSelectedToFloor(){
-    PolygonEntity* selectedEntity = static_cast<PolygonEntity*>(selectedItems().at(0));
+    PolygonFeature* selectedFeature = static_cast<PolygonFeature*>(selectedItems().at(0));
     if(m_curFloor != NULL && m_curFloor->outline().empty()){
-        m_curFloor->setOutline(selectedEntity->outline());
+        m_curFloor->setOutline(selectedFeature->outline());
     }else{
-        addFloor(new Floor(*selectedEntity));
+        addFloor(new Floor(*selectedFeature));
     }
-     deleteMapEntity(selectedEntity);
+     deleteMapFeature(selectedFeature);
 }
 
-void Scene::convertSelectedToFuncArea(){
-    PolygonEntity* selectedEntity = static_cast<PolygonEntity*>(selectedItems().at(0));
-    addFuncArea(new FuncArea(*selectedEntity));
-    selectedEntity->outline().clear();
+void Scene::convertSelectedToRoom(){
+    PolygonFeature* selectedFeature = static_cast<PolygonFeature*>(selectedItems().at(0));
+    addRoom(new Room(*selectedFeature));
+    selectedFeature->outline().clear();
 }
 
 void Scene::deleteSelectedItems(){
@@ -211,9 +201,9 @@ void Scene::deleteSelectedItems(){
         }
     }
     foreach (QGraphicsItem* item, realItems) {
-        MapEntity *mapEntity = dynamic_cast<MapEntity *>(item);
-        if(mapEntity)
-            deleteMapEntity(mapEntity);
+        Feature *mapFeature = dynamic_cast<Feature *>(item);
+        if(mapFeature)
+            deleteMapFeature(mapFeature);
     }
     update();
 }
@@ -222,10 +212,10 @@ void Scene::deleteSelectedLayers(){
     bool isBuilding = false;
     foreach(QGraphicsItem* item, m_selectedLayers){
         if(item){
-            MapEntity *mapEntity = qgraphicsitem_cast<MapEntity*>(item);
-            if(mapEntity->isClassOf("Building"))
+            Feature *mapFeature = qgraphicsitem_cast<Feature*>(item);
+            if(mapFeature->isClassOf("Building"))
                 isBuilding = true;
-            removeMapEntity(mapEntity);
+            removeMapFeature(mapFeature);
             delete item;
             item = NULL;
         }
@@ -236,23 +226,23 @@ void Scene::deleteSelectedLayers(){
     clearSelectedLayers();
 }
 
-void Scene::deleteMapEntity(MapEntity *entity){
+void Scene::deleteMapFeature(Feature *feature){
 
     //如果是floor或building，仅清空其轮廓
-    if(entity->isClassOf("Floor")||entity->isClassOf("Building")){
-        PolygonEntity* poly = dynamic_cast<PolygonEntity*>(entity);
+    if(feature->isClassOf("Floor")||feature->isClassOf("Building")){
+        PolygonFeature* poly = dynamic_cast<PolygonFeature*>(feature);
         poly->outline().clear();
     }else{ //否则直接删除
-        removeMapEntity(entity);
-        delete entity;
-        entity = NULL;
+        removeMapFeature(feature);
+        delete feature;
+        feature = NULL;
     }
     emit buildingChanged();
 }
 
-void Scene::removeMapEntity(MapEntity *entity){
-    entity->setParent(NULL);
-    entity->setParentItem(NULL);
+void Scene::removeMapFeature(Feature *feature){
+    feature->setParent(NULL);
+    feature->setParentItem(NULL);
 }
 
 bool Scene::showFloor(int floorId) {
@@ -281,7 +271,7 @@ bool Scene::showFloor(int floorId) {
 }
 
 bool Scene::showDefaultFloor(){
-    return showFloor(m_building->defaultFloor());
+    return showFloor(1);
 }
 
 void Scene::setCurrentFloor(Floor *floor){
@@ -296,25 +286,25 @@ void Scene::contextMenuEvent(QGraphicsSceneContextMenuEvent *event){
     ToolManager::instance()->currentTool().contextMenuEvent(event);
 }
 
-QList<MapEntity *> Scene::findMapEntity(const QString &name){
+QList<Feature *> Scene::findMapFeature(const QString &name){
     //TODO: better stategies
-    return m_root->findChildren<MapEntity*>(name);
+    return m_root->findChildren<Feature*>(name);
 }
 
-QList<QList<MapEntity*> > Scene::findAllRepeat(){
-    QList<QList<MapEntity*> > result;
-    QHash<QString, MapEntity* > hash;
+QList<QList<Feature*> > Scene::findAllRepeat(){
+    QList<QList<Feature*> > result;
+    QHash<QString, Feature* > hash;
     if(m_building != NULL){
         const QVector<Floor*> & floors = m_building->getFloors();
         Floor* floor;
         foreach(floor, floors){
             Q_ASSERT_X(floor != NULL, "findAllRepeat", "floor is NULL");
-            FuncArea* funcArea;
-            const QList<FuncArea *> & funcAreas = floor->getFuncAreas();
-            foreach (funcArea, funcAreas) {
-                QString name = funcArea->objectName();
+            Room* room;
+            const QList<Room *> & rooms = floor->getRooms();
+            foreach (room, rooms) {
+                QString name = room->objectName();
                 if(name.compare("非开放区域") && name.compare("中空") && name.compare("空铺")){
-                    hash.insertMulti(funcArea->objectName(), funcArea);
+                    hash.insertMulti(room->objectName(), room);
                 }
 
             }
@@ -323,7 +313,7 @@ QList<QList<MapEntity*> > Scene::findAllRepeat(){
 
     const QList<QString> & keys = hash.uniqueKeys();
     foreach (const QString & key, keys) {
-        const QList<MapEntity*> & list = hash.values(key);
+        const QList<Feature*> & list = hash.values(key);
         if(list.size() > 1){
             result.append(list);
         }
@@ -332,23 +322,23 @@ QList<QList<MapEntity*> > Scene::findAllRepeat(){
     return result;
 }
 
-void Scene::selectMapEntity(MapEntity *entity){
-    if(entity != NULL && (entity->isClassOf("FuncArea") || entity->isClassOf("PubPoint"))){
+void Scene::selectMapFeature(Feature *feature){
+    if(feature != NULL && (feature->isClassOf("room") || feature->isClassOf("PubPoint"))){
         clearSelection();
-        Floor *floor = static_cast<Floor*>(entity->parentObject());
+        Floor *floor = static_cast<Floor*>(feature->parentObject());
         if(floor != NULL){
             showFloor(floor->id());
         }
-        entity->setSelected(true);
+        feature->setSelected(true);
     }
 }
 
 void Scene::transformMap(const QMatrix &mat)
 {
     if(m_curFloor != NULL){//rotate current floor
-        m_curFloor->transformEntity(mat);
+        m_curFloor->transformFeature(mat);
     }else{ //rotate the whole building
-        m_building->transformEntity(mat);
+        m_building->transformFeature(mat);
     }
 }
 
@@ -358,21 +348,21 @@ void Scene::addScale(double s) {
     QMatrix mat;
     scale /= m_curScale; //相对于上一次的缩放
     mat.scale(scale, scale);
-    m_building->transformEntity(mat);
+    m_building->transformFeature(mat);
     m_curScale = scale;
 
 }
 
-void Scene::setSelectedLayer(MapEntity *entity){
+void Scene::setSelectedLayer(Feature *feature){
     m_selectedLayers.clear();
-    m_selectedLayers.append(entity);
+    m_selectedLayers.append(feature);
 }
 
 void Scene::clearSelectedLayers(){
     m_selectedLayers.clear();
 }
 
-MapEntity *Scene::currentLayer(){
+Feature *Scene::currentLayer(){
     if(m_selectedLayers.empty())
         return NULL;
     else

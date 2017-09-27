@@ -1,17 +1,14 @@
-﻿#ifndef FUNCAREA_H
-#define FUNCAREA_H
+﻿#ifndef ROOM_H
+#define ROOM_H
 
-#include "polygonentity.h"
+#include "polygonfeature.h"
 #include <QHash>
 #include <QString>
 #include <QJsonObject>
 
-//function area status
-
-
 class QGraphicsTextItem;
 
-class FuncArea : public PolygonEntity
+class Room : public PolygonFeature
 {
 
     Q_OBJECT
@@ -45,9 +42,9 @@ public:
     };
 
 public:
-    FuncArea(QGraphicsItem *parent = 0);
-    FuncArea(PolygonEntity &polygon);
-    FuncArea( const QString & name, const QPolygon& poly);
+    Room(QGraphicsItem *parent = 0);
+    Room(PolygonFeature &polygon);
+    Room( const QString & name, const QPolygon& poly);
 
     bool load(const QJsonObject & jsonObject);
     bool save(QJsonObject &jsonObject) const;
@@ -56,8 +53,8 @@ public:
     QString shopNo() const;
     void setShopNo(const QString & shopNo);
 
-    FuncArea::Category category() const;
-    void setCategory(FuncArea::Category cate);
+    Room::Category category() const;
+    void setCategory(Room::Category cate);
 
     int dianpingId() const;
     void setDianpingId(int dpId);
@@ -65,11 +62,11 @@ public:
     void setMateId(int id);
     int mateId() const;
 
-    void setAreaStatus(FuncArea::AreaStatus areaStatus);
-    FuncArea::AreaStatus areaStatus() const;
+    void setAreaStatus(Room::AreaStatus areaStatus);
+    Room::AreaStatus areaStatus() const;
 
-    void setSortType(FuncArea::SORT_TYPE sortType);
-    FuncArea::SORT_TYPE sortType();
+    void setSortType(Room::SORT_TYPE sortType);
+    Room::SORT_TYPE sortType();
 
     const QStringList typeStringList() const;
     virtual QString getTypeName();
@@ -96,4 +93,4 @@ private:
     SORT_TYPE m_sortType;       //铺位类别，边铺或中岛
 };
 
-#endif // FUNCAREA_H
+#endif // ROOM_H

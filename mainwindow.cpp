@@ -2,7 +2,7 @@
 #include "ui_mainwindow.h"
 #include "./gui/documentview.h"
 #include "./gui/propertyview.h"
-#include "./gui/propviewfuncarea.h"
+#include "./gui/propviewroom.h"
 #include "./gui/propviewbuilding.h"
 #include "./gui/propviewfloor.h"
 #include "./gui/scenemodel.h"
@@ -16,7 +16,6 @@
 #include "./tool/mergetool.h"
 #include "./tool/splittool.h"
 #include "./tool/scaletool.h"
-#include "./function/shopanalysis.h"
 #include <time.h>
 #include <QTimer>
 #include <QCloseEvent>
@@ -85,7 +84,7 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->actionClose, SIGNAL(triggered()), this, SLOT(closeFile()));
     connect(ui->actionPrint, SIGNAL(triggered()), this, SLOT(printFile()));
     connect(ui->actionPrintCurrent, SIGNAL(triggered()), this, SLOT(printCurrent()));
-    connect(ui->actionDelete, SIGNAL(triggered()), this, SLOT(deleteEntity()));
+    connect(ui->actionDelete, SIGNAL(triggered()), this, SLOT(deleteFeature()));
     connect(ui->actionFont, SIGNAL(triggered()), this, SLOT(setGraphicsViewFont()));
     connect(ui->actionFindRepeat, SIGNAL(triggered()), this, SLOT(findAllRepeat()));
     connect(ui->actionFind, SIGNAL(triggered()), this, SLOT(onFind()));
@@ -113,7 +112,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
     //other actions
     connect(m_sceneTreeView, SIGNAL(clicked(QModelIndex)), m_docView, SLOT(updateSelection(QModelIndex)));
-    connect(m_docView, SIGNAL(selectionChanged(MapEntity*)), this, SLOT(updatePropertyView(MapEntity*)));
+    connect(m_docView, SIGNAL(selectionChanged(Feature*)), this, SLOT(updatePropertyView(Feature*)));
     connect(m_docView->scene(), SIGNAL(buildingChanged()), this, SLOT(rebuildTreeView()));
     connect(ui->deleteButton, SIGNAL(clicked()), this, SLOT(onDeleteButtonClicked()));
     connect(ui->addLayerButton, SIGNAL(clicked()), this, SLOT(onAddLayerButtonClicked()));
@@ -321,7 +320,7 @@ void MainWindow::printCurrent(){
     preview.exec();
 }
 
-void MainWindow::deleteEntity(){
+void MainWindow::deleteFeature(){
 
     currentDocument()->scene()->deleteSelectedItems();
     rebuildTreeView();
@@ -423,30 +422,30 @@ void MainWindow::rebuildTreeView(){
     m_sceneTreeView->expandToDepth(0);
 }
 
-void MainWindow::updatePropertyView(MapEntity *mapEntity) {
-    if(mapEntity == NULL && m_propertyView!=NULL){
+void MainWindow::updatePropertyView(Feature *mapFeature) {
+    if(mapFeature == NULL && m_propertyView!=NULL){
         delete m_propertyView;
         m_propertyView = NULL;
         return;
     }
-    QString className = mapEntity->metaObject()->className();
+    QString className = mapFeature->metaObject()->className();
 
-    if(m_propertyView== NULL || !m_propertyView->match(mapEntity)){
+    if(m_propertyView== NULL || !m_propertyView->match(mapFeature)){
         if(m_propertyView != NULL)
             delete m_propertyView;
         //ugly codes. should be replaced by a factory class later.
-        if(className == "FuncArea"){
-            m_propertyView = new PropViewFuncArea(mapEntity, ui->dockPropertyWidget);
+        if(className == "Room"){
+            m_propertyView = new PropViewRoom(mapFeature, ui->dockPropertyWidget);
         }else if(className == "Building"){
-            m_propertyView = new PropViewBuilding(mapEntity, ui->dockPropertyWidget);
+            m_propertyView = new PropViewBuilding(mapFeature, ui->dockPropertyWidget);
         }else if(className == "Floor"){
-            m_propertyView = new PropViewFloor(mapEntity, ui->dockPropertyWidget);
+            m_propertyView = new PropViewFloor(mapFeature, ui->dockPropertyWidget);
         }else{
-            m_propertyView = new PropertyView(mapEntity, ui->dockPropertyWidget);
+            m_propertyView = new PropertyView(mapFeature, ui->dockPropertyWidget);
         }
         ui->dockPropertyWidget->setWidget(m_propertyView);
     }else{
-        m_propertyView->setMapEntity(mapEntity);
+        m_propertyView->setMapFeature(mapFeature);
     }
 }
 
@@ -502,35 +501,35 @@ void MainWindow::onFind(){
                                              tr("名称:"), QLineEdit::Normal,
                                              QString(), &ok);
     if (ok && !searchText.isEmpty()){
-        m_searchResults = currentDocument()->scene()->findMapEntity(searchText);
+        m_searchResults = currentDocument()->scene()->findMapFeature(searchText);
 
         if(m_searchResults.isEmpty()){
             QMessageBox::warning(this, tr("搜索结果"),(QString("未找到 ")+searchText),QMessageBox::Ok);
             return;
         }else{
             QListWidget *listWidget = new QListWidget(this);
-            foreach(MapEntity *mapEntity, m_searchResults){
-                QListWidgetItem * listItem = new QListWidgetItem(mapEntity->objectName()+" @ "+mapEntity->parent()->objectName(), listWidget);
-                listItem->setData(Qt::UserRole, QVariant::fromValue(mapEntity));
+            foreach(Feature *mapFeature, m_searchResults){
+                QListWidgetItem * listItem = new QListWidgetItem(mapFeature->objectName()+" @ "+mapFeature->parent()->objectName(), listWidget);
+                listItem->setData(Qt::UserRole, QVariant::fromValue(mapFeature));
             }
             connect(listWidget, SIGNAL(itemClicked(QListWidgetItem*)), this, SLOT(outputItemClicked(QListWidgetItem*)));
 
             ui->dockOutputWidget->setWidget(listWidget);
             ui->dockOutputWidget->setVisible(true);
         }
-        currentDocument()->scene()->selectMapEntity((m_searchResultIter.next()));
+        currentDocument()->scene()->selectMapFeature((m_searchResultIter.next()));
     }
 }
 
 void MainWindow::findAllRepeat(){
     QListWidget *listWidget = new QListWidget(this);
 
-    const QList<QList<MapEntity*> > & result = currentDocument()->scene()->findAllRepeat();
-    foreach(const QList<MapEntity*> & list, result){
-        MapEntity *mapEntity;
-        foreach(mapEntity, list){
-            QListWidgetItem * listItem = new QListWidgetItem(mapEntity->objectName()+" @ "+mapEntity->parent()->objectName(), listWidget);
-            listItem->setData(Qt::UserRole, QVariant::fromValue(mapEntity));
+    const QList<QList<Feature*> > & result = currentDocument()->scene()->findAllRepeat();
+    foreach(const QList<Feature*> & list, result){
+        Feature *mapFeature;
+        foreach(mapFeature, list){
+            QListWidgetItem * listItem = new QListWidgetItem(mapFeature->objectName()+" @ "+mapFeature->parent()->objectName(), listWidget);
+            listItem->setData(Qt::UserRole, QVariant::fromValue(mapFeature));
         }
     }
 
@@ -541,18 +540,12 @@ void MainWindow::findAllRepeat(){
 }
 
 void MainWindow::outputItemClicked(QListWidgetItem* item){
-    MapEntity* mapEntity = item->data(Qt::UserRole).value<MapEntity*>();
-    if(mapEntity != NULL){
-        currentDocument()->scene()->selectMapEntity(mapEntity);
+    Feature* mapFeature = item->data(Qt::UserRole).value<Feature*>();
+    if(mapFeature != NULL){
+        currentDocument()->scene()->selectMapFeature(mapFeature);
     }
 }
 
 void MainWindow::sortAreas(){
-    //TODO: if file hasn't been loaded
-    Building* building = currentDocument()->scene()->building();
-    if(building == NULL)
-        return;
-    ShopAnalysis analysis;
-    analysis.buildingSortArea(building);
-    building->update();
+
 }
