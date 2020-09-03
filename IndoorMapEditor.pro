@@ -39,8 +39,7 @@ SOURCES += main.cpp\
     tool/edittool.cpp \
     core/room.cpp \
     gui/propviewroom.cpp \
-    core/feature.cpp \
-    core/polygonfeature.cpp
+    core/feature.cpp
 
 HEADERS  += mainwindow.h \
     core/building.h \
@@ -71,8 +70,7 @@ HEADERS  += mainwindow.h \
     tool/edittool.h \
     core/room.h \
     gui/propviewroom.h \
-    core/feature.h \
-    core/polygonfeature.h
+    core/feature.h
 
 FORMS    += mainwindow.ui
 
