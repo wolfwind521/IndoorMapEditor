@@ -53,7 +53,7 @@ public:
     QVector<Floor*> getFloors();
     Floor *getFloorById(int id);
 
-    virtual void transformFeature(const QMatrix &matrix);
+    virtual void transformFeature(const QTransform &matrix);
 
  private slots:
     void updateFloorIds(int oldId, int newId);

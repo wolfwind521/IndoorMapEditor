@@ -154,7 +154,7 @@ bool Split::intersect(QPointF &crossPoint, const QPoint &polyPoint1, const QPoin
     QLineF l1(polyPoint1, polyPoint2);
     QLineF l2(linePoint1, linePoint2);
 
-    return l1.intersect(l2, &crossPoint) == QLineF::BoundedIntersection;
+    return l1.intersects(l2, &crossPoint) == QLineF::BoundedIntersection;
 }
 
 bool Split::isBetween(const QPoint &p0, const QPoint &p1, const QPoint &p2) {

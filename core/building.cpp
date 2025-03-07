@@ -191,8 +191,11 @@ bool Building::save(QJsonObject &jsonObject) const
             floorArray.append(floorObject);
         }
     }
-    qSort(tmpList);
-    foreach(int id, tmpList){
+    // qSqrt(tmpList);
+    QList<int> sqrtList;
+    std::transform(tmpList.begin(), tmpList.end(), std::back_inserter(sqrtList),
+                   [](int value) { return qSqrt(value); });
+    foreach(int id, sqrtList){
         floorsId += QString::number(id) + ",";
     }
 
@@ -296,7 +299,7 @@ void Building::setTel(const QString &tel){
     }
 }
 
-void Building::transformFeature(const QMatrix &matrix){
+void Building::transformFeature(const QTransform &matrix){
     PolygonFeature::transformFeature(matrix);
 
     QList<QGraphicsItem*> children = this->childItems();

@@ -64,7 +64,7 @@ public:
 
     QList<QList<Feature*> > findAllRepeat();
 
-    void transformMap(const QMatrix &matrix);
+    void transformMap(const QTransform &matrix);
     void addScale(double s);
     void clearSelectedLayers();
     void setSelectedLayer(Feature *feature);

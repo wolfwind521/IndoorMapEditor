@@ -1,6 +1,8 @@
 ﻿#include "feature.h"
 #include <QJsonArray>
 #include <QDateTime>
+#include <QRandomGenerator>
+#include <QTextStream>
 
 Feature::Feature(QGraphicsItem *parent) :
     QGraphicsObject(parent), m_type("0")
@@ -22,7 +24,9 @@ const QString &Feature::brief() const
 
 int Feature::generateId(){
     //利用时间生成6位id, 小概率生成同样id...
-    m_id = QDateTime::currentDateTime().toTime_t() % 1000000 +  qrand()% 100000 + 1000000;
+    // m_id = QDateTime::currentDateTime().toTime_t() % 1000000 +  qrand()% 100000 + 1000000;
+    // m_id = QDateTime::currentDateTime().toSecsSinceEpoch() % 1000000 + std::rand() % 100000 + 1000000;
+    m_id = QDateTime::currentDateTime().toSecsSinceEpoch() % 1000000 + QRandomGenerator::global()->bounded(100000) + 1000000;
     return m_id;
 }
 
@@ -99,6 +103,10 @@ bool Feature::load(const QJsonObject &jsonObject)
     setObjectName( jsonObject["Name"].toString() );
     m_enName = jsonObject["Name_en"].toString();
     m_brief = jsonObject["Brief"].toString();
+
+    QTextStream out(stdout);
+    out << jsonObject["Name"].toString() << Qt::endl;
+
     const QJsonArray & jsonArray = jsonObject["Center"].toArray();
     if(jsonArray.size() == 2){
         m_center = QPointF(jsonArray[0].toDouble(), -jsonArray[1].toDouble());
@@ -124,7 +132,7 @@ void Feature::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, Q
 
 }
 
-void Feature::transformFeature(const QMatrix &matrix){
+void Feature::transformFeature(const QTransform &matrix){
     m_center = matrix.map(m_center);
     emit centerChanged(m_center);
 }

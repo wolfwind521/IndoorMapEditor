@@ -143,7 +143,8 @@ void DocumentView::printScene(QPrinter *printer){
         QVector<Floor*> floors = m_scene->building()->getFloors();
         m_scene->showFloor(floors[page-1]->id());
         QRectF newRect = rect.united(m_scene->currentFloor()->boundingRect()); //unite the building rect with the floor rect
-        m_scene->render(&painter, printer->pageRect(), newRect, Qt::KeepAspectRatio);
+        // m_scene->render(&painter, printer->pageRect(), newRect, Qt::KeepAspectRatio);
+        m_scene->render(&painter, printer->pageRect(QPrinter::Millimeter), newRect, Qt::KeepAspectRatio);
         firstPage = false;
     }
     painter.end();
@@ -286,7 +287,8 @@ void DocumentView::keyReleaseEvent(QKeyEvent *event){
 void DocumentView::wheelEvent(QWheelEvent *event){
 
     if(m_ctrlKeyPressed){
-        int numDegrees = event->delta() / 8;
+        // int numDegrees = event->delta() / 8;
+        int numDegrees = event->angleDelta().y() / 8;
         int numSteps = numDegrees / 15;
         zoom(numSteps);
     }else{
@@ -305,9 +307,10 @@ void DocumentView::zoomOut(int step){
 void DocumentView::zoom(int step){
     m_zoom += step;
     float scale = qPow(2.0, m_zoom / 50.0);
-    QMatrix matrix;
+    QTransform matrix;
     matrix.scale(scale, scale);
-    this->setMatrix(matrix);
+    // this->setMatrix(matrix);
+    this->setTransform(matrix);
 }
 
 void DocumentView::mousePressEvent(QMouseEvent *event){
@@ -318,7 +321,7 @@ void DocumentView::mousePressEvent(QMouseEvent *event){
 
 void DocumentView::fitView(){
     fitInView(m_scene->currentFloor()->boundingRect(),Qt::KeepAspectRatio);
-    qreal dx = matrix().m11();
+    qreal dx = transform().m11();
     m_zoom = qLn(dx)/qLn(2.0) * 50.0;
 }
 
@@ -328,7 +331,7 @@ void DocumentView::onRotate(){
     int angle = QInputDialog::getInt(this, tr("旋转地图"),
                                      tr("顺时针角度(0~360):"), 0, 0, 360, 1, &ok);
     if (ok){
-        QMatrix mat;
+        QTransform mat;
         mat.rotate(angle);
         m_scene->transformMap(mat);
     }
@@ -343,7 +346,7 @@ void DocumentView::onFlip(){
     QString item = QInputDialog::getItem(this, tr("对称翻转"),
                                              tr("选择对称方向"), items, 0, false, &ok);
     if (ok && !item.isEmpty()){
-        QMatrix mat;
+        QTransform mat;
         if(!item.compare(item1)){
             mat.scale(-1, 1);
         }else if(!item.compare(item2)){

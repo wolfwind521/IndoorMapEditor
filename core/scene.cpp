@@ -293,7 +293,7 @@ QList<Feature *> Scene::findMapFeature(const QString &name){
 
 QList<QList<Feature*> > Scene::findAllRepeat(){
     QList<QList<Feature*> > result;
-    QHash<QString, Feature* > hash;
+    QMultiHash<QString, Feature* > hash;
     if(m_building != NULL){
         const QVector<Floor*> & floors = m_building->getFloors();
         Floor* floor;
@@ -304,7 +304,8 @@ QList<QList<Feature*> > Scene::findAllRepeat(){
             foreach (room, rooms) {
                 QString name = room->objectName();
                 if(name.compare("非开放区域") && name.compare("中空") && name.compare("空铺")){
-                    hash.insertMulti(room->objectName(), room);
+                    // hash.insertMulti(room->objectName(), room);
+                    hash.insert(room->objectName(), room);
                 }
 
             }
@@ -333,7 +334,7 @@ void Scene::selectMapFeature(Feature *feature){
     }
 }
 
-void Scene::transformMap(const QMatrix &mat)
+void Scene::transformMap(const QTransform &mat)
 {
     if(m_curFloor != NULL){//rotate current floor
         m_curFloor->transformFeature(mat);
@@ -345,7 +346,7 @@ void Scene::transformMap(const QMatrix &mat)
 void Scene::addScale(double s) {
     m_scaleNum ++;
     double scale = (s*m_curScale + m_curScale*(m_scaleNum-1))/m_scaleNum; //相对于初始的平均缩放
-    QMatrix mat;
+    QTransform mat;
     scale /= m_curScale; //相对于上一次的缩放
     mat.scale(scale, scale);
     m_building->transformFeature(mat);

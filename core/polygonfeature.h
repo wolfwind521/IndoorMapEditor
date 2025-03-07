@@ -6,7 +6,6 @@
 #include <QJsonArray>
 #include <QGraphicsObject>
 #include <QPolygon>
-
 class PolygonFeature : public Feature
 {
     Q_OBJECT
@@ -62,7 +61,7 @@ public:
     virtual bool load(const QJsonObject & jsonObject);
     virtual bool save(QJsonObject & jsonObject) const;
 
-    virtual void transformFeature(const QMatrix &matrix);
+    virtual void transformFeature(const QTransform &matrix);
 protected:
 
     double m_frontAngle;

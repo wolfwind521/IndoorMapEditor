@@ -26,7 +26,7 @@ public:
     static void resetMaxFloorId();
 
     //transform
-    virtual void transformFeature(const QMatrix &matrix);
+    virtual void transformFeature(const QTransform &matrix);
     virtual int generateId();
 signals:
     void heightChanged( double height );

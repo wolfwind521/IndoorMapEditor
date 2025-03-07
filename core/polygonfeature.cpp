@@ -234,7 +234,7 @@ QPointF PolygonFeature::computeMainDir(){
     return QPointF(double(obb.get_dir(0)[0]), double(obb.get_dir(0)[1]));
 }
 
-void PolygonFeature::transformFeature(const QMatrix &matrix){
+void PolygonFeature::transformFeature(const QTransform &matrix){
     Feature::transformFeature(matrix);
     m_outline = matrix.map(m_outline);
     computeArea();

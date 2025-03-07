@@ -46,7 +46,7 @@ public:
     virtual bool load(const QJsonObject & jsonObject);
     virtual bool save(QJsonObject & jsonObject) const;
 
-    virtual void transformFeature(const QMatrix &matrix);
+    virtual void transformFeature(const QTransform &matrix);
     virtual int generateId();
 signals:
     void nameChanged(const QString & name);

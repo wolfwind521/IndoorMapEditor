@@ -135,7 +135,7 @@ QList<Room*> Floor::getRooms() const{
 }
 
 
-void Floor::transformFeature(const QMatrix &mat)
+void Floor::transformFeature(const QTransform &mat)
 {
     PolygonFeature::transformFeature(mat);
 

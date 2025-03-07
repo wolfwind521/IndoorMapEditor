@@ -33,6 +33,8 @@
 #include <QtPrintSupport/QPrintDialog>
 #include <QtPrintSupport/QPrintPreviewDialog>
 #endif
+#include <QActionGroup>
+
 
 #pragma execution_character_set("utf-8")
 
@@ -47,7 +49,8 @@ MainWindow::MainWindow(QWidget *parent) :
     m_searchResultIter(m_searchResults)
 {
     ui->setupUi(this);
-    qsrand(time(0));
+    // srand(time(0));
+    arc4random();
 
     m_sceneTreeView = new QTreeView(ui->dockTreeWidget);
     ui->verticalLayout->insertWidget(0,m_sceneTreeView);
